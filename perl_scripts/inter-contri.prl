@@ -1,0 +1,169 @@
+#!/usr/bin/perl
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by M. A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@hotmail.com
+#
+#########################################################
+
+
+$natom=`grep \"NATOM \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in the system
+chomp $natom;
+print "Total number of atoms in the system : $natom \n";
+
+$nconf=`grep nframes data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # number of conformations (frames)
+chomp $nconf;
+print "Number of conformations : $nconf \n";
+
+$temp = `awk '(\$1=="!A")'  data/definitions.str `; 
+chomp $temp;
+my @allA = split(/ /,$temp );
+shift @allA;   # Getting rid of the line label in definitions.str
+
+$temp = `awk '(\$1=="!B") '  data/definitions.str `; 
+chomp $temp;
+my @allB = split(/ /,$temp );
+shift @allB;  # Getting rid of the line label in definitions.str
+
+$temp = `awk '(\$1=="!Ares")'  data/definitions.str `; 
+chomp $temp;
+my @resA = split(/ /,$temp );
+shift @resA;  # Getting rid of the line label in definitions.str
+$nresA = scalar(@resA);
+
+$temp = `awk '(\$1=="!Bres") '  data/definitions.str `; 
+chomp $temp;
+my @resB = split(/ /,$temp );
+shift @resB;  # Getting rid of the line label in definitions.str
+$nresB = scalar(@resB);
+
+my @resAB = @resA;
+push( @resAB, @resB) ; 
+$nresAB = $nresA + $nresB;
+
+
+# Calculate contribution for $nconf conformations.
+
+for $n (1..$nconf) {
+  $nrA=0;
+  open(IN,"inter/inter-byres-$n-a.dat") or die "Could not open file inter-byres-$n-b.dat \n";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);
+    $res_vdw_bb[$w[0]][$n]+=$w[1];
+    $res_vdw_bb_mean[$w[0]]+=$w[1];
+    $res_elec_bb[$w[0]][$n]+=$w[2];
+    $res_elec_bb_mean[$w[0]]+=$w[2];
+    $res_vdw_sc[$w[0]][$n]+=$w[3];
+    $res_vdw_sc_mean[$w[0]]+=$w[3];
+    $res_elec_sc[$w[0]][$n]+=$w[4];
+    $res_elec_sc_mean[$w[0]]+=$w[4];
+    $nrA+=1;
+  }
+  close(IN);
+  $nrB=0;
+  open(IN,"inter/inter-byres-$n-b.dat") or die "Could not open file inter-byres-$n-b.dat \n";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);
+    $res_vdw_bb[$w[0]][$n]+=$w[1];
+    $res_vdw_bb_mean[$w[0]]+=$w[1];
+    $res_elec_bb[$w[0]][$n]+=$w[2];
+    $res_elec_bb_mean[$w[0]]+=$w[2];
+    $res_vdw_sc[$w[0]][$n]+=$w[3];
+    $res_vdw_sc_mean[$w[0]]+=$w[3];
+    $res_elec_sc[$w[0]][$n]+=$w[4];
+    $res_elec_sc_mean[$w[0]]+=$w[4];
+    $nrB+=1;
+  }
+
+  if ( $nrA != $nresA ) { die "Frame $n : number of inter values in part A ($nrA) does not match definitions.str ($nresA) !!" ;}
+  if ( $nrB != $nresB ) { die "Frame $n : number of inter values in part B ($nrB) does not match definitions.str ($nresB) !!" ;}
+
+  close(IN);
+  
+}
+
+foreach $i (@resAB) {
+  $res_vdw_bb_mean[$i]=$res_vdw_bb_mean[$i]/$nconf;
+  $res_elec_bb_mean[$i]=$res_elec_bb_mean[$i]/$nconf;
+  $res_vdw_sc_mean[$i]=$res_vdw_sc_mean[$i]/$nconf;
+  $res_elec_sc_mean[$i]=$res_elec_sc_mean[$i]/$nconf;
+  for $n (1..$nconf) {
+    $res_vdw_bb_sd[$i]+=($res_vdw_bb[$i][$n]-$res_vdw_bb_mean[$i])**2;
+    $res_elec_bb_sd[$i]+=($res_elec_bb[$i][$n]-$res_elec_bb_mean[$i])**2;
+    $res_vdw_sc_sd[$i]+=($res_vdw_sc[$i][$n]-$res_vdw_sc_mean[$i])**2;
+    $res_elec_sc_sd[$i]+=($res_elec_sc[$i][$n]-$res_elec_sc_mean[$i])**2;
+  }
+  $res_vdw_bb_sd[$i]=sqrt($res_vdw_bb_sd[$i]/$nconf);
+  $res_elec_bb_sd[$i]=sqrt($res_elec_bb_sd[$i]/$nconf);
+  $res_vdw_sc_sd[$i]=sqrt($res_vdw_sc_sd[$i]/$nconf);
+  $res_elec_sc_sd[$i]=sqrt($res_elec_sc_sd[$i]/$nconf);
+}
+
+
+foreach $i (@resAB) {
+  $filename="inter/inter-res-bb-$i.dat";
+  open(OUT,">$filename");
+  for $n (1..$nconf) {
+    printf OUT ("%4d    %10.4f %10.4f \n",
+		$n, $res_vdw_bb[$i][$n], $res_elec_bb[$i][$n]);
+  }
+  printf OUT "----------------------------------------\n";
+  printf OUT ("AVE     %10.4f %10.4f \n",
+	      $res_vdw_bb_mean[$i], $res_elec_bb_mean[$i]);
+  printf OUT ("SD      %10.4f %10.4f \n",
+	      $res_vdw_bb_sd[$i], $res_elec_bb_sd[$i]);
+  close(OUT);
+}
+
+
+open(OUT,">inter/inter-res-bb.dat");
+foreach $i (@resAB) {
+  printf OUT ("%4d    %10.4f %10.4f  \n",
+	      $i, $res_vdw_bb_mean[$i], $res_elec_bb_mean[$i]);
+  $res_vdw_bb_tot+=$res_vdw_bb_mean[$i];
+  $res_elec_bb_tot+=$res_elec_bb_mean[$i];
+}
+printf OUT "----------------------------------------\n";
+printf OUT ("TOT     %10.4f %10.4f \n",
+	    $res_vdw_bb_tot, $res_elec_bb_tot);
+
+
+
+
+foreach $i (@resAB) {
+  $filename="inter/inter-res-sc-$i.dat";
+  open(OUT,">$filename");
+  for $n (1..$nconf) {
+    printf OUT ("%4d    %10.4f %10.4f \n",
+		$n, $res_vdw_sc[$i][$n], $res_elec_sc[$i][$n]);
+  }
+  printf OUT "--------------------------------------------\n";
+  printf OUT ("AVE     %10.4f %10.4f \n",
+	      $res_vdw_sc_mean[$i], $res_elec_sc_mean[$i]);
+  printf OUT ("SD      %10.4f %10.4f \n",
+	      $res_vdw_sc_sd[$i], $res_elec_sc_sd[$i]);
+  close(OUT);
+}
+
+
+open(OUT,">inter/inter-res-sc.dat");
+foreach $i (@resAB) {
+  printf OUT ("%4d    %10.4f %10.4f  \n",
+	      $i, $res_vdw_sc_mean[$i], $res_elec_sc_mean[$i]);
+  $res_vdw_sc_tot+=$res_vdw_sc_mean[$i];
+  $res_elec_sc_tot+=$res_elec_sc_mean[$i];
+}
+printf OUT "--------------------------------------------\n";
+printf OUT ("TOT     %10.4f %10.4f \n",
+	    $res_vdw_sc_tot, $res_elec_sc_tot);
+
+
+
+
+
+

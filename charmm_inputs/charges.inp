@@ -1,0 +1,31 @@
+*########################################################
+* Written by Vincent Zoete
+* Modified by Michel A. Cuendet
+* For questions, please contact vincent.zoete _at_ unil.ch
+* or michel.cuendet _at_ unil.ch
+*########################################################
+*
+
+
+STREAM ./data/loader.str
+
+STREAM ./data/definitions.str
+
+
+!================================================================
+! Write charges
+!================================================================
+
+SCALAR WMAIN = CHARGE
+
+OPEN UNIT 1 WRITE CARD NAME data/charges.crd
+WRITE COOR CARd UNIT 1
+
+
+ 
+
+!================================================================
+!	END
+!================================================================
+
+STOP

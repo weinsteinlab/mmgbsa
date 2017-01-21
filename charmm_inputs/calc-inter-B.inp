@@ -1,0 +1,121 @@
+*########################################################
+* Written by Vincent Zoete
+* Modified by Michel A. Cuendet
+* For questions, please contact vincent.zoete _at_ unil.ch
+* or michel.cuendet _at_ unil.ch
+*########################################################
+*
+
+STREAM ./data/loader.str
+
+!=============================
+! Definitions
+!=============================
+
+STREAM ./data/definitions.str
+
+DEFINE bb SELE (ATOM * * CA .OR. ATOM * * C .OR. ATOM * * N -
+   .OR. ATOM * * O .OR. ATOM * * NT .OR. ATOM * * HN .OR. ATOM * * HA -
+   .OR. ATOM * * HT1 .OR. ATOM * * HT2 .OR. ATOM * * HT3 -
+   .OR. ATOM * * OT1 .OR. ATOM * * OT2 .OR. ATOM * * HA1 -
+   .OR. ATOM * * HA2 ) END
+
+
+!================================================================
+! Treat trajectory
+!================================================================
+
+
+
+NBOND @nbstr
+INTER SELE A END  SELE B END
+! #### This first evaluation is necessary for the NBOND to be takein into account.
+! #### Otherwise the first frame is evaluated with unknown default parameters,
+! #### at least for the global interaction energies. As a precaution, we also put it here.
+
+SET n 0
+LABEL loop
+
+  INCR n BY 1
+  
+  COOR INIT SELE ALL END
+
+  OPEN UNIT 2 READ CARD NAME frames-comp/@n-in.crd
+  READ COOR CARD RESI UNIT 2 
+  ! ###### Here we should use RESI if atoms have been deleted
+  ! ###### But we can't if atom order is not preserved in trajectory CRD files,
+  ! ###### as is the case when using trajectories from NAMD. 
+  ! ###### So here we use pre-processed CRD files with atom order corrected, 
+  CLOSE UNIT 2
+  
+  !--- Open output files for writing
+  OPEN UNIT 12 WRITE CARD NAME inter/inter-byres-@n-b.dat
+
+  PRNLEV 0
+  ! Loops over residues of B
+  CALC k = @firstresb - 1
+  LABEL l1
+
+     INCR k 
+     
+     ! ##### Non-existing reisdue : skip loop
+     DEFINE COUNT SELECT (IRES @k) END
+     SET d ?NSEL
+     IF @d .EQ. 0 GOTO l2
+     
+     ! ##### Select resoidues based on WCOMP from definitions.crd 
+     COOR COMP STAT SELE ( IRES @k ) END
+     SET key ?WAVE    
+     ! # Convention    A : w=1    Acalc : w=2    B : w=-1   Bcalc : w=-2
+     IF @key .NE. -2  GOTO l2
+
+     ! #####  Non-standard stuff, such as ions or ligands will all be considered "not backbone"
+     SET vdwbb 0
+     SET elecbb 0
+     DEFINE COUNT SELECT (IRES @k .AND. bb) END
+     SET d ?NSEL
+     IF @d .EQ. 0 GOTO g0
+
+     INTER SELE A END -
+          SELE IRES @k .AND. bb END
+     SET vdwbb ?VDW
+     SET elecbb ?ELEC    
+
+     LABEL g0
+
+     SET vdwsc 0
+     SET elecsc 0
+     !find out if GLY
+     DEFINE COUNT SELECT (IRES @k .AND. .NOT. bb) END
+     SET d ?NSEL
+     IF @d .EQ. 0 GOTO g1
+
+     INTER SELE A END -
+          SELE IRES @k .AND. .NOT. bb END
+     SET vdwsc ?VDW
+     SET elecsc ?ELEC 
+
+     LABEL g1
+
+     WRITE TITLE UNIT 12
+     * @k   @vdwbb @elecbb   @vdwsc @elecsc 
+     
+     LABEL l2
+
+  IF @k .LT. @lastresb GOTO l1
+  PRNLEV 5
+  
+IF @n .LT. @nframes GOTO loop
+
+
+CLOSE UNIT 12
+CLOSE UNIT 13
+
+
+
+!================================================================
+!	END
+!================================================================
+
+STOP
+

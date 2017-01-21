@@ -1,0 +1,51 @@
+*########################################################
+* Written by Vincent Zoete
+* Modified by Michel A. Cuendet
+* For questions, please contact vincent.zoete _at_ unil.ch
+* or michel.cuendet _at_ unil.ch
+*########################################################
+*
+
+STREAM ./data/loader.str
+STREAM ./data/definitions.str
+
+
+!================================================================
+! Treat trajectory
+!================================================================
+
+SET n 0
+LABEL loop
+
+  INCR n BY 1
+  
+  COOR INIT SELE ALL END
+  
+  ! ##### Read original frames with all atoms
+  OPEN UNIT 2 READ CARD NAME frames-comp/@n-raw.crd
+  READ COOR CARD UNIT 2 
+  ! ###### Here we should use RESI if atoms have been deleted
+  ! ###### But we can't if atom order is not preserved in trajectory CRD files,
+  ! ###### as is the case when using trajectories from NAMD, 
+  ! ##### or with  gromacs crd files does NOT work with RESI with ACE termini.
+
+  CLOSE UNIT 2
+  
+
+ OPEN UNIT 1 WRITE CARD NAME frames-comp/@n-in.crd
+ WRITE COOR CARD UNIT 1
+ CLOSE UNIT 1
+
+IF @n .LT. @nframes GOTO loop
+
+
+CLOSE UNIT 12
+CLOSE UNIT 13
+
+
+
+!================================================================
+!	END
+!================================================================
+
+STOP

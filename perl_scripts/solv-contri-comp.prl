@@ -1,0 +1,206 @@
+#!/usr/bin/perl
+
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by Michel A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@unil.ch
+#
+#########################################################
+
+# prevent warnings for "smartmatch", i.e. operator "~~".
+use experimental qw(smartmatch switch);
+
+$natom=`grep \"NATOMAB \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in the AB system
+chomp $natom;
+print "Total number of atoms in the system : $natom \n";
+
+$nconf=`grep nframes data/definitions.str | awk '{print \$3}'`; # number of conformations (frames)
+chomp $nconf;
+print "Number of conformations : $nconf \n";
+
+$temp = `awk '(\$1=="!A")'  data/definitions.str `;
+chomp $temp;
+my @allA = split(/ /,$temp );
+shift @allA;   # Getting rid of the line label in definitions.str
+
+$temp = `awk '(\$1=="!B") '  data/definitions.str `;
+chomp $temp;
+my @allB = split(/ /,$temp );
+shift @allB;  # Getting rid of the line label in definitions.str
+
+my @allAB = @allA;
+push( @allAB, @allB) ;
+
+$temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
+chomp $temp;
+my @resA = split(/ /,$temp );
+shift @resA;  # Getting rid of the line label in definitions.str
+$nresA = scalar(@resA);
+
+$temp = `awk '(\$1=="!Bres") '  data/definitions.str `;
+chomp $temp;
+my @resB = split(/ /,$temp );
+shift @resB;  # Getting rid of the line label in definitions.str
+$nresB = scalar(@resB);
+
+my @resAB = @resA;
+push( @resAB, @resB) ; 
+$nresAB = $nresA + $nresB;
+
+$cutoff = `awk '(\$1=="!cutoff"){print \$2}'  data/definitions.str `;
+chomp $cutoff;
+$cutoff2 = $cutoff**2;
+
+$ionconc = `awk '(\$1=="!monovalent_ion_concentration"){print \$2}'  data/definitions.str `;
+chomp $ionconc;
+
+
+# Improved loops with less testing for group belonging (slower than actually calculating...)
+$do_new_scheme=1;
+
+
+#$k=-166*(1/1-1/80);
+
+# Here we implement the Debeye-Huckel model as described in 
+# Srinivasan et al., Theo Chem Accts 101(6) : 426, 1999
+$celec=-(332.0672/2);# Electric constant in kcal/mol as defined in CHARMM
+$eps_w=80;           # Relecative dielectric constant of water
+$inv_eps_w=1.0/$eps_w;
+$eps_s=1;            # Relative dielectric constant of solute
+$inv_eps_s = 1.0/$eps_s;
+#$ionconc=0.154;      # Physiological ion concentration
+                     # Recover the original behavior with $ionconc=0
+
+$kappa=0.316*sqrt($ionconc);    #Debeye screening constant [A-1], defined as in 
+                                # Onufriev et al., Proteins 55 : 383, 2004
+
+# Build dictionary to translate to full-system IRES :
+open(IN,"data/definitions.crd");
+$ii=1;	# Atom numbers start at 1
+foreach $line (<IN>) {
+    @w=split(" ",$line);
+    $subindex[$w[0]]=0;
+    if ( ($w[0] !~ /\*/) && ($#w >0) ) {
+      if ( $w[9] != 0.0 ) {
+      	$resnum[$ii]=$w[1];
+	$resname[$ii]=$w[2];  
+	$atomname[$ii]=$w[3];
+	$subindex[$w[0]]=$ii;
+	$ii++;
+      }
+    }
+}
+close(IN);
+$ni = $ii-1;
+if ( $ni != $natom ) {
+	die "Mismatch between number of atoms in dictionary ($ni) and in data/system.dat ($natom) !\n";
+}
+
+# Determine type, charges and residue for each atom.
+open(IN,"data/charges.crd");
+foreach $line (<IN>) {
+    @w=split(" ",$line);
+    if ( ($w[0] !~ /\*/) && ($#w >0) ) {      
+    	$q[$subindex[$w[0]]]=$w[9];
+	print  
+    }
+}
+close(IN);
+
+# Now the total contribution is calculated in solv-comp.inp because we don't do all residues here...
+# open(DAT,">total/solv-tot-comp.dat");
+
+# Calculate contribution for $nconf conformations.
+
+for $n (1..$nconf) {
+
+  print "Treating frame $n \n";
+
+  open(IN,"frames-comp/$n-alpha.crd") or die "Could not open file frames-comp/$n-alpha.crd" ;
+  foreach $line (<IN>) {
+#    if ($line =~ / A1 / or $line =~ / B1 / or $line =~ / A2 / or $line =~ / B2 /) {
+      @w=split(" ",$line);
+      $a[$w[0]]=$w[9];
+      $x[$w[0]]=$w[4];
+      $y[$w[0]]=$w[5];
+      $z[$w[0]]=$w[6];
+#    }
+  }
+  close(IN);
+
+
+  @contri=0;
+  if ($do_new_scheme) {	# Improved loops with less testing for group belonging (slower than actually calculating...)
+      for $i (1..$natom) {
+        if ($resnum[$i] ~~ @resAB ) {
+          for $j (1..$natom) {		# Here counting from 1 not $i
+              $r2=($x[$i]-$x[$j])**2+($y[$i]-$y[$j])**2+($z[$i]-$z[$j])**2;
+              if ($r2 > $cutoff2) { next };
+	      $a2=$a[$i]*$a[$j];
+	      $d = sqrt( $r2 + $a2*exp(-$r2/(8*$a2)));
+              $k = $celec*( $inv_eps_s - exp(-$kappa*$d)*$inv_eps_w) ;   # This is the Debeye-Huckel contribution
+              $term=$k*$q[$i]*$q[$j]/$d;
+              $contri[$i]+= $term;         
+          }
+        }
+      }
+  }else{
+      @contri=0;
+      for $i (1..$natom) {
+	if ($resnum[$i] ~~ @allAB ) {
+	  #print "Atom $i Res $resnum[$i]\n";
+	  for $j ($i..$natom) {
+            if (($resnum[$i] ~~ @resAB ) or ($resnum[$j] ~~ @resAB )) {
+              $r2=($x[$i]-$x[$j])**2+($y[$i]-$y[$j])**2+($z[$i]-$z[$j])**2;
+	      $a2=$a[$i]*$a[$j];
+	      $d = sqrt( $r2 + $a2*exp(-$r2/(8*$a2)));
+	      $k = $celec*( $inv_eps_s - exp(-$kappa*$d)*$inv_eps_w ) ;   # This is the Debeye-Huckel contribution
+	      $term=$k*$q[$i]*$q[$j]/$d;
+	      # print "Atom $i $j : charges $q[$i] $q[$j] distance $d term $term\n";
+	      if ($i == $j) {
+        	$contri[$i]+= $term;
+	      } else {
+        	$contri[$i]+= $term; # Normally 0.5 for each, but counted twice since loop over triangular matrix
+        	$contri[$j]+= $term; # Normally 0.5 for each, but counted twice since loop over triangular matrix
+	      }
+	    }
+	  }
+	}
+      }
+  }
+
+  @res_bb=0; @res_sc=0; @res_all=0;
+  for $i (1..$natom) {
+    if ($resnum[$i] ~~ @resAB ) {
+    $res_all[$resnum[$i]]+=$contri[$i];
+      if ( $atomname[$i] eq "CA" or  $atomname[$i] eq "HA" or $atomname[$i] eq "C" or $atomname[$i] eq "O" or $atomname[$i] eq "N"  or $atomname[$i] eq "NT" or $atomname[$i] eq "HN" or $atomname[$i] eq "HT1" or $atomname[$i] eq "HT2" or $atomname[$i] eq "HT3" or $atomname[$i] eq "OT1" or $atomname[$i] eq "OT2"or $atomname[$i] eq "HA1" or $atomname[$i] eq "HA2"  ) {
+	$res_bb[$resnum[$i]]+=$contri[$i];
+      } else {
+	$res_sc[$resnum[$i]]+=$contri[$i];
+      }
+    }
+  }
+
+  $all=0; $bb=0; $sc=0;
+  open(OUT,">solv-comp/solv-comp-frame-$n.dat");
+  foreach $i (@resAB)  {
+    $bb+=$res_bb[$i];
+    $sc+=$res_sc[$i];
+    $all+=$res_all[$i];
+    printf OUT ("%4d   %10.4f   %10.4f   %10.4f \n",
+		$i,$res_bb[$i],$res_sc[$i],$res_all[$i]);
+  }
+  print OUT "---------------------------------------------- \n";
+  printf OUT ("TOT    %10.4f   %10.4f   %10.4f \n",
+	      $bb, $sc, $all);
+  close(OUT);
+
+  printf DAT ("%4d  %10.4f \n",$n,$all);
+
+}
+

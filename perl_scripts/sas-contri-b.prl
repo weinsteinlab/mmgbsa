@@ -1,0 +1,120 @@
+#!/usr/bin/perl
+
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by Michel A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@unil.ch
+#
+#########################################################
+
+# prevent warnings for "smartmatch", i.e. operator "~~".
+use experimental qw(smartmatch switch);
+
+$natom=`grep \"NATOM \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in the system
+chomp $natom;
+print "Total number of atoms in the system : $natom \n";
+
+$nconf=`grep nframes data/definitions.str | awk '{print \$3}'`; # number of conformations (frames)
+chomp $nconf;
+print "Number of conformations : $nconf \n";
+
+$temp = `awk '(\$1=="!Bres") '  data/definitions.str `;
+chomp $temp;
+my @resB = split(/ /,$temp );
+shift @resB;  # Getting rid of the line label in definitions.str
+
+
+# Determine type, charges and residue for each atom.
+
+open(IN,"data/charges.crd");
+foreach $line (<IN>) {
+#  if ($line =~ / A1 / or $line =~ / B1 / or $line =~ / A2 / or $line =~ / B2 /) {
+    @w=split(" ",$line);
+    $q[$w[0]]=$w[9];
+    $resnum[$w[0]]=$w[1];
+    $resname[$w[0]]=$w[2];
+    $atomname[$w[0]]=$w[3];
+#  }
+}
+close(IN);
+$lastresnum=$resnum[$natom];
+
+
+# Calculate contribution for $nconf conformations.
+
+for $n (1..$nconf) {
+
+  open(IN,"frames-b/$n-sas.crd") or die "Could not open file frames-b/$n-sas.crd" ;
+  foreach $line (<IN>) {
+#    if ($line =~ / A1 / or $line =~ / B1 / or $line =~ / A2 / or $line =~ / B2 /) {
+      @w=split(" ",$line);
+      $sas[$w[0]]=$w[9];
+#    }
+  }
+  close(IN);
+
+  for $i (1..$natom) {
+    if ($resnum[$i] ~~ @resB ) { # This does not work with older perl versions. 
+      $res_all[$resnum[$i]][$n]+=$sas[$i];
+      $res_all_mean[$resnum[$i]]+=$sas[$i];
+      if ( $atomname[$i] eq "CA" or  $atomname[$i] eq "HA" or $atomname[$i] eq "C" or $atomname[$i] eq "O" or $atomname[$i] eq "N"  or $atomname[$i] eq "NT" or $atomname[$i] eq "HN" or $atomname[$i] eq "HT1" or $atomname[$i] eq "HT2" or $atomname[$i] eq "HT3" or $atomname[$i] eq "OT1" or $atomname[$i] eq "OT2"or $atomname[$i] eq "HA1" or $atomname[$i] eq "HA2") {
+	$res_bb[$resnum[$i]][$n]+=$sas[$i];
+	$res_bb_mean[$resnum[$i]]+=$sas[$i];
+      } else {
+	$res_sc[$resnum[$i]][$n]+=$sas[$i];
+	$res_sc_mean[$resnum[$i]]+=$sas[$i];
+      }
+    }
+  }
+
+}
+
+
+
+foreach $i (@resB) {
+  $res_all_mean[$i]=$res_all_mean[$i]/$nconf;
+  $res_bb_mean[$i]=$res_bb_mean[$i]/$nconf;
+  $res_sc_mean[$i]=$res_sc_mean[$i]/$nconf;
+  for $n (1..$nconf) {
+    $res_all_sd[$i]+=($res_all[$i][$n]-$res_all_mean[$i])**2;
+    $res_bb_sd[$i]+=($res_bb[$i][$n]-$res_bb_mean[$i])**2;
+    $res_sc_sd[$i]+=($res_sc[$i][$n]-$res_sc_mean[$i])**2;
+  }
+  $res_all_sd[$i]=sqrt($res_all_sd[$i]/$nconf);
+  $res_bb_sd[$i]=sqrt($res_bb_sd[$i]/$nconf);
+  $res_sc_sd[$i]=sqrt($res_sc_sd[$i]/$nconf);
+}
+
+
+foreach $i (@resB)  {
+  $filename="sas-b/sas-b-res-$i.dat";
+  open(OUT,">$filename");
+  for $n (1..$nconf) {
+    printf OUT ("%4d    %10.4f %10.4f %10.4f \n",
+		$n, $res_bb[$i][$n], $res_sc[$i][$n], $res_all[$i][$n]);
+  }
+  printf OUT "--------------------------------------------\n";
+  printf OUT ("TOT     %10.4f %10.4f %10.4f \n",
+	      $res_bb_mean[$i], $res_sc_mean[$i], $res_all_mean[$i]);
+  printf OUT ("SD      %10.4f %10.4f %10.4f \n",
+	      $res_bb_sd[$i], $res_sc_sd[$i], $res_all_sd[$i]);
+  close(OUT);
+}
+
+
+open(OUT,">sas-b/sas-b-res.dat");
+foreach $i (@resB)  {
+  printf OUT ("%4d    %10.4f %10.4f %10.4f \n",
+	      $i, $res_bb_mean[$i], $res_sc_mean[$i], $res_all_mean[$i]);
+  $res_bb_tot+=$res_bb_mean[$i];
+  $res_sc_tot+=$res_sc_mean[$i];
+  $res_all_tot+=$res_all_mean[$i];
+}
+printf OUT "--------------------------------------------\n";
+printf OUT ("TOT     %10.4f %10.4f %10.4f \n",
+	    $res_bb_tot, $res_sc_tot, $res_all_tot);

@@ -1,0 +1,217 @@
+#!/usr/bin/perl
+
+
+#######################################################
+#
+# This scripts is part of a package that automatically
+#  setups protein for CHARMM.
+#
+# This one parses the protein, looking for different
+#  protein fragments, etc...
+#
+# Usage : ./parse-protein.prl myprotein.pdb
+#
+#
+# For informations, please contact:
+# ZOETE Vincent
+# vincent.zoete@isb-sib.ch
+# Swiss Institute of Bioinformatics
+# Molecular Modeling Group
+# Quartier Sorge - Batiment Genopode
+# CH-1015 Lausanne
+# Switzerland
+# T: +41 21 692 4082
+######################################################
+
+
+
+$DIR="preparing-system";
+
+if (-e "$DIR") {
+  print "Directory $DIR already exists. Deleting it.\n";
+  system "rm -rf $DIR";
+}
+mkdir "$DIR";
+
+# Do we make definitions.str file here? 
+$do_def=0;
+# In the new pipeline, this is done by VMD in prepare_mmgbsa_common.csh
+
+######################################################
+# Reading original PDB file, looking for ATOM entries.
+# Finding segments, etc...
+######################################################
+
+$file = @ARGV[0];
+
+$previous_resid="NONE";
+$current_seg=1;
+
+@natural_aa=qw(ALA ARG ASN ASP ASPH CYS GLN GLU GLY HIS HSD HSP HSE HSP ILE LEU LYS MET PHE PRO SER THR TRP TYR VAL);
+foreach $aa (@natural_aa) {
+  $Is_natural_aa{$aa}=1;
+}
+
+
+$offset_x = 21;
+$offset_y = 31; 
+$offset_z = 41;
+
+open(IN,"$file");
+foreach $line (<IN>) {
+  $res_name=uc(substr($line,11,5));
+  $res_name=~ s/ //g;
+  # test useless on a well behaved CRD
+  #if (($line=~ /\AATOM  / or $line=~ /\AHETATM/) && (substr($line,16,1) eq " " or substr($line,16,1) eq "A") && $Is_natural_aa{$res_name}==1 ) {
+  if ( substr($line,0,1) ne "*" and length($line) > 12) {
+    $natom++;
+    $atom_num[$natom]=substr($line,0,5);
+    $atom_name[$natom]=substr($line,16,4);
+    #$resid[$natom]=substr($line,5,5);
+    $resid[$natom]=substr($line,53,7);
+    $resid[$natom]=~ s/ //g;
+    #print " resid $resid[$natom] ";
+    $res_name[$natom]=substr($line,11,5);
+    $seg_name[$natom]=substr($line,50,3);
+    $x[$natom]=substr($line,$offset_x,9);
+    $y[$natom]=substr($line,$offset_y,9);
+    $z[$natom]=substr($line,$offset_z,9);
+
+    # Change atom names to agree with CHARMM forcefield
+    if ($atom_name[$natom] =~ /CD1/ and $res_name[$natom] eq "ILE") {
+      $atom_name[$natom] = "CD ";
+    }
+
+    # Check RESID and SEGNAME to Identify residues. Index by IRES.
+    if ( ($resid[$natom] ne $previous_resid) or (  $seg_name[$natom] ne $previous_segname) ) {
+      $ires++;
+      $previous_resid=$resid[$natom];
+      $previous_segname=$seg_name[$natom]; 
+      $resid_byres[$ires]=$resid[$natom];
+      $resname_byres[$ires]=$res_name[$natom];
+    }
+
+    $ires[$natom]=$ires;
+
+    ($name=$atom_name[$natom]) =~ s/ //g;
+
+    # Collect x,y,z for N atoms
+    if ( $name eq "N" ) {
+      $x_n[$ires]=substr($line,$offset_x,9);
+      $y_n[$ires]=substr($line,$offset_y,9);
+      $z_n[$ires]=substr($line,$offset_z,9);
+    }
+
+    # Collect x,y,z for C atoms
+    if ( $name eq "C" ) {
+      $x_c[$ires]=substr($line,$offset_x,9);
+      $y_c[$ires]=substr($line,$offset_y,9);
+      $z_c[$ires]=substr($line,$offset_z,9);
+    }
+
+    # Collect x,y,z for SG atoms and index CYS residues
+    if ( $name eq "SG"  and $res_name[$natom] =~ /CYS/) {
+      $ncys++;
+      $num_cys[$ncys]=$ires;
+      $x_s[$ires]=substr($line,$offset_x,9);
+      $y_s[$ires]=substr($line,$offset_y,9);
+      $z_s[$ires]=substr($line,$offset_z,9);
+    }
+
+  }
+}
+
+
+# Find segments based on C(n-1) - N(n) distances
+
+$seg[1]=1;
+$first_res_seg[1]=1;
+for $i (2..$ires) {
+  $d=0;
+  $d+=($x_n[$i]-$x_c[$i-1])**2;
+  $d+=($y_n[$i]-$y_c[$i-1])**2;
+  $d+=($z_n[$i]-$z_c[$i-1])**2;
+  # New segment
+#  print "$i - $i-1 : $d \n";
+  if (($d > 2.89) || ($d ==0)) {   #  ##### If d=0, there are no N of C, this is an ion.
+    $last_res_seg[$current_seg]=$i-1;
+    $current_seg++;
+    $first_res_seg[$current_seg]=$i;
+  }
+  $seg[$i]=$current_seg;
+}
+$last_res_seg[$current_seg]=$ires;
+
+
+# Find disulfide bridges and write into file
+open(OUT,">$DIR/DisulfideBridges");
+if ($ncys>1) {
+  for $i (1..$ncys-1) {
+    for $j ($i+1..$ncys) {
+      $d=0;
+      $d+=($x_s[$num_cys[$i]] - $x_s[$num_cys[$j]])**2;
+      $d+=($y_s[$num_cys[$i]] - $y_s[$num_cys[$j]])**2;
+      $d+=($z_s[$num_cys[$i]] - $z_s[$num_cys[$j]])**2;
+      if ($d < 5) {
+	print OUT "PATCH DISU $seg[$num_cys[$i]]  $resid_byres[$num_cys[$i]]  ";
+	print OUT "$seg[$num_cys[$j]]  $resid_byres[$num_cys[$j]]  \n";
+      }
+    }
+  }
+}
+close(OUT);
+
+
+# Write segments/atoms into files
+
+open(OUT,">$DIR/ProteinSegments");
+for $i (1..$current_seg) {
+  $first="NTER";
+  $last="CTER";
+  # Change N-terminus patch if Gly or Pro.
+  if ($resname_byres[$first_res_seg[$i]] =~ /GLY/ ) { $first="GLYP" }
+  if ($resname_byres[$first_res_seg[$i]] =~ /PRO/ ) { $first="PROP" }
+
+  if ($resname_byres[$first_res_seg[$i]] =~ /SOD/ ) { $first="NONE"; $last="NONE"; }		# ##### SODIUM IN GLTPH
+  if ($resname_byres[$first_res_seg[$i]] =~ /POP/ ) { $first="NONE"; $last="NONE"; }		# ##### LIPIDS
+  if ($resname_byres[$first_res_seg[$i]] =~ /CLOL/ ) { $first="NONE"; $last="NONE"; }		# ##### CHOLESTEROL
+  if ($resname_byres[$first_res_seg[$i]] =~ /CHL1/ ) { $first="NONE"; $last="NONE"; }		# ##### CHOLESTEROL
+  if ($resname_byres[$first_res_seg[$i]] =~ /SAP/ ) { $first="NONE"; $last="NONE"; }		# ##### PIP2
+  printf OUT ("Segment %4d : %4d ( %4s ) to %4d ( %4s ) : Included = true : FIRST = %4s : LAST =  %4s \n",
+	 $i, $first_res_seg[$i], $resid_byres[$first_res_seg[$i]],
+	 $last_res_seg[$i], $resid_byres[$last_res_seg[$i]], $first, $last);
+}
+close(OUT);
+
+
+
+open(OUT,">$DIR/ProteinAtoms");
+for $i (1..$natom) {
+  printf OUT ("%8d ( %8d ) : Segment %4d : IRES %4d : RESID %4s : RESNAME %4s : NAME %4s : COOR  %8.3f %8.3f %8.3f \n",
+	     $i, $atom_num[$i], $seg[$ires[$i]], $ires[$i], $resid_byres[$ires[$i]],
+	     $res_name[$i], $atom_name[$i], $x[$i], $y[$i], $z[$i]);
+}
+close(OUT);
+
+#---------------------------------------------------------------------------------
+# Print difinition.str file for MMGBSA scripts
+
+if ($do_def > 0 ) {
+  open(OUT,">definitions.str");
+
+  printf OUT (" *\n\nDEFINE A SELE PROPERTY WMAIN .EQ. 1 END\n");
+  printf OUT (" *\n\nDEFINE B SELE PROPERTY WMAIN .EQ. -1  END\n\n");
+  printf OUT ("SET firstresa     1\n");
+  # HERE THERE WAS PROBABLY A BUG !!! IT SHOULD BE ires not resid  !!!!
+  #printf OUT ("SET lastresa     %d\n",$resid_byres[$last_res_seg[$current_seg-1]]);
+  #printf OUT ("SET firstresb     %d\n",$resid_byres[$first_res_seg[$current_seg]]);
+  #printf OUT ("SET lastresb     %d\n",$resid_byres[$last_res_seg[$current_seg]]);
+  printf OUT ("SET lastresa     %d\n",$last_res_seg[$current_seg-1]);
+  printf OUT ("SET firstresb     %d\n",$first_res_seg[$current_seg]);
+  printf OUT ("SET lastresb     %d\n",$last_res_seg[$current_seg]);
+
+  printf OUT ("\nSET nframes  XXXNFRAMES\n");
+
+  close(OUT);
+}
+

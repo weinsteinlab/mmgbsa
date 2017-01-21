@@ -1,0 +1,70 @@
+*########################################################
+* Written by Vincent Zoete
+* Modified by Michel A. Cuendet
+* For questions, please contact vincent.zoete _at_ unil.ch
+* or michel.cuendet _at_ unil.ch
+*########################################################
+*
+
+STREAM ./data/loader.str
+
+STREAM ./data/definitions.str
+
+DELETE ATOM SELE .NOT. A  END
+! #### Invert the selection, because there might be other things than A and B in complex
+
+!================================================================
+! Treat trajectory
+!================================================================
+
+!--- Open output files for writing
+
+NBOND @nbstr
+
+OPEN UNIT 20 CARD WRITE NAME total/solv-a-global.dat
+
+SET n 0
+LABEL loop
+
+  INCR n BY 1
+  
+  COOR INIT SELE ALL END
+
+  OPEN UNIT 2 READ CARD NAME frames-comp/@n-in.crd
+  READ COOR CARD RESI UNIT 2 
+  ! ###### Here we should use RESI if atoms have been deleted
+  ! ###### But we can't if atom order is not preserved in trajectory CRD files,
+  ! ###### as is the case when using trajectories from NAMD.   
+  CLOSE UNIT 2
+
+ !--- Calculates complex solvation energy with GBMV model II
+
+ GBMV BETA -20 EPSILON 80 DN 1.0 watr 1.4 GEOM -
+     TOL 1e-8 BUFR 0.5 Mem 10 CUTA 20 HSX1 -0.125 HSX2 0.25 -
+     ALFRQ 1 EMP 1.5 P4 0.0 P6 8.0 P3 0.70 ONX 1.9 OFFX 2.1 -
+     WTYP 2 NPHI 38 SHIFT -0.102 SLOPE 0.9085 CORR 1 SA 0.0
+
+ ENERGY @nbstr
+
+ SET solv ?GBEN
+
+ WRITE TITLE UNIT 20 
+ * @n @solv
+
+ SCALAR WMAIN = GBAL
+ OPEN UNIT 1 WRITE CARD NAME frames-a/@n-alpha.crd
+ WRITE COOR CARD UNIT 1
+
+ GBMV CLEAR
+
+
+IF @n .LT. @nframes GOTO loop
+
+
+
+!================================================================
+!	END
+!================================================================
+
+STOP
+

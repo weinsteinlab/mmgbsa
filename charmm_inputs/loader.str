@@ -1,0 +1,65 @@
+
+!------	Aliases
+SET lib BASEDIR/data/
+
+
+!------ Topology and Parameters 
+open unit 1 card read name @lib/top_all36_prot.rtf
+read RTF card unit 1 
+close unit 1 
+
+open unit 1 card read name @lib/top_all36_lipid.rtf
+read RTF card unit 1 append
+close unit 1 
+
+open unit 1 card read name @lib/top_all36_cgenff.rtf
+read RTF card unit 1 append
+close unit 1
+
+open unit 1 card read name @lib/top_all36_carb.rtf
+read RTF card unit 1 append
+close unit 1
+
+! open unit 1 card read name @lib/ligand.rtf  
+! read RTF card unit 1 append 
+! close unit 1 
+
+open unit 1 card read name @lib/par_all36_prot.prm
+read PARA card flex unit 1 
+close unit 1 
+
+open unit 1 card read name @lib/par_all36_lipid.prm
+read PARA card flex unit 1 append
+close unit 1
+
+open unit 1 card read name @lib/par_all36_cgenff.prm
+read PARA card flex unit 1 append
+close unit 1
+
+open unit 1 card read name @lib/par_all36_carb.prm
+read PARA card flex unit 1 append
+close unit 1
+
+! open unit 1 card read name @lib/ligand.par  
+! read PARA card unit 1 append 
+! close unit 1 
+
+STREAM @lib/toppar_water_ions.str 
+! STREAM @lib/sapi24_renamed_sapi.str
+
+!------ System
+OPEN UNIT 1 READ CARD NAME @lib/complex.psf
+READ PSF CARD UNIT 1
+CLOSE UNIT 1
+
+OPEN UNIT 1 READ CARD NAME @lib/complex.crd
+READ COOR CARD UNIT 1
+CLOSE UNIT 1
+
+OPEN UNIT 1 READ CARD NAME @lib/definitions.crd
+READ COOR COMP CARD UNIT 1
+CLOSE UNIT 1
+
+
+
+

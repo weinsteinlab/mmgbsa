@@ -1,0 +1,55 @@
+
+######################################################################
+NEW IN VERSION 2.1
+######################################################################
+
+1) Derek's scripts are integrated into the MMGBSA distribution, in a directory named ./parallel_scripts/
+
+2) Split prepare_mmgbsa_namd.csh into two parts:
+	- prepare_mmgbsa_common.csh is executed once before parallelization.
+	- prepare_mmgbsa_local.csh is executed on each node with each small trajectory.
+
+3) setup_charmm.sh is now a bash script. It takes an array of cappings as argument instead of separate arguments.
+
+4) vmd_selections.tcl is now created by the top script run.sh. 
+
+5) Change in calc-inter-global.inp, such that first frame uses the right cutoffs for electrostatics. 
+
+6) Adapted mmgbsa_final_results.sh (now called mmgbsa_collect_results.sh) so that it handles arbitrary number of frames per subjob. 
+
+======================================================================
+Modification to the parallel scripts themselves
+
+0) Scripts are now kept in the distribution, only the top script called mmgbsa_master_submit.sh will be copied to the directory where the calculation is done. In the future, an input file should contain all the system-specific things and even the mmgbsa_master_submit.sh script should be stored only in the MMGBSA distribution. 
+
+1) setenv.sh is now called only by the top script. Parameters are passed to sub-scripts as global variables. Also, setenv.csh is not used anymore. We don't make local versions of setenv.sh and only the distribution version of setenv.sh is called, 
+
+2) Several modifications to the mmgbsa_master_submit.sh, so that setup_charmm.sh prepare_mmgbsa_common.csh are performed only once on the front end, before mmgbsa_master_submit.sh is distributed to the nodes. 
+
+3) remove sub-directory ./job_directory, and move everything up one level. 
+
+4) For final results, remove sub-directory ./final_results and copy everything at the level of the working directory. 
+
+5) Renamed some of the scripts for more consistency.
+
+6) Submission of  mmgbsa_final_submit.sh (previously run_final.sh) is done with a dependency condition, such that the jobs starts only when all subjobs have finised. 
+
+
+======================================================================
+Typical workflow for mmgbsa2.1
+
+
+In the main directory, there should be an ./input subdirectory containing a PSF and a PDB file. Source the environment :
+
+	source /home/mac2109/mmgbsa/mmgbsa2.1/scripts/setenv.sh
+
+Copy the main script locally :
+
+	cp -rp $mmgbsa_path/RUN.sh .
+
+Edit the parameters inside the script. Then run the entire calculation with 
+
+	./RUN.sh
+
+	
+======================================================================

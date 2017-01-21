@@ -1,0 +1,52 @@
+*########################################################
+* Written by Vincent Zoete
+* Modified by Michel A. Cuendet
+* For questions, please contact vincent.zoete _at_ unil.ch
+* or michel.cuendet _at_ unil.ch
+*########################################################
+*
+
+
+STREAM ./data/loader.str
+
+STREAM ./data/definitions.str
+
+OPEN UNIT 10 WRITE CARD NAME ./data/system.dat
+
+WRITE TITLE UNIT 10
+* NATOM ?NATOM
+* NRES ?NRES
+* 
+
+COOR STAT SELE A .OR. B END
+
+WRITE TITLE UNIT 10
+* NATOMAB ?NSEL
+*
+
+
+COOR STAT SELE A END
+
+WRITE TITLE UNIT 10
+* NATOMA ?NSEL
+* 
+
+
+COOR STAT SELE B END
+
+WRITE TITLE UNIT 10
+* NATOMB ?NSEL
+* 
+
+CLOSE UNIT 10
+
+
+
+
+
+!================================================================
+!	END
+!================================================================
+
+STOP
+

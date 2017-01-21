@@ -1,0 +1,209 @@
+#!/usr/bin/perl
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by Michel A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@unil.ch
+#
+#########################################################
+
+use warnings;
+
+$nconf=`grep nframes data/definitions.str | awk '{print \$3}'`; # number of conformations (frames)
+chomp $nconf;
+print "Number of conformations : $nconf \n";
+
+
+
+open(IN,"total/inter-global.dat") or die "Could not open total/inter-global.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  $vdw[$w[0]]=$w[1];
+  $elec[$w[0]]=$w[2];
+}
+close(IN);
+
+open(IN,"total/solv-comp-global.dat") or die "Could not open total/solv-comp-global.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  $solv_comp[$w[0]]=$w[1];
+}
+close(IN);
+
+
+open(IN,"total/solv-a-global.dat") or die "Could not open total/solv-a-global.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  $solv_a[$w[0]]=$w[1];
+}
+close(IN);
+
+open(IN,"total/solv-b-global.dat") or die "Could not open total/solv-b-global.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  $solv_b[$w[0]]=$w[1];
+}
+close(IN);
+
+open(IN,"total/buried-sasa.dat") or die "Could not open total/buried-sasa.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  $surf[$w[0]]=$w[5];
+}
+close(IN);
+
+open(OUT, ">binding-time.dat");
+
+printf OUT ("       %7s   %7s  %7s  %7s  :   %7s \n","VdW","Elec","GB","SA", "TOTAL");
+print OUT "---------------------------------------------------------\n";
+
+my $vdw_tot=0;
+my $elec_tot=0;
+my $desolv_tot=0;
+my $bur_tot=0;
+my $bind_tot=0;
+
+my $vdw2_tot=0;
+my $elec2_tot=0;
+my $desolv2_tot=0;
+my $bur2_tot=0;
+my $bind2_tot=0;
+
+for $i (1..$nconf) {
+
+  $desolv[$i]=$solv_comp[$i]-($solv_a[$i]+$solv_b[$i]);
+  $bur[$i]=-0.0072*$surf[$i];
+  # The minus sign comes from the fact that the buried surface is calculated 
+  # as (a + b -comp) (to get a positive number)
+  $bind[$i] = $vdw[$i] + $elec[$i] + $desolv[$i] + $bur[$i];
+
+  # totals
+  $vdw_tot+=$vdw[$i];
+  $elec_tot+=$elec[$i];
+  $desolv_tot+=$desolv[$i];
+  $bur_tot+=$bur[$i];
+  $bind_tot+=$bind[$i];
+
+  # squared totals
+  $vdw2_tot+=$vdw[$i]**2;
+  $elec2_tot+=$elec[$i]**2;
+  $desolv2_tot+=$desolv[$i]**2;
+  $bur2_tot+=$bur[$i]**2;
+  $bind2_tot+=$bind[$i]**2;
+
+
+  printf OUT ("%3d :  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+	      $i, $vdw[$i], $elec[$i], $desolv[$i], $bur[$i], $bind[$i]);
+}
+
+# means
+$vdw_mean=$vdw_tot/$nconf;
+$elec_mean=$elec_tot/$nconf;
+$desolv_mean=$desolv_tot/$nconf;
+$bur_mean=$bur_tot/$nconf;
+$bind_mean=$bind_tot/$nconf;
+
+# Unbiased standard deviation estimate 
+$vdw_sd = sqrt( ( $vdw2_tot - $nconf*$vdw_mean**2 ) / ($nconf -1) );
+$elec_sd = sqrt( ( $elec2_tot - $nconf*$elec_mean**2 ) / ($nconf -1) );
+$desolv_sd = sqrt( ( $desolv2_tot - $nconf*$desolv_mean**2 ) / ($nconf -1) );
+$bur_sd = sqrt( ( $bur2_tot - $nconf*$bur_mean**2 ) / ($nconf -1) );
+$bind_sd = sqrt( ( $bind2_tot - $nconf*$bind_mean**2 ) / ($nconf -1) );
+ 
+# Now that we have the mean, we can calculate the moments :
+my $vdw2_norm_tot=0;
+my $vdw2_shift_tot=0;
+my $elec2_norm_tot=0;
+my $elec2_shift_tot=0;
+my $bur2_norm_tot=0;
+my $bur2_shift_tot=0;
+my $bind2_norm_tot=0;
+my $bind2_shift_tot=0;
+
+for $n (1..$nconf) {
+    $vdw2_norm_tot+=($vdw[$n] -  $vdw_mean)**2;
+    $elec2_norm_tot+=($elec[$n] -  $elec_mean)**2;
+    $desolv2_norm_tot+=($desolv[$n] -  $desolv_mean)**2;
+    $bur2_norm_tot+=($bur[$n] -  $bur_mean)**2;
+    $bind2_norm_tot+=($bind[$n] -  $bind_mean)**2;
+
+    if ($n >1) {
+       $vdw2_shift_tot+=($vdw[$n] -  $vdw_mean) * ($vdw_old -  $vdw_mean);
+       $elec2_shift_tot+=($elec[$n] -  $elec_mean) * ($elec_old -  $elec_mean);
+       $desolv2_shift_tot+=($desolv[$n] -  $desolv_mean) * ($desolv_old -  $desolv_mean);
+       $bur2_shift_tot+=($bur[$n] -  $bur_mean) * ($bur_old -  $bur_mean);
+       $bind2_shift_tot+=($bind[$n] -  $bind_mean) * ($bind_old -  $bind_mean);
+    }
+
+    $vdw_old=$vdw[$n];
+    $elec_old=$elec[$n];
+    $desolv_old=$desolv[$n];
+    $bur_old=$bur[$n];
+    $bind_old=$bind[$n];
+}
+
+# For each, calculate n_effective and standard error.
+if ($vdw2_tot > 0) {
+    $vdw_r1 = $vdw2_shift_tot / $vdw2_norm_tot;
+    $vdw_n_eff = $nconf * (1-$vdw_r1) / (1+$vdw_r1) ;
+    $vdw_err = $vdw_sd / sqrt($vdw_n_eff ) ;
+}else{
+    $vdw_n_eff = 0;
+    $vdw_err = 0;
+}
+
+if ($elec2_tot > 0) {
+    $elec_r1 = $elec2_shift_tot / $elec2_norm_tot;
+    $elec_n_eff = $nconf * (1-$elec_r1) / (1+$elec_r1) ;
+    $elec_err = $elec_sd / sqrt($elec_n_eff ) ;
+}else{
+    $elec_n_eff = 0;
+    $elec_err = 0;
+}
+
+if ($desolv2_tot > 0) {
+    $desolv_r1 = $desolv2_shift_tot / $desolv2_norm_tot;
+    $desolv_n_eff = $nconf * (1-$desolv_r1) / (1+$desolv_r1) ;
+    $desolv_err = $desolv_sd / sqrt($desolv_n_eff ) ;
+}else{
+    $desolv_n_eff = 0;
+    $desolv_err = 0;
+}
+
+if ($bur2_tot > 0) {
+    $bur_r1 = $bur2_shift_tot / $bur2_norm_tot;
+    $bur_n_eff = $nconf * (1-$bur_r1) / (1+$bur_r1) ;
+    $bur_err = $bur_sd / sqrt($bur_n_eff ) ;
+}else{
+    $bur_n_eff = 0;
+    $bur_err = 0;
+}
+
+if ($bind2_tot > 0) {
+    $bind_r1 = $bind2_shift_tot / $bind2_norm_tot;
+    $bind_n_eff = $nconf * (1-$bind_r1) / (1+$bind_r1) ;
+    $bind_err = $bind_sd / sqrt($bind_n_eff ) ;
+}else{
+    $bind_n_eff = 0;
+    $bind_err = 0;
+}
+
+
+
+print OUT "---------------------------------------------------------\n";
+printf OUT ("AVE :  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+	      $vdw_mean, $elec_mean, $desolv_mean, $bur_mean, $bind_mean);
+printf OUT ("SD  :  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+	      $vdw_sd, $elec_sd, $desolv_sd, $bur_sd, $bind_sd);
+printf OUT ("N_EF:  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+	      $vdw_n_eff, $elec_n_eff, $desolv_n_eff, $bur_n_eff, $bind_n_eff);
+printf OUT ("ERR :  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+	      $vdw_err, $elec_err, $desolv_err, $bur_err, $bind_err);
+
+
+close(OUT);
+

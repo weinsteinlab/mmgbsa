@@ -1,0 +1,116 @@
+#!/usr/bin/perl
+
+# Assigns values to the b-factor field of the pdb file 
+# based on the residue number 
+
+# Arguments 
+# 1) pdb file
+# 2) file with values : residue_number value 
+# 3) optional : factor to scale the value :
+
+if ($#ARGV eq 2) {
+    $factor = $ARGV[2];
+}else{
+    $factor = 1.0;    
+}
+
+# Read value file 1
+$ii = 0;
+open(IN,$ARGV[1]) or die "Could not open file $ARGV[1] \n";  
+foreach $line (<IN>) {
+    @w=split(" ",$line);
+    if ($w[0] =~ /S/ ) {
+      $segment[$ii] = $w[0];
+      chomp($w[1]);
+      $residue[$ii] = substr($w[1],3) ;
+      $value[$ii] = $w[7];
+      $nn[$ii]+=1;
+      #print STDOUT  " $w[1]  xx  $segment[$ii]  $residue[$ii] $value[$ii]\n";
+      $ii++;
+    }
+}   
+close(IN); 
+$n_val = $ii; 
+
+
+# Read value file 2
+$ii = 0;
+open(IN,$ARGV[1]) or die "Could not open file $ARGV[1] \n";  
+foreach $line (<IN>) {
+    @w=split(" ",$line);
+    if ($w[0] =~ /S/ ) {
+      $segment[$ii] = $w[0];
+      chomp($w[1]);
+      $residue[$ii] = substr($w[1],3) ;
+      $value[$ii] = $w[7];
+      $nn[$ii]+=1;
+      #print STDOUT  " $w[1]  xx  $segment[$ii]  $residue[$ii] $value[$ii]\n";
+      $ii++;
+    }
+}   
+close(IN); 
+$n_val = $ii; 
+
+# Read value file 3
+$ii = 0;
+open(IN,$ARGV[1]) or die "Could not open file $ARGV[1] \n";  
+foreach $line (<IN>) {
+    @w=split(" ",$line);
+    if ($w[0] =~ /S/ ) {
+      $segment[$ii] = $w[0];
+      chomp($w[1]);
+      $residue[$ii] = substr($w[1],3) ;
+      $value[$ii] = $w[7];
+      $nn[$ii]+=1;
+      #print STDOUT  " $w[1]  xx  $segment[$ii]  $residue[$ii] $value[$ii]\n";
+      $ii++;
+    }
+}   
+close(IN); 
+$n_val = $ii; 
+
+
+print STDERR "Number of values $n_val\n"; 
+
+# Read pdb file
+$ii = 0;
+open(IN,$ARGV[0]) or die "Could not open file $ARGV[0] \n";  
+foreach $line (<IN>) {
+    @w=split(" ",$line);
+    if ($w[0] =~ /ATOM/){
+        $w[9] = 0.0;
+        for $jj (0..($n_val-1)) {
+            #if ( ($w[4] == $residue[$jj] )) {§
+            #   print STDOUT "$w[4] $residue[$jj]  $w[10]  $segment[$jj] \n"; 
+            #}
+            if ( ($w[4] == $residue[$jj] ) and ( $w[10] eq $segment[$jj]))  {
+                $w[9] = $value[$jj] * $factor;
+            }    
+       } 
+       if  ($w[10] eq "LIG"){ $chain = "L"};
+       if  ($w[10] ne "LIG") { $chain = "X" } ;
+       if  ($w[10] eq "1S") { $chain = "A" } ;
+       if  ($w[10] eq "2S") { $chain = "B" } ;
+       if  ($w[10] eq "3S") { $chain = "C" } ;
+       if  ($w[10] eq "4S") { $chain = "S" } ;
+       if  ($w[10] eq "5S") { $chain = "T" } ;
+       if  ($w[10] eq "6S") { $chain = "U" } ;
+       if  ($w[10] eq "7S") { $chain = "L" } ;
+       if  ($w[10] eq "8S") { $chain = "L" } ;
+       if  ($w[10] eq "9S") { $chain = "L" } ;
+       if  ($w[10] eq "10S") { $chain = "M" } ;
+       if  ($w[10] eq "11S") { $chain = "M" } ;
+       if  ($w[10] eq "12S") { $chain = "M" } ;
+       if  ($w[10] eq "13S") { $chain = "N" } ;
+       if  ($w[10] eq "14S") { $chain = "N" } ;
+       if  ($w[10] eq "15S") { $chain = "N" } ;
+ 
+        if (length($w[2]) <4) {   
+            printf("%-4s%7d  %-3s %3s %1s%4d    %8.3f%8.3f%8.3f%6.2f%6.2f%10s \n",
+    	        $w[0],$w[1],$w[2],$w[3],$chain,$w[4],$w[5],$w[6],$w[7],$w[8],$w[9],$w[10]);
+        }else{
+            printf("%-4s%7d %-4s %3s %1s%4d    %8.3f%8.3f%8.3f%6.2f%6.2f%10s \n",
+    	        $w[0],$w[1],$w[2],$w[3],$chain,$w[4],$w[5],$w[6],$w[7],$w[8],$w[9],$w[10]);
+        }         
+    } 
+}       
