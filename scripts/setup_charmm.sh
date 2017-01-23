@@ -32,8 +32,7 @@ echo "Capping options : ${capping[*]}"
 
 # ---------------------------------------------------------------
 # Make directory structure
- mkdir -p setup_charmm
- cd setup_charmm
+
  pwd
 
  mkdir -p data
@@ -99,7 +98,21 @@ echo ""
 # ---------------------------------------------------------------
 # Do the charmm setup 
 
-echo " Preparing charmm setup ... "
+# Make local copies of the relevant topology and parameter files
+# This is required because Charmm cannot handle mixed-case paths in variables
+# So that the script fails sometimes when using an absolute path to the $top_path directory.
+mkdir -p toppar
+cp -p $top_path/top_all36_prot.rtf toppar/.
+cp -p $top_path/top_all36_lipid.rtf toppar/.
+cp -p $top_path/top_all36_cgenff.rtf toppar/.
+cp -p $top_path/top_all36_carb.rtf toppar/.
+cp -p $top_path/par_all36_prot.prm toppar/.
+cp -p $top_path/par_all36_lipid.prm toppar/.
+cp -p $top_path/par_all36_cgenff.prm toppar/.
+cp -p $top_path/par_all36_carb.prm toppar/.
+cp -rp $top_path/toppar_water_ions.str toppar/.
+
+echo "Running charmm setup ... "
 $perl $scripts/prepare-charmm36.prl
  
 cd ..

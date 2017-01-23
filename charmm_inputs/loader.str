@@ -1,7 +1,8 @@
 
 !------	Aliases
 SET lib BASEDIR/data/
-
+! Note that BASEDIR cannot contain capital letters, due to a limitation in the way Charmm handles variables. 
+! Therefore it is more robust to use relative paths. 
 
 !------ Topology and Parameters 
 open unit 1 card read name @lib/top_all36_prot.rtf

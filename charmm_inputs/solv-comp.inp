@@ -45,7 +45,7 @@ LABEL loop
 
  !--- Calculates complex solvation energy with GBMV model II
 
- GBMV BETA -20 EPSILON 80 DN 1.0 watr 1.4 GEOM -
+ GBMV BETA -20 EPSILON 80 DN 1.0 watr 1.4 GEOM KAPPA @kappa -
      TOL 1e-8 BUFR 0.5 Mem 10 CUTA 20 HSX1 -0.125 HSX2 0.25 -
      ALFRQ 1 EMP 1.5 P4 0.0 P6 8.0 P3 0.70 ONX 1.9 OFFX 2.1 -
      WTYP 2 NPHI 38 SHIFT -0.102 SLOPE 0.9085 CORR 1 SA 0.0

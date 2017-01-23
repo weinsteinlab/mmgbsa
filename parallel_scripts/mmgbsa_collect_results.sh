@@ -23,9 +23,9 @@ frames_per_job=$3	# number of frames per subjob
 #####                                                                                      #####
 ################################################################################################
 
-if [[ ${mytraj##*.} -eq "xtc" ]] ; then
+if [[ ${mytraj##*.} == "xtc" ]] ; then
 	trajtypeflag="-xtc"
-elif [[ ${mytraj##*.} -eq "dcd" ]] ; then
+elif [[ ${mytraj##*.} == "dcd" ]] ; then
 	trajtypeflag="-dcd"
 else
 	echo "ERROR : Unrecognized trajectory file type"

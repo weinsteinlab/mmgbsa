@@ -14,9 +14,6 @@ set -u
 # Selection for the MMGBSA system
 system_selection='protein or (chain S T U L M N and not lipid)'
 
-# Name of mmgbsa run
-mmgbsa_name="test_mmgbsa"
-
 # Selection text for part A
 partA_selection=" chain A and ( (resid 223 to 417) or (chain S L and not lipid) ) "
 
@@ -24,6 +21,7 @@ partA_selection=" chain A and ( (resid 223 to 417) or (chain S L and not lipid) 
 partB_selection="  chain A and (resid 34 to 74)  "
 
 # Cutoff to choose residues within each part, for which the decomposition will be made. 
+# If set to zero, we use the alternative selections below. 
 cutoff_residues=0
 
 # Alternatively, one can choose residues explicitly
@@ -42,13 +40,13 @@ frames_per_job=10 # number of frames in each sub-job
 n_jobs=3
 
 # Non-bonded interaction parameters
-cutoff=50
+cutoff=30	# Cutoff for electro and VdW interactions in Angstroms
 ionconc=0.154   # Monovalent ion concentration in M (default = 0.154). 
 
 # System details
 proteins=6 # number of separate (i.e. not covalently bonded) proteins/peptides
 
-##### for each protein/peptide, include the following variables ###
+# For each protein/peptide, include the following variables ###
 capping[1]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
 capping[2]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
 
@@ -69,6 +67,12 @@ capping[12]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for ye
 # et caetera ...
 
 
+###################################################################
+#                                                                 #
+# End of user-defined parameters                                  #
+#                                                                 #
+###################################################################
+
 
 ###################################################################
 # Define some variables 
@@ -76,18 +80,30 @@ capping[12]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for ye
 mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
 source $mmgbsa_path/scripts/setenv.sh
 
+# Name of mmgbsa run
+mmgbsa_name="mmgbsa"
 
 
 ###################################################################
-# Setup charmm
+# Charmm setup
 
 echo "Performing charmm setup ... "
 
-$scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}"
+mkdir -p setup_charmm
+cd setup_charmm
 
+$scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}" > setup_charmm.log
+
+is_ok=`grep  "Everything seems Ok" setup_charmm.log`
+echo $is_ok
+if [ -z "$is_ok" ]; then
+	echo "ERROR during charmm setup !"
+	exit 1
+fi
+
+cd ..
 mkdir -p  $mmgbsa_name
 cd $mmgbsa_name
-
 
 ###################################################################
 # Make vmd_selection.tcl file

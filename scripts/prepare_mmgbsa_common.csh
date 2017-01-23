@@ -29,8 +29,13 @@ endif
 #set mmgbsa_path="/home/mac2109/mmgbsa/mmgbsa2.0/"
 # set inputs=$mmgbsa_path/charmm_inputs/
 
+# The path to the main mmgbsa directory where the ./setup_charmm/ directory is located
+set main_path=".."
+
 # set basedir_backslash=`pwd | awk '{gsub("/","\\/"); print $0}'`
 # We need a relative path to loader.str with tmp directories assigned by SGE...
+# Also, charmm cannot handle variables with capital letters, so an absolute path
+# will fail in some cases. 
 set  basedir_backslash='.' 
 
 mkdir -p data log outputs
@@ -43,8 +48,8 @@ endif
 
 # .......................................................................
 # HERE WE USE THE ORIGINAL CHARMM SETUP !
-cp  -p ../setup_charmm/data/complex* data/.
-cp  -p ../input/*.psf data/system.namd.psf
+cp  -p $main_path/setup_charmm/data/complex* data/.
+cp  -p $main_path/input/*.psf data/system.namd.psf
 
 # We make local copies of charmm input files so that the node does not read 100 times from main disk. 
 cp -p $top_path/top_all36_prot.rtf data/.
@@ -96,6 +101,7 @@ echo "Running charmm system.inp ... "
 $charmm < $inputs/system.inp > outputs/system.out 
 if ($? != 0) then
     echo "ERROR : charmm system.inp"
+    exit 1
 endif
 
 
@@ -103,6 +109,7 @@ echo "Running charmm charges.inp ... "
 $charmm < $inputs/charges.inp > outputs/charges.out
 if ($? != 0) then
     echo "ERROR : charmm charges.inp"
+    exit 1
 endif
 
 

@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#$ -N mmgbsa2
+#$ -N mmgbsa2.1
 #$ -j y
 #$ -cwd
 #$ -q standard.q
@@ -40,9 +40,9 @@ mj=$(( $js - 1 ))
 dcd_tmp=$TMPDIR/job_${B}
 main_tmp=$TMPDIR/${B}
 
-if [[ ${mytraj##*.} -eq "xtc" ]] ; then
+if [[ ${mytraj##*.} == "xtc" ]] ; then
 	trajtypeflag="-xtc"
-elif [[ ${mytraj##*.} -eq "dcd" ]] ; then
+elif [[ ${mytraj##*.} == "dcd" ]] ; then
 	trajtypeflag="-dcd"
 else
 	echo "ERROR : Unrecognized trajectory file type"
@@ -69,6 +69,14 @@ cd $current
 
 # Get the total number of frames in the trajectory
 frame_num=` $catdcd -num $trajtypeflag $mytraj | awk '($1=="Total"){print $3}'  `
+
+if (( $frame_num  == 0 ))
+then
+	echo "ERROR : No frames could be read from trajectory!"
+	pwd
+	exit 1
+fi
+
 
 echo " Extracting small trajectory ... "
 if (( $frame_num % $js == 0 ))
@@ -124,13 +132,14 @@ echo "DCD directory : $dcd_tmp"
 
 echo " "
 echo " Preparing local MMGBSA job ... "
-$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $small_traj 1 $last $stride $dcd_tmp > prepare.log
+$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$SGE_TASK_ID.log
 
 ###################################################################
 # Run local mmgbsa 
 
 echo " Running local MMGBSA job ... "
-$mmgbsa_path/scripts/run_one_mmgbsa.sh  > overall.log
+$mmgbsa_path/scripts/run_one_mmgbsa.sh  >  $current/log/run_job_$SGE_TASK_ID.log
+
 
 sleep 10
 

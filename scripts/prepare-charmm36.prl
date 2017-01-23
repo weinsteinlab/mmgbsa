@@ -29,7 +29,8 @@ $DIR="preparing-system";
 #$CHARMM_EXE="/home/mac2109/local/charmm36a2_intel9_64_mpich-1.2.7p1/bin/charmm";
 $CHARMM_EXE=$ENV{charmm};
 #$CHARMM_TOPPAR="/home/mac2109/mmgbsa/mmgbsa2.1/mitch_top_files_mackerell/";
-$CHARMM_TOPPAR=$ENV{top_path};
+#$CHARMM_TOPPAR=$ENV{top_path};
+$CHARMM_TOPPAR="../toppar";
 
 open(LOG,">$DIR/Preparation.log");
 
@@ -103,7 +104,7 @@ print INPUT "read PARA card flex unit 1 append\n";
 print INPUT "close unit 1 \n\n";
 
 
-print INPUT "STREAM \@lib/toppar_all36_lipid_inositol.str\n";
+#print INPUT "STREAM \@lib/toppar_all36_lipid_inositol.str\n";
 #print INPUT "STREAM \@lib/saia.str \n";
 #print INPUT "STREAM \@lib/sapi24_renamed_sapi.str \n";
 print INPUT "STREAM \@lib/toppar_water_ions.str \n\n";
