@@ -58,7 +58,6 @@ sleep $time_to_sleep
 mkdir $dcd_tmp
 mkdir $main_tmp
 
-mkdir $main_tmp
 cp -rp data $main_tmp/.
 cp -rp vmd_selections.tcl $main_tmp/.
 
