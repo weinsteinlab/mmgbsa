@@ -12,13 +12,13 @@ set -u
 ###################################################################
 
 # Selection for the MMGBSA system
-system_selection='protein or (chain S T U L M N and not lipid)'
+system_selection='protein'
 
 # Selection text for part A
-partA_selection=" chain A and ( (resid 223 to 417) or (chain S L and not lipid) ) "
+partA_selection=" chain A "
 
 # Selection text for part B
-partB_selection="  chain A and (resid 34 to 74)  "
+partB_selection="  chain B  "
 
 # Cutoff to choose residues within each part, for which the decomposition will be made. 
 # If set to zero, we use the alternative selections below. 
@@ -26,10 +26,10 @@ cutoff_residues=0
 
 # Alternatively, one can choose residues explicitly
 partA_residues_selection="chain A and resid 351 to 353 "
-partB_residues_selection="chain A and resid 51 to 53 "
+partB_residues_selection="chain B and resid 51 to 53 "
 
 # Trajectory of the full system (can be a DCD file or an XTC file). 
-traj=/home/mac2109/mod/gltph/new.c36/dyna/systems/ofcc2/equil_phase4_unscaled/ofcc2.xtc
+traj=/path/to/traj.xtc
 
 # Frames used 
 start_frame=1
@@ -44,7 +44,7 @@ cutoff=30	# Cutoff for electro and VdW interactions in Angstroms
 ionconc=0.154   # Monovalent ion concentration in M (default = 0.154). 
 
 # System details
-proteins=6 # number of separate (i.e. not covalently bonded) proteins/peptides
+proteins=2 # number of separate (i.e. not covalently bonded) protein/peptide segments 
 
 # For each protein/peptide, include the following variables ###
 capping[1]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
