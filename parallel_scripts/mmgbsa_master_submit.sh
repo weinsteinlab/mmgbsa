@@ -11,6 +11,8 @@
 #                                                                 #
 ###################################################################
 
+# TEST! Just to see how GitLab documents command line-pushed changes. 
+
 # Trajectory of the full system (can be a DCD file or an XTC file)
 mytraj=$1
 # Start frame of the main trajectory
@@ -58,7 +60,6 @@ sleep $time_to_sleep
 mkdir $dcd_tmp
 mkdir $main_tmp
 
-mkdir $main_tmp
 cp -rp data $main_tmp/.
 cp -rp vmd_selections.tcl $main_tmp/.
 
