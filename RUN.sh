@@ -83,6 +83,10 @@ source $mmgbsa_path/scripts/setenv.sh
 # Name of mmgbsa run
 mmgbsa_name="mmgbsa"
 
+# Make the path to traj absolute if it is not already
+traj=`readlink -f $traj`
+echo "Using trajectory $traj"
+
 
 ###################################################################
 # Charmm setup
@@ -168,7 +172,7 @@ $scripts/prepare_mmgbsa_common.csh "$cutoff" "$ionconc"
 ###################################################################
 # Submit sub-jobs with the parallel script
 #      This calls the preparation script 
-#      $scripts/prepare_mmgbsa_local.csh $mytraj $startframe $endframe $stride
+#      $scripts/prepare_mmgbsa_local.csh $traj $startframe $endframe $stride
 
 echo "Submitting all sub-jobs ... "
 
@@ -183,7 +187,7 @@ echo "Submitting final post-procession job ... "
 
 qsub -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
 
-
+qstat
 
 
 
