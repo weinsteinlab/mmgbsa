@@ -150,6 +150,7 @@ for $n (1..$nconf) {
 if ($vdw2_tot > 0) {
     $vdw_r1 = $vdw2_shift_tot / $vdw2_norm_tot;
     $vdw_n_eff = $nconf * (1-$vdw_r1) / (1+$vdw_r1) ;
+    if ( $vdw_n_eff gt $nconf) {$vdw_n_eff = $nconf};
     $vdw_err = $vdw_sd / sqrt($vdw_n_eff ) ;
 }else{
     $vdw_n_eff = 0;
@@ -159,6 +160,7 @@ if ($vdw2_tot > 0) {
 if ($elec2_tot > 0) {
     $elec_r1 = $elec2_shift_tot / $elec2_norm_tot;
     $elec_n_eff = $nconf * (1-$elec_r1) / (1+$elec_r1) ;
+    if ( $elec_n_eff gt $nconf) {$elec_n_eff = $nconf};
     $elec_err = $elec_sd / sqrt($elec_n_eff ) ;
 }else{
     $elec_n_eff = 0;
@@ -168,6 +170,7 @@ if ($elec2_tot > 0) {
 if ($desolv2_tot > 0) {
     $desolv_r1 = $desolv2_shift_tot / $desolv2_norm_tot;
     $desolv_n_eff = $nconf * (1-$desolv_r1) / (1+$desolv_r1) ;
+    if ( $desolv_n_eff gt $nconf) {$desolv_n_eff = $nconf};
     $desolv_err = $desolv_sd / sqrt($desolv_n_eff ) ;
 }else{
     $desolv_n_eff = 0;
@@ -177,6 +180,7 @@ if ($desolv2_tot > 0) {
 if ($bur2_tot > 0) {
     $bur_r1 = $bur2_shift_tot / $bur2_norm_tot;
     $bur_n_eff = $nconf * (1-$bur_r1) / (1+$bur_r1) ;
+    if ( $bur_n_eff gt $nconf) {$bur_n_eff = $nconf};
     $bur_err = $bur_sd / sqrt($bur_n_eff ) ;
 }else{
     $bur_n_eff = 0;
@@ -186,6 +190,7 @@ if ($bur2_tot > 0) {
 if ($bind2_tot > 0) {
     $bind_r1 = $bind2_shift_tot / $bind2_norm_tot;
     $bind_n_eff = $nconf * (1-$bind_r1) / (1+$bind_r1) ;
+    if ( $bind_n_eff gt $nconf) {$bind_n_eff = $nconf};
     $bind_err = $bind_sd / sqrt($bind_n_eff ) ;
 }else{
     $bind_n_eff = 0;
