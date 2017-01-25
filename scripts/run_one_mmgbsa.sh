@@ -7,6 +7,9 @@
 # main_tmp=$1
 # source $main_tmp/setenv.sh
 
+echo "Started local mmgbsa calculation ..."
+echo "Host : $HOSTNAME"
+pwd
 
 # -------------------------------------------------------------------------
 #inter

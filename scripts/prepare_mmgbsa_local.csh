@@ -154,8 +154,9 @@ echo "Running charmm chomp-frames.inp ... "
 $charmm < $inputs/chomp-frames.inp > outputs/chomp.out
 if ($? != 0) then
     echo "ERROR : charmm chomp-frames.inp"
+    exit 1
 endif
 
-
+echo "Done."
 
 

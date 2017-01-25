@@ -158,4 +158,5 @@ tar czf $B.tar.gz $B
 rm -r $B
 mv $B.tar.gz $current/.
 
+echo "Done."
 exit

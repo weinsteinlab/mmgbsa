@@ -26,6 +26,9 @@ cwd=$(pwd)
 
 echo "Working in directory $TMPDIR"
 
+tar czf sub_job_logs.tar.gz mmgbsa2.o*
+rm mmgbsa2.o*
+
 cd ..
 
 cp -rp $cwd $TMPDIR/final_job_tmp
@@ -41,9 +44,6 @@ for file in `ls [0-9][0-9][0-9][0-9].tar.gz`; do
 	tar -xzf $file
 done
 rm *.gz
-
-tar czf sub_job_logs.tar.gz mmgbsa2.o*
-rm mmgbsa2.o*
 
 $parallel_scripts/mmgbsa_collect_results.sh ${traj} ${sub_job_num}  ${frames_per_job}
 

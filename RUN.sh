@@ -14,17 +14,15 @@ set -u
 # Selection for the MMGBSA system
 system_selection='protein'
 
-# Selection text for part A
+# Selection text for parts A and B of the complex
 partA_selection=" chain A "
-
-# Selection text for part B
-partB_selection="  chain B  "
+partB_selection=" chain B "
 
 # Cutoff to choose residues within each part, for which the decomposition will be made. 
 # If set to zero, we use the alternative selections below. 
 cutoff_residues=0
 
-# Alternatively, one can choose residues explicitly
+# Alternatively, one can select residues explicitly for the decomposition.
 partA_residues_selection="chain A and resid 351 to 353 "
 partB_residues_selection="chain B and resid 51 to 53 "
 
@@ -38,6 +36,7 @@ frame_stride=1
 # Number of jobs
 frames_per_job=10 # number of frames in each sub-job
 n_jobs=3
+max_jobs_running_simultaneously=50
 
 # Non-bonded interaction parameters
 cutoff=30	# Cutoff for electro and VdW interactions in Angstroms
@@ -176,7 +175,7 @@ $scripts/prepare_mmgbsa_common.csh "$cutoff" "$ionconc"
 
 echo "Submitting all sub-jobs ... "
 
-jobid_raw=$( qsub -t 1-$n_jobs $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
+jobid_raw=$( qsub -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
 
 jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
 
