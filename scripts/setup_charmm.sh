@@ -69,9 +69,6 @@ cat complex_raw.pdb | $scripts/pdb2crd.prl > complex_raw.crd
 echo "Parsing complex ..."
 $scripts/parse-protein.prl complex_raw.crd
 
-#echo " Is this ok? If not, edit the ./preparing-system/ProteinSegments file before hitting enter"
-#set continue = $< 
-
 # ---------------------------------------------------------------
 # Modify ProteinSegments for capping. 
 
@@ -94,6 +91,9 @@ sed -i -e "$prot_plus,9999 s/CTER/NONE/" ./preparing-system/ProteinSegments
 echo ""
 cat preparing-system/ProteinSegments
 echo ""
+
+echo " Is this ok? If not, edit the ./setup_charmm/preparing-system/ProteinSegments file before hitting enter"
+set continue = $< 
 
 # ---------------------------------------------------------------
 # Do the charmm setup 

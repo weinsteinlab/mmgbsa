@@ -1,6 +1,6 @@
 
 # MMGBSA distribution
-export mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1
+#export mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1
 export scripts=$mmgbsa_path/scripts/
 export parallel_scripts=$mmgbsa_path/parallel_scripts/
 export inputs=$mmgbsa_path/charmm_inputs/

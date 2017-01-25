@@ -42,7 +42,7 @@ max_jobs_running_simultaneously=50
 cutoff=30	# Cutoff for electro and VdW interactions in Angstroms
 ionconc=0.154   # Monovalent ion concentration in M (default = 0.154). 
 
-# System details
+# System details - proteins are assumed to come first in the PSF.
 proteins=2 # number of separate (i.e. not covalently bonded) protein/peptide segments 
 
 # For each protein/peptide, include the following variables ###
@@ -76,7 +76,7 @@ capping[12]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for ye
 ###################################################################
 # Define some variables 
 
-mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+export mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
 source $mmgbsa_path/scripts/setenv.sh
 
 # Name of mmgbsa run
