@@ -183,7 +183,7 @@ jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
 ###################################################################
 # Submit post-processing job
 
-echo "Submitting final post-procession job ... "
+echo "Submitting final post-processing job ... "
 
 qsub -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
 
