@@ -15,7 +15,7 @@ traj=$1
 sub_job_num=$2
 frames_per_job=$3
 
-mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+# mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
 source $mmgbsa_path/scripts/setenv.sh
 
 ###################################################################
@@ -24,7 +24,6 @@ cwd=$(pwd)
 # TMPDIR=$($parallel_scripts/grab_job_id_for_terminal.sh)
 # TMPDIR="$cwd/../"
 
-echo "Working in directory $TMPDIR"
 
 tar czf sub_job_logs.tar.gz mmgbsa2.o*
 rm mmgbsa2.o*
@@ -34,6 +33,7 @@ cd ..
 cp -rp $cwd $TMPDIR/final_job_tmp
 
 cd $TMPDIR/final_job_tmp
+echo "Working in directory $TMPDIR/final_job_tmp/"
 
 #echo '#!/bin/bash' > un_tar.sh
 #ls *.gz >> un_tar.sh

@@ -11,6 +11,9 @@ set -u
 #                                                                 #
 ###################################################################
 
+# Path to MMGBSA distribution 
+mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+
 # Selection for the MMGBSA system
 system_selection='protein'
 
@@ -76,7 +79,9 @@ capping[12]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for ye
 ###################################################################
 # Define some variables 
 
-export mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+export mmgbsa_path  
+# It is very important that mmgbsa_path be a global variable.
+
 source $mmgbsa_path/scripts/setenv.sh
 
 # Name of mmgbsa run
@@ -95,7 +100,7 @@ echo "Performing charmm setup ... "
 mkdir -p setup_charmm
 cd setup_charmm
 
-$scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}" > setup_charmm.log
+$scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}" | tee setup_charmm.log 
 
 is_ok=`grep  "Everything seems Ok" setup_charmm.log`
 echo $is_ok
@@ -175,7 +180,9 @@ $scripts/prepare_mmgbsa_common.csh "$cutoff" "$ionconc"
 
 echo "Submitting all sub-jobs ... "
 
-jobid_raw=$( qsub -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
+jobid_raw=$( qsub -V -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
+# The -V option to qsub states that the job should have the same environment variables as the shell executing qsub
+# This is needed to pass the mmgbsa_path global variable. 
 
 jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
 
@@ -184,7 +191,7 @@ jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
 
 echo "Submitting final post-processing job ... "
 
-qsub -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
+qsub -V -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
 
 qstat
 

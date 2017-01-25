@@ -47,6 +47,7 @@ close unit 1
 
 STREAM @lib/toppar_water_ions.str 
 ! STREAM @lib/sapi24_renamed_sapi.str
+STREAM @lib/toppar_all36_lipid_cholesterol.str
 
 !------ System
 OPEN UNIT 1 READ CARD NAME @lib/complex.psf
