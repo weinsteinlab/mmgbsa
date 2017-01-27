@@ -191,10 +191,15 @@ jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
 
 echo "Submitting final post-processing job ... "
 
-qsub -V -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
+if [ $frames_per_job -lt 100 ]
+then
+	qsub -V -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
+else
+        qsub -V -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit_more_frames.sh $traj $n_jobs $frames_per_job
+fi
 
 qstat
-
+exit
 
 
 
