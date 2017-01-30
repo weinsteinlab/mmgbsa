@@ -103,7 +103,6 @@ cd setup_charmm
 $scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}" | tee setup_charmm.log 
 
 is_ok=`grep  "Everything seems Ok" setup_charmm.log`
-echo $is_ok
 if [ -z "$is_ok" ]; then
 	echo "ERROR during charmm setup !"
 	exit 1

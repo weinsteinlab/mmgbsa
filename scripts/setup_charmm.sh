@@ -16,6 +16,8 @@ set -e
 set -u
 # source ./setenv.sh
 
+pwd
+
 # -------------------------------------------------------------
 # Read arguments 
 
@@ -32,8 +34,6 @@ echo "Capping options : ${capping[*]}"
 
 # ---------------------------------------------------------------
 # Make directory structure
-
- pwd
 
  mkdir -p data
  #ln -fs $charmm_toppar/top_all36_prot.rtf .
