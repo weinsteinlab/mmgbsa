@@ -89,7 +89,13 @@ mmgbsa_name="mmgbsa"
 
 # Make the path to traj absolute if it is not already
 traj=`readlink -f $traj`
-echo "Using trajectory $traj"
+if [[ -e $traj ]]; then
+        echo "Using trajectory $traj"
+else
+        echo "ERROR : trajectory does not exist"
+        echo $traj
+        exit 1
+fi
 
 
 ###################################################################

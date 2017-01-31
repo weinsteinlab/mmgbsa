@@ -2,11 +2,11 @@
 
 
 # Does a CHARMM setup with the charmm36 force field
-# Usage ./setup_charmm.csh  selection_text protein_num "$capping$
+# Usage ./setup_charmm.csh  selection_text protein_num "$capping"
 # 
 # ARGUMENTS :
 # 	selection_text	: Selection text to remove solvent
-#	protein_num	: Number of proteins in the system
+#	protein_num	: Number of protein segments in the system
 # 	capping		: Array with caping option for each segment
 #
 # Only charged terminal groups are available in automatic setup,
