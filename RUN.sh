@@ -178,6 +178,26 @@ echo "Preparing MMGBSA directory ... "
 
 $scripts/prepare_mmgbsa_common.csh "$cutoff" "$ionconc"	
 
+
+echo "Testing trajectory ... "
+mkdir -p test_traj
+cd test_traj
+mypsf="../data/system.namd.psf"
+
+cat > test_traj.tcl  << EOF
+  source ../vmd_selections.tcl
+  mol new $mypsf
+  mol addfile $traj waitfor all last 2
+  quit
+EOF
+$vmd -dispdev text -e test_traj.tcl >& ../log/test_traj.log
+if [ "`grep ERROR ../log/test_traj.log`" != "" ]; then
+	echo "ERROR with trajectory !"
+	echo "See file ./log/test_traj.log"
+	exit 1
+fi
+cd ..
+
 ###################################################################
 # Submit sub-jobs with the parallel script
 #      This calls the preparation script 

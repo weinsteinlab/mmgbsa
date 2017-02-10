@@ -8,17 +8,17 @@
 pwd
 
 set nb_cutoff = $1;
-echo "Cutoff for non-bonded interactions : $nb_cutoff A"
+echo "    Cutoff for non-bonded interactions : $nb_cutoff A"
 
 set ionconc = $2
 if ( $ionconc == "" ) then 
 	set ionconc = 0.154
 endif
-echo "Monovalent ion concentration for Debye-Huckel : $ionconc M"
+echo "    Monovalent ion concentration for Debye-Huckel : $ionconc M"
 
 # The vmd_selections.tcl file must be present.  
 if ( ! ( -e  vmd_selections.tcl ) )  then  
-    echo " ERROR! We need a file vmd_selections.tcl in the MMGBSA directory !"
+    echo "    ERROR! We need a file vmd_selections.tcl in the MMGBSA directory !"
     exit 2
 endif 
     
@@ -41,7 +41,7 @@ set  basedir_backslash='.'
 mkdir -p data log outputs
 
 if ( -e data/loader.str ) then
-        echo "Using previous loader.str"
+        echo "    Using previous loader.str"
 else
         sed "s/BASEDIR/$basedir_backslash/" $inputs/loader.str > data/loader.str
 endif
@@ -67,7 +67,7 @@ cp -rp $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str data/.
 
 # ..........................................................................
 # DEFINITIONS :
-echo "Making definitions ..."
+echo "    Making definitions ..."
 
 # Reads the specific ./vmd_selections.tcl file
 # Makes a definitions.pdb file with flags in the b-factor column.
@@ -98,7 +98,7 @@ printf '\!monovalent_ion_concentration %f\n' $ionconc >> data/definitions.str
 # Charmm executable
 # ln -fs $charmm charmm
  
-echo "Running charmm system.inp ... "
+echo "    Running charmm system.inp ... "
 $charmm < $inputs/system.inp > outputs/system.out 
 if ($? != 0) then
     echo "ERROR : charmm system.inp"
@@ -106,7 +106,7 @@ if ($? != 0) then
 endif
 
 
-echo "Running charmm charges.inp ... "
+echo "    Running charmm charges.inp ... "
 $charmm < $inputs/charges.inp > outputs/charges.out
 if ($? != 0) then
     echo "ERROR : charmm charges.inp"
