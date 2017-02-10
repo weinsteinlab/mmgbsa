@@ -97,6 +97,13 @@ else
         exit 1
 fi
 
+# Select the correct resource requirement depending on which cluster we run 
+res_req=""
+if [[  $HOSTNAME =~ panda ]]; then
+    res_req="-l zeno=true"
+    # This requests nodes where the /senodotus file system is mounted
+fi
+
 
 ###################################################################
 # Charmm setup
@@ -205,8 +212,8 @@ cd ..
 
 echo "Submitting all sub-jobs ... "
 
-jobid_raw=$( qsub -V -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
-# The -V option to qsub states that the job should have the same environment variables as the shell executing qsub
+jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path $res_req  -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
+# The -v option to qsub pushes the  environment variables from the shell executing qsub
 # This is needed to pass the mmgbsa_path global variable. 
 
 jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
@@ -218,9 +225,9 @@ echo "Submitting final post-processing job ... "
 
 if [ $frames_per_job -lt 100 ]
 then
-	qsub -V -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
+	qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
 else
-        qsub -V -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit_more_frames.sh $traj $n_jobs $frames_per_job
+        qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit_more_frames.sh $traj $n_jobs $frames_per_job
 fi
 
 qstat

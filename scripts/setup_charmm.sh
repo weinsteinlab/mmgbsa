@@ -30,7 +30,7 @@ shift 2		# This renumbers arguments
 
 # Capping flags
 capping=( "$@" )
-echo "Capping options : ${capping[*]}"
+echo "    Capping options : ${capping[*]}"
 
 # ---------------------------------------------------------------
 # Make directory structure
