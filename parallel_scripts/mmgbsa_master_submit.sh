@@ -31,7 +31,8 @@ psf=./data/system.namd.psf
 A=$SGE_TASK_ID
 B=`printf %04i $A`
 
-mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+# mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+# This is now inherited by the environment through qsub -V
 source $mmgbsa_path/scripts/setenv.sh
 catdcd=$mmgbsa_path/parallel_scripts/catdcd 
 
