@@ -100,12 +100,9 @@ LABEL loop
   IF @k .LT. @lastresa GOTO l1
   PRNLEV 5
   
+  CLOSE UNIT 12
+  
 IF @n .LT. @nframes GOTO loop
-
-
-CLOSE UNIT 12
-CLOSE UNIT 13
-
 
 
 !================================================================
