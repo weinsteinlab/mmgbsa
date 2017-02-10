@@ -73,6 +73,11 @@ echo "    Making definitions ..."
 # Makes a definitions.pdb file with flags in the b-factor column.
 # Also makes the definitions.str file from scratch. 
 $vmd -dispdev text -e $scripts/make_definitions.tcl >& log/make_definitions.log
+set myerr=`grep ERROR log/make_definitions.log`
+if ( "$myerr" != "" ) then 
+	echo $myerr
+	exit 1
+endif
 
 # Transforms to crd
 cat data/definitions.pdb | $scripts/pdb2crd.prl >  data/definitions.crd
