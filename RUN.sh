@@ -37,9 +37,9 @@ start_frame=1
 frame_stride=1
 
 # Number of jobs
-frames_per_job=10 # number of frames in each sub-job
-n_jobs=3
-max_jobs_running_simultaneously=50
+frames_per_job=10 	# number of frames in each sub-job.
+n_jobs=3		# number of sub-jobs. Together with $frames_per_job, determines the total number of frames.
+max_jobs_running_simultaneously=50    # Option for SGE, in order not to invate an entire cluter.
 
 # Non-bonded interaction parameters
 cutoff=30	# Cutoff for electro and VdW interactions in Angstroms

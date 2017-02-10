@@ -17,6 +17,11 @@ NEW IN VERSION 2.1
 
 6) Adapted mmgbsa_final_results.sh (now called mmgbsa_collect_results.sh) so that it handles arbitrary number of frames per subjob. 
 
+7) Scripts can now be run on panda as well as fido
+
+8) Added many additional error messages to stop execution if something is wrong.  
+
+
 ======================================================================
 Modification to the parallel scripts themselves
 
@@ -53,7 +58,5 @@ Edit the parameters inside the script. Then run the entire calculation with
 
 	
 ======================================================================
-
-MITCH <3 MOM 
 
 
