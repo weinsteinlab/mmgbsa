@@ -100,8 +100,9 @@ fi
 # Select the correct resource requirement depending on which cluster we run 
 res_req=""
 if [[  $HOSTNAME =~ panda ]]; then
-    res_req="-l zeno=true"
-    # This requests nodes where the /senodotus file system is mounted
+    res_req="-l zeno=true,operating_system=rhel6.3"
+    # This requests nodes where the /zenodotus file system is mounted
+    # and where charmm39 will run (on panda).
 fi
 
 
