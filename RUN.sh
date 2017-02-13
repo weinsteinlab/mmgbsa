@@ -32,40 +32,37 @@ partB_residues_selection="chain B and resid 51 to 53 "
 # Trajectory of the full system (can be a DCD file or an XTC file). 
 traj=/path/to/traj.xtc
 
-# Frames used 
+# Frames used :
 start_frame=1
 frame_stride=1
 
-# Number of jobs
-frames_per_job=10 	# number of frames in each sub-job.
-n_jobs=3		# number of sub-jobs. Together with $frames_per_job, determines the total number of frames.
-max_jobs_running_simultaneously=50    # Option for SGE, in order not to invate an entire cluter.
+# Parallelization settings :
+#    number of frames in each sub-job.
+frames_per_job=10
+#    number of sub-jobs. Together with $frames_per_job, determines the total number of frames.
+n_jobs=3
+#    Maximum number of jobs junning simultaneourly, in order not to invate an entire cluter.
+max_jobs_running_simultaneously=50   
 
-# Non-bonded interaction parameters
-cutoff=30	# Cutoff for electro and VdW interactions in Angstroms
-ionconc=0.154   # Monovalent ion concentration in M (default = 0.154). 
+# Non-bonded interaction parameters :
+#    Cutoff for electro and VdW interactions in Angstroms.
+cutoff=30
+#    Monovalent ion concentration in M for Deheye-Huckel screening (default = 0.154). 
+ionconc=0.154 
 
 # System details - proteins are assumed to come first in the PSF.
-proteins=2 # number of separate (i.e. not covalently bonded) protein/peptide segments 
+#    Number of separate (i.e. not covalently bonded) protein/peptide segments
+proteins=3 
 
 # For each protein/peptide, include the following variables ###
 capping[1]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
 capping[2]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
 
-capping[3]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[4]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
+capping[3]=0 # is the 2nd protein/peptide's n-term capped? 0 for no, 1 for yes. 
+capping[4]=0 # is the 2nd protein/peptide's c-term capped? 0 for no, 1 for yes.
 
-capping[5]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[6]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
-
-capping[7]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[8]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
-
-capping[9]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[10]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
-
-capping[11]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[12]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
+capping[5]=0 # is the 3rd protein/peptide's n-term capped? 0 for no, 1 for yes. 
+capping[6]=0 # is the 3rd protein/peptide's c-term capped? 0 for no, 1 for yes.
 # et caetera ...
 
 
