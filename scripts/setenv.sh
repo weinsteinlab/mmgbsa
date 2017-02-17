@@ -18,6 +18,9 @@ fi
 if [[  $HOSTNAME =~ panda ]]; then
     export charmm=/home/mac2109/src/c39b2/exec/em64t/charmm
     # This works on panda but is too recent for fido
+
+    slchoose R   2.15.2     gcc_64
+    # The defauld version does not work on panda
 fi
 
 export vmd=/home/mac2109/local/vmd-1.9.2/bin/vmd 

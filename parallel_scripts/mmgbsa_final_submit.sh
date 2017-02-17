@@ -17,6 +17,7 @@ frames_per_job=$3
 
 source $mmgbsa_path/scripts/setenv.sh
 
+
 ###################################################################
 
 cwd=$(pwd)

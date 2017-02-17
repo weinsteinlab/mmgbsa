@@ -198,7 +198,7 @@ EOF
 $vmd -dispdev text -e test_traj.tcl >& ../log/test_traj.log
 if [ "`grep ERROR ../log/test_traj.log`" != "" ]; then
 	echo "ERROR with trajectory !"
-	echo "See file ./log/test_traj.log"
+	echo "See file ./mmgbsa/log/test_traj.log"
 	exit 1
 fi
 cd ..
