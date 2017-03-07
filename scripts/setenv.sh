@@ -1,3 +1,4 @@
+#! /bin/bash -l
 
 # MMGBSA distribution
 #export mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1
