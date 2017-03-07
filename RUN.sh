@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -l
 
 # Needs a directory ./input with *.psf and *.pdb files
 

@@ -54,8 +54,8 @@ $nresAB = $nresA + $nresB;
 
 open(IN,"data/charges.crd");
 foreach $line (<IN>) {
-  # For names, look only at C alphas, Ps for lipids and O3 for cholesterol.
-  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /)) {
+  # Look only at C alphas, P for lipids, O3 for cholesterol, Na for sodium ions...
+  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /) or ($line =~ / SOD /) ) {
     @w=split(" " ,$line);
     $name[$w[1]]=$w[7]." ".$w[2].$w[8];
   }
