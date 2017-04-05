@@ -149,7 +149,7 @@ sed -i "s/XXXNFRAMES/$numframes/" data/definitions.str
 # ln -fs $charmm charmm
 
 # Converting frames so that the atom order is correct
-# This is neessary when using the RESI option to read parts of the system
+# This is necessary when using the RESI option to read parts of the system
 echo "Running charmm chomp-frames.inp ... "
 $charmm < $inputs/chomp-frames.inp > outputs/chomp.out
 if ($? != 0) then
