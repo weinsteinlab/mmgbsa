@@ -215,143 +215,112 @@ foreach $i (@resAB)  {
 
 
 # ====================================================================================================
-# Calculate time series for entire dg
+# Calculate and print time series for the sums
 print "Calculating ... \n";
+print "     We have $nconf frames\n";
 
-mkdir "dg";
-
-
-my @dg_sc_group=0;	# Arrays with all time points for the group
-my @dg_bb_group=0;
-my @dg_all_group=0;
+my @vdw_group=0;	# Arrays with all time points for the group
+my @elec_group=0;
+my @solv_group=0;
+my @np_group=0;
+my @dg_group=0;
 
 foreach $i (@group)  {
    
   
   for $n (1..$nconf) {
-
-    $vdw_sc = 0.5*$res_vdw_sc[$i][$n];
-    $elec_sc = 0.5*$res_elec_sc[$i][$n];
-    $solv_sc = $solv_comp_sc[$i][$n] - $solv_a_sc[$i][$n] - $solv_b_sc[$i][$n];
-    $np_sc =  0.0072*($sas_comp_sc[$i][$n] - $sas_a_sc[$i][$n] -$sas_b_sc[$i][$n]) ;
-    $dg_sc_group[$n] += $vdw_sc + $elec_sc + $solv_sc  + $np_sc ;
-
-    $vdw_bb = 0.5*$res_vdw_bb[$i][$n];
-    $elec_bb = 0.5*$res_elec_bb[$i][$n];
-    $solv_bb = $solv_comp_bb[$i][$n] - $solv_a_bb[$i][$n] - $solv_b_bb[$i][$n];
-    $np_bb =  0.0072*($sas_comp_bb[$i][$n] - $sas_a_bb[$i][$n] -$sas_b_bb[$i][$n]) ;
-    $dg_bb_group[$n] += $vdw_bb + $elec_bb + $solv_bb  + $np_bb ;
-
-    $vdw_all = $vdw_sc + $vdw_bb ;
-    $elec_all = $elec_sc + $elec_bb ;
+  
+    $vdw_all = 0.5*$res_vdw_sc[$i][$n] + 0.5*$res_vdw_bb[$i][$n] ;
+    $elec_all = 0.5*$res_elec_sc[$i][$n] + 0.5*$res_elec_bb[$i][$n] ;
     $solv_all = $solv_comp_all[$i][$n] - $solv_a_all[$i][$n] - $solv_b_all[$i][$n];
     $np_all =  0.0072*($sas_comp_all[$i][$n] - $sas_a_all[$i][$n] -$sas_b_all[$i][$n]) ;
-    $dg_all_group[$n] += $vdw_all + $elec_all + $solv_all  + $np_all ;
-  
-
-  
+    
+    $vdw_group[$n] += $vdw_all;
+    $elec_group[$n] += $elec_all;
+    $solv_group[$n] += $solv_all;
+    $np_group[$n] += $np_all;
+    $dg_group[$n] += $vdw_all + $elec_all + $solv_all  + $np_all ;
+   
   }
 }
 
 open(OUT,">binding_group_stat.dat");
 
-my $dg_sc_tot=0;
-my $dg_bb_tot=0;
-my $dg_all_tot=0;
-my $dg2_sc_tot=0;
-my $dg2_bb_tot=0;
-my $dg2_all_tot=0;
-
+printf OUT ("# frame %10s %10s %10s %10s %10s \n","vdw","elec","solv","np","dg");
 for $n (1..$nconf) {
-
-     printf OUT ("%4d    %10.4f %10.4f %10.4f \n",
-                $n, $dg_bb_group[$n], $dg_sc_group[$n], $dg_all_group[$n]);
-    
-    $dg_sc_tot+=$dg_sc_group[$n];
-    $dg_bb_tot+=$dg_bb_group[$n];
-    $dg_all_tot+=$dg_all_group[$n];
-    $dg2_sc_tot+=$dg_sc_group[$n]**2;
-    $dg2_bb_tot+=$dg_bb_group[$n]**2;
-    $dg2_all_tot+=$dg_all_group[$n]**2;
+     printf OUT ("%4d    %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+                $n, $vdw_group[$n], $elec_group[$n], $solv_group[$n], $np_group[$n], $dg_group[$n]);
 }
  
-$dg_sc_mean = $dg_sc_tot/$nconf;
-$dg_bb_mean = $dg_bb_tot/$nconf;
-$dg_all_mean = $dg_all_tot/$nconf;
+# ====================================================================================================
+# Calculate statistics usin subroutine and print
+
+my ($vdw_mean, $vdw_sd, $vdw_neff, $vdw_err) = time_statistics(@vdw_group);
+my ($elec_mean, $elec_sd, $elec_neff, $elec_err) = time_statistics(@elec_group);
+my ($solv_mean, $solv_sd, $solv_neff, $solv_err) = time_statistics(@solv_group);
+my ($np_mean, $np_sd, $np_neff, $np_err) = time_statistics(@np_group);
+my ($dg_mean, $dg_sd, $dg_neff, $dg_err) = time_statistics(@dg_group);
 
 
-# Unbiased standard deviation estimate 
-$dg_sc_sd = sqrt( ( $dg2_sc_tot - $nconf*$dg_sc_mean**2 ) / ($nconf -1) );
-$dg_bb_sd = sqrt( ( $dg2_bb_tot - $nconf*$dg_bb_mean**2 ) / ($nconf -1) );
-$dg_all_sd = sqrt( ( $dg2_all_tot - $nconf*$dg_all_mean**2 ) / ($nconf -1) );
-
-# Effective sample size in an AR(1)  correlated time series according to :
-# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean, Journal of Climate 8 : 336 (1995).
-
-# Now that we have the mean, we can calculate the moments :
-my $dg2_sc_norm_tot=0;
-my $dg2_bb_norm_tot=0;
-my $dg2_all_norm_tot=0;
-my $dg2_shift_sc_tot=0;
-my $dg2_shift_bb_tot=0;
-my $dg2_shift_all_tot=0;
-for $n (1..$nconf) {
-  $dg2_sc_norm_tot+=($dg_sc_group[$n] -  $dg_sc_mean)**2; 
-  $dg2_bb_norm_tot+=($dg_bb_group[$n] -  $dg_bb_mean)**2;
-  $dg2_all_norm_tot+=($dg_all_group[$n] -  $dg_all_mean)**2;
-
-  if ($n >1) {
-     $dg2_shift_sc_tot+=($dg_sc_group[$n] -  $dg_sc_mean) * ($dg_sc_old -  $dg_sc_mean);
-     $dg2_shift_bb_tot+=($dg_bb_group[$n] -  $dg_bb_mean) * ($dg_bb_old -  $dg_bb_mean);
-     $dg2_shift_all_tot+=($dg_all_group[$n] -  $dg_all_mean) * ($dg_all_old -  $dg_all_mean);
-  }
-
-  $dg_sc_old=$dg_sc_group[$n];
-  $dg_bb_old=$dg_bb_group[$n];
-  $dg_all_old=$dg_all_group[$n];
-}
-
-# For each, calculate n_effective and standard error.
-if ($dg2_sc_tot > 0) {
-  $r1_sc = $dg2_shift_sc_tot / $dg2_sc_norm_tot;
-  $n_eff_sc = $nconf * (1-$r1_sc) / (1+$r1_sc) ;
-  if ( $n_eff_sc gt $nconf) {$n_eff_sc = $nconf};
-  $dg_sc_err = $dg_sc_sd / sqrt($n_eff_sc ) ; 
-}else{
-  $n_eff_sc = 0;
-  $dg_sc_err = 0;
-}
-
-if ($dg2_bb_tot > 0) {
-  $r1_bb = $dg2_shift_bb_tot / $dg2_bb_norm_tot;
-  $n_eff_bb = $nconf * (1-$r1_bb) / (1+$r1_bb) ;
-  if ( $n_eff_bb gt $nconf) {$n_eff_bb = $nconf};
-  $dg_bb_err = $dg_bb_sd / sqrt($n_eff_bb ) ;
-}else{
-  $n_eff_bb = 0;
-  $dg_bb_err = 0;
-}
-
-if ($dg2_all_tot > 0) {
-  $r1_all = $dg2_shift_all_tot / $dg2_all_norm_tot;
-  $n_eff_all = $nconf * (1-$r1_all) / (1+$r1_all) ;
-  if ( $n_eff_all gt $nconf) {$n_eff_all = $nconf};
-  $dg_all_err = $dg_all_sd / sqrt($n_eff_all ) ;
-}else{
-  $n_eff_all = 0;
-  $dg_all_err = 0;
-}
 
 printf OUT "# --------------------------------------------\n";
-printf OUT ("# TOT	%10.4f %10.4f %10.4f \n",
-	    $dg_bb_mean, $dg_sc_mean, $dg_all_mean);
-printf OUT ("# SD	%10.4f %10.4f %10.4f \n",
-	    $dg_bb_sd, $dg_sc_sd, $dg_all_sd);
-printf OUT ("# N_eff   %10.4f %10.4f %10.4f \n",
-	    $n_eff_bb, $n_eff_sc, $n_eff_all);
-printf OUT ("# ERR     %10.4f %10.4f %10.4f \n",
-	    $dg_bb_err, $dg_sc_err, $dg_all_err);
+printf OUT ("# MEAN	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_mean, $elec_mean, $solv_mean, $np_mean, $dg_mean); 
+printf OUT ("# SD	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_sd, $elec_sd, $solv_sd, $np_sd, $dg_sd);
+printf OUT ("# N_eff	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_neff, $elec_neff, $solv_neff, $np_neff, $dg_neff);
+printf OUT ("# ERR	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_err, $elec_err, $solv_err, $np_err, $dg_err);
 close(OUT);
+
+# ====================================================================================================
+# Subroutine definition
+
+sub time_statistics {
+	my @a = @_;
+	# Arrays usually start at zero, but here we start at 1...
+	my $nconf = scalar(@a)-1;
+	
+	my $a_tot = 0;
+	my $a2_tot = 0;
+	for $n (1..$nconf) {
+        	$a_tot+=  $a[$n];
+        	$a2_tot+=  $a[$n]**2;
+ 
+	}
+	$a_mean = $a_tot/$nconf;
+	# Unbiased standard deviation estimate 
+	$a_sd = sqrt( ( $a2_tot - $nconf*$a_mean**2 ) / ($nconf -1) );
+
+	# Effective sample size in an AR(1)  correlated time series according to :
+	# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean, Journal of Climate 8 : 336 (1995).
+
+	# Now that we have the mean, we can calculate the moments :
+	my $a2_norm_tot=0;
+	my $a2_shift_tot=0;
+	for $n (1..$nconf) {
+  		$a2_norm_tot+=($a[$n] -  $a_mean)**2; 
+  		if ($n >1) {
+     			$a2_shift_tot+=($a[$n] -  $a_mean) * ($a_old -  $a_mean);
+  		}
+  		$a_old=$a[$n];
+ 	}
+	
+	# For each, calculate n_effective and standard error.
+	if ($a2_norm_tot > 0) {
+	  $r1 = $a2_shift_tot / $a2_norm_tot;
+	  $n_eff = $nconf * (1-$r1) / (1+$r1) ;
+	  if ( $n_eff gt $nconf) {$n_eff = $nconf };
+	  $err = $a_sd / sqrt($n_eff ) ; 
+	}else{
+	  $n_eff = 0;
+	  $err = 0;
+	}
+
+	return ($a_mean, $a_sd, $n_eff, $err);
+}	
+
 
 
 
