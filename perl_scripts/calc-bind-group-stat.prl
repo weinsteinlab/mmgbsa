@@ -289,9 +289,9 @@ sub time_statistics {
         	$a2_tot+=  $a[$n]**2;
  
 	}
-	$a_mean = $a_tot/$nconf;
+	my $a_mean = $a_tot/$nconf;
 	# Unbiased standard deviation estimate 
-	$a_sd = sqrt( ( $a2_tot - $nconf*$a_mean**2 ) / ($nconf -1) );
+	my $a_sd = sqrt( ( $a2_tot - $nconf*$a_mean**2 ) / ($nconf -1) );
 
 	# Effective sample size in an AR(1)  correlated time series according to :
 	# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean, Journal of Climate 8 : 336 (1995).
@@ -299,6 +299,7 @@ sub time_statistics {
 	# Now that we have the mean, we can calculate the moments :
 	my $a2_norm_tot=0;
 	my $a2_shift_tot=0;
+	my $a_old=0;
 	for $n (1..$nconf) {
   		$a2_norm_tot+=($a[$n] -  $a_mean)**2; 
   		if ($n >1) {
@@ -309,13 +310,13 @@ sub time_statistics {
 	
 	# For each, calculate n_effective and standard error.
 	if ($a2_norm_tot > 0) {
-	  $r1 = $a2_shift_tot / $a2_norm_tot;
-	  $n_eff = $nconf * (1-$r1) / (1+$r1) ;
+	  my $r1 = $a2_shift_tot / $a2_norm_tot;
+	  my $n_eff = $nconf * (1-$r1) / (1+$r1) ;
 	  if ( $n_eff gt $nconf) {$n_eff = $nconf };
-	  $err = $a_sd / sqrt($n_eff ) ; 
+	  my $err = $a_sd / sqrt($n_eff ) ; 
 	}else{
-	  $n_eff = 0;
-	  $err = 0;
+	  my $n_eff = 0;
+	  my $err = 0;
 	}
 
 	return ($a_mean, $a_sd, $n_eff, $err);
