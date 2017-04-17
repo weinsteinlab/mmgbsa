@@ -32,11 +32,6 @@ $nconf=`grep nframes data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # nu
 chomp $nconf;
 print "Number of conformations : $nconf \n";
 
-
-$nres=`grep lastresb data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # Total number of residues.
-chomp $nres;
-print "Total number of residues : $nres \n";
-
 $temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
 chomp $temp;
 my @resA = split(/ /,$temp );
@@ -52,7 +47,6 @@ $nresB = scalar(@resB);
 my @resAB = @resA;
 push( @resAB, @resB) ; 
 $nresAB = $nresA + $nresB;
-
 
 $temp = `awk '(\$1=="!group") '  data/definitions.str `;
 chomp $temp;
@@ -247,6 +241,7 @@ foreach $i (@group)  {
 open(OUT,">binding_group_stat.dat");
 
 printf OUT ("# frame %10s %10s %10s %10s %10s \n","vdw","elec","solv","np","dg");
+printf OUT "# ------------------------------------------------------------\n";
 for $n (1..$nconf) {
      printf OUT ("%4d    %10.4f %10.4f %10.4f %10.4f %10.4f \n",
                 $n, $vdw_group[$n], $elec_group[$n], $solv_group[$n], $np_group[$n], $dg_group[$n]);
@@ -263,7 +258,7 @@ my ($dg_mean, $dg_sd, $dg_neff, $dg_err) = time_statistics(@dg_group);
 
 
 
-printf OUT "# --------------------------------------------\n";
+printf OUT "# ------------------------------------------------------------\n";
 printf OUT ("# MEAN	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
 	$vdw_mean, $elec_mean, $solv_mean, $np_mean, $dg_mean); 
 printf OUT ("# SD	%10.4f %10.4f %10.4f %10.4f %10.4f \n",

@@ -12,10 +12,6 @@
 #########################################################
 
 
-$nres=`grep lastresb data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # Total number of residues.
-chomp $nres;
-print "Total number of residues : $nres \n";
-
 $temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
 chomp $temp;
 my @resA = split(/ /,$temp );
