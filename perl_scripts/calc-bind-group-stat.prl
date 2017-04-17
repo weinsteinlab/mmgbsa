@@ -253,7 +253,7 @@ for $n (1..$nconf) {
 }
  
 # ====================================================================================================
-# Calculate statistics usin subroutine and print
+# Calculate statistics using subroutine and print
 
 my ($vdw_mean, $vdw_sd, $vdw_neff, $vdw_err) = time_statistics(@vdw_group);
 my ($elec_mean, $elec_sd, $elec_neff, $elec_err) = time_statistics(@elec_group);
@@ -309,14 +309,14 @@ sub time_statistics {
  	}
 	
 	# For each, calculate n_effective and standard error.
+	my $r1 = 0;
+	my $n_eff = 0;
+	my $err = 0;
 	if ($a2_norm_tot > 0) {
-	  my $r1 = $a2_shift_tot / $a2_norm_tot;
-	  my $n_eff = $nconf * (1-$r1) / (1+$r1) ;
-	  if ( $n_eff gt $nconf) {$n_eff = $nconf };
-	  my $err = $a_sd / sqrt($n_eff ) ; 
-	}else{
-	  my $n_eff = 0;
-	  my $err = 0;
+	  $r1 = $a2_shift_tot / $a2_norm_tot;
+	  $n_eff = $nconf * (1.0-$r1) / (1.0+$r1) ;
+	  if ( $n_eff > $nconf) {$n_eff = $nconf };
+	  $err = $a_sd / sqrt($n_eff ) ; 
 	}
 
 	return ($a_mean, $a_sd, $n_eff, $err);

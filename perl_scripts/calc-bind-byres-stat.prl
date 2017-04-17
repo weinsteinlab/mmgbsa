@@ -341,7 +341,7 @@ foreach $i (@resAB)  {
   if ($dg2_sc_tot > 0) {
     $r1_sc = $dg2_shift_sc_tot / $dg2_sc_norm_tot;
     $n_eff_sc[$i] = $nconf * (1-$r1_sc) / (1+$r1_sc) ;
-    if ( $n_eff_sc[$i] gt $nconf) {$n_eff_sc[$i] = $nconf};
+    if ( $n_eff_sc[$i] > $nconf) {$n_eff_sc[$i] = $nconf};
     $dg_sc_err[$i] = $dg_sc_sd[$i] / sqrt($n_eff_sc[$i] ) ; 
   }else{
     $n_eff_sc[$i] = 0;
@@ -351,7 +351,7 @@ foreach $i (@resAB)  {
   if ($dg2_bb_tot > 0) {
     $r1_bb = $dg2_shift_bb_tot / $dg2_bb_norm_tot;
     $n_eff_bb[$i] = $nconf * (1-$r1_bb) / (1+$r1_bb) ;
-    if ( $n_eff_bb[$i] gt $nconf) {$n_eff_bb[$i] = $nconf};
+    if ( $n_eff_bb[$i] > $nconf) {$n_eff_bb[$i] = $nconf};
     $dg_bb_err[$i] = $dg_bb_sd[$i] / sqrt($n_eff_bb[$i] ) ;
   }else{
     $n_eff_bb[$i] = 0;
@@ -361,7 +361,7 @@ foreach $i (@resAB)  {
   if ($dg2_all_tot > 0) {
     $r1_all = $dg2_shift_all_tot / $dg2_all_norm_tot;
     $n_eff_all[$i] = $nconf * (1-$r1_all) / (1+$r1_all) ;
-    if ( $n_eff_all[$i] gt $nconf) {$n_eff_all[$i] = $nconf};
+    if ( $n_eff_all[$i] > $nconf) {$n_eff_all[$i] = $nconf};
     $dg_all_err[$i] = $dg_all_sd[$i] / sqrt($n_eff_all[$i] ) ;
   }else{
     $n_eff_all[$i] = 0;
