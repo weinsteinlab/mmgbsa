@@ -211,7 +211,6 @@ foreach $i (@resAB)  {
 # ====================================================================================================
 # Calculate and print time series for the sums
 print "Calculating ... \n";
-print "     We have $nconf frames\n";
 
 my @vdw_group=0;	# Arrays with all time points for the group
 my @elec_group=0;
@@ -238,13 +237,15 @@ foreach $i (@group)  {
   }
 }
 
+
 open(OUT,">binding_group_stat.dat");
 
-printf OUT ("# frame %10s %10s %10s %10s %10s \n","vdw","elec","solv","np","dg");
-printf OUT "# ------------------------------------------------------------\n";
+printf OUT ("# frame %10s %10s %10s %10s %10s %10s \n","vdw","elec","solv","elec+solv","np","dg");
+printf OUT "# -----------------------------------------------------------------------\n";
 for $n (1..$nconf) {
-     printf OUT ("%4d    %10.4f %10.4f %10.4f %10.4f %10.4f \n",
-                $n, $vdw_group[$n], $elec_group[$n], $solv_group[$n], $np_group[$n], $dg_group[$n]);
+     $polar_group[$n]=$elec_group[$n]+$solv_group[$n];
+     printf OUT ("%4d    %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+                $n, $vdw_group[$n], $elec_group[$n], $solv_group[$n],$polar_group[$n] , $np_group[$n], $dg_group[$n]);
 }
  
 # ====================================================================================================
@@ -253,20 +254,21 @@ for $n (1..$nconf) {
 my ($vdw_mean, $vdw_sd, $vdw_neff, $vdw_err) = time_statistics(@vdw_group);
 my ($elec_mean, $elec_sd, $elec_neff, $elec_err) = time_statistics(@elec_group);
 my ($solv_mean, $solv_sd, $solv_neff, $solv_err) = time_statistics(@solv_group);
+my ($polar_mean, $polar_sd, $polar_neff, $polar_err) = time_statistics(@polar_group);
 my ($np_mean, $np_sd, $np_neff, $np_err) = time_statistics(@np_group);
 my ($dg_mean, $dg_sd, $dg_neff, $dg_err) = time_statistics(@dg_group);
 
 
 
-printf OUT "# ------------------------------------------------------------\n";
-printf OUT ("# MEAN	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
-	$vdw_mean, $elec_mean, $solv_mean, $np_mean, $dg_mean); 
-printf OUT ("# SD	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
-	$vdw_sd, $elec_sd, $solv_sd, $np_sd, $dg_sd);
-printf OUT ("# N_eff	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
-	$vdw_neff, $elec_neff, $solv_neff, $np_neff, $dg_neff);
-printf OUT ("# ERR	%10.4f %10.4f %10.4f %10.4f %10.4f \n",
-	$vdw_err, $elec_err, $solv_err, $np_err, $dg_err);
+printf OUT "# -----------------------------------------------------------------------\n";
+printf OUT ("# MEAN	%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_mean, $elec_mean, $solv_mean, $polar_mean, $np_mean, $dg_mean); 
+printf OUT ("# SD	%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_sd, $elec_sd, $solv_sd, $polar_sd, $np_sd, $dg_sd);
+printf OUT ("# N_eff	%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_neff, $elec_neff, $solv_neff, $polar_neff, $np_neff, $dg_neff);
+printf OUT ("# ERR	%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_err, $elec_err, $solv_err, $polar_err, $np_err, $dg_err);
 close(OUT);
 
 # ====================================================================================================
