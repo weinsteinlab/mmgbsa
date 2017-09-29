@@ -1,0 +1,121 @@
+#!/usr/bin/perl
+
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by M. A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@hotmail.com
+#
+#########################################################
+
+# prevent warnings for "smartmatch", i.e. operator "~~".
+use experimental qw(smartmatch switch);
+
+$mmgbsa_path = $ENV{'mmgbsa_path'};
+require "$mmgbsa_path/perl_scripts/time_statistics.prl";
+
+$natom=`grep \"NATOM \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in the system
+chomp $natom;
+print "Total number of atoms in the system : $natom \n";
+
+$nconf=`grep nframes  data/definitions.str | awk '{print \$3}'`; # number of conformations (frames)
+chomp $nconf;
+print "Number of conformations : $nconf \n";
+
+$temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
+chomp $temp;
+my @resA = split(/ /,$temp );
+shift @resA;  # Getting rid of the line label in definitions.str
+
+
+# Determine type, charges and residue for each atom.
+
+open(IN,"data/charges.crd") or die "Could not open file data/charges.crd for reading" ;
+foreach $line (<IN>) {
+#  if ($line =~ / A1 / or $line =~ / B1 / or $line =~ / A2 / or $line =~ / B2 /) {
+    @w=split(" ",$line);
+    if ($w[0] eq "*") {next};
+    # $q[$w[0]]=$w[9]; 		# Not used here.
+    $resnum[$w[0]]=$w[1];
+    # $resname[$w[0]]=$w[2];   # Not used here.
+    $atomname[$w[0]]=$w[3];
+#  }
+}
+close(IN);
+
+# Initialize contribution for $nconf conformations.
+for $n (1..$nconf) {
+foreach $i (@resA) {
+      $res_sc[$i][$n]=0;
+      $res_bb[$i][$n]=0;
+      $res_all[$i][$n]=0; 
+}
+}
+
+# Calculate contribution for $nconf conformations.
+for $n (1..$nconf) {
+  open(IN,"frames-comp/$n-sas.crd") or die "Could not open file frames-comp/$n-sas.crd";
+  foreach $line (<IN>) {
+#    if ($line =~ / A1 / or $line =~ / B1 / or $line =~ / A2 / or $line =~ / B2 /) {
+      @w=split(" ",$line);
+      if ($w[0] eq "*") {next};
+      $sas[$w[0]]=$w[9];
+#    }
+  }
+  close(IN);
+
+  for $i (1..$natom) {
+    if ($resnum[$i] ~~ @resA ) {   # This does not work with older perl versions. 
+      $res_all[$resnum[$i]][$n]+=$sas[$i];
+      if ( $atomname[$i] eq "CA" or  $atomname[$i] eq "HA" or $atomname[$i] eq "C" or $atomname[$i] eq "O" or $atomname[$i] eq "N"  or $atomname[$i] eq "NT" or $atomname[$i] eq "HN" or $atomname[$i] eq "HT1" or $atomname[$i] eq "HT2" or $atomname[$i] eq "HT3" or $atomname[$i] eq "OT1" or $atomname[$i] eq "OT2"or $atomname[$i] eq "HA1" or $atomname[$i] eq "HA2") {
+	$res_bb[$resnum[$i]][$n]+=$sas[$i];
+      } else {
+	$res_sc[$resnum[$i]][$n]+=$sas[$i];
+      }
+    }
+  }
+}
+
+# Callculate time statistics
+foreach $i (@resA)  {
+  ($res_all_mean[$i], $res_all_sd[$i], $res_all_neff[$i], $res_all_err[$i]) = time_statistics_FTZ(@{ $res_all[$i] });
+  ($res_bb_mean[$i], $res_bb_sd[$i], $res_bb_neff[$i], $res_bb_err[$i]) = time_statistics_FTZ(@{ $res_bb[$i] });
+  ($res_sc_mean[$i], $res_sc_sd[$i], $res_sc_neff[$i], $res_sc_err[$i]) = time_statistics_FTZ(@{ $res_sc[$i] });
+  # print "$res_sc_mean[$i] $res_bb_mean[$i] $res_all_mean[$i]\n";
+}
+
+foreach $i (@resA)  {
+  $filename="sas/sas-res-$i.dat";
+  open(OUT,">$filename") or die "Could not open file $filename for writing";
+  for $n (1..$nconf) {
+    printf OUT ("%4d    %10.4f %10.4f %10.4f \n",
+		$n, $res_bb[$i][$n], $res_sc[$i][$n], $res_all[$i][$n]);
+  }
+  printf OUT "--------------------------------------------\n";
+  printf OUT ("AVE     %10.4f %10.4f %10.4f \n",
+	      $res_bb_mean[$i], $res_sc_mean[$i], $res_all_mean[$i]);
+  printf OUT ("SD      %10.4f %10.4f %10.4f \n",
+	      $res_bb_sd[$i], $res_sc_sd[$i], $res_all_sd[$i]);
+  printf OUT ("N_eff   %10.4f %10.4f %10.4f \n",
+	      $res_bb_neff[$i], $res_sc_neff[$i], $res_all_neff[$i]);	      	      
+  printf OUT ("ERR     %10.4f %10.4f %10.4f \n",
+	      $res_bb_err[$i], $res_sc_err[$i], $res_all_err[$i]);	      	      
+  close(OUT);
+}
+
+
+open(OUT,">sas/sas-res.dat")or die "Could not open file sas/sas-res.dat for writing";
+foreach $i (@resA)  {
+  printf OUT ("%4d    %10.4f %10.4f %10.4f    %10.4f %10.4f %10.4f  \n",
+	      $i, $res_bb_mean[$i], $res_sc_mean[$i], $res_all_mean[$i],  $res_bb_err[$i], $res_sc_err[$i], $res_all_err[$i]);
+  $res_bb_tot+=$res_bb_mean[$i];
+  $res_sc_tot+=$res_sc_mean[$i];
+  $res_all_tot+=$res_all_mean[$i];
+}
+printf OUT "--------------------------------------------\n";
+printf OUT ("TOT     %10.4f %10.4f %10.4f \n",
+	    $res_bb_tot, $res_sc_tot, $res_all_tot);

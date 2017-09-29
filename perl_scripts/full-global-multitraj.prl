@@ -1,0 +1,86 @@
+#!/usr/bin/perl
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by Michel A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@unil.ch
+#
+#########################################################
+
+use warnings;
+
+$mmgbsa_path = $ENV{'mmgbsa_path'};
+require "$mmgbsa_path/perl_scripts/time_statistics.prl";
+
+$nconf=`grep nframes data/definitions.str | awk '{print \$3}'`; # number of conformations (frames)
+chomp $nconf;
+print "Number of conformations : $nconf \n";
+
+# --------------------------------------------------------------------
+# Read suff in
+open(IN,"total/inter-global.dat") or die "Could not open total/inter-global.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);  
+  $bonded[$w[0]]=$w[1];
+  $vdw[$w[0]]=$w[2];
+  $elec[$w[0]]=$w[3];
+}
+close(IN);
+
+open(IN,"total/solv-global.dat") or die "Could not open total/solv-global.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  $solv[$w[0]]=$w[1];
+}
+close(IN);
+
+
+open(IN,"total/sasa-global.dat") or die "Could not open total/sasa-global.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  $np[$w[0]]=0.0072*$w[1];
+}
+close(IN);
+
+# --------------------------------------------------------------------
+# Print time series
+open(OUT, ">full-global-time.dat");
+
+printf OUT ("       %10s  %10s  %10s  %10s  %10s  :   %10s \n","Bonded","VdW","Elec","GB","SA", "TOTAL");
+print OUT "---------------------------------------------------------\n";
+for $i (1..$nconf) {
+
+  $full[$i] = $bonded[$i] + $vdw[$i] + $elec[$i] + $solv[$i] + $np[$i];
+
+  printf OUT ("%3d :  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+	      $i, $bonded[$i], $vdw[$i], $elec[$i], $solv[$i], $np[$i], $full[$i]);
+}
+
+# --------------------------------------------------------------------
+# Calculate time statistics
+($bonded_mean, $bonded_sd, $bonded_n_eff, $bonded_err) = time_statistics_FTZ(@bonded);
+($vdw_mean, $vdw_sd, $vdw_n_eff, $vdw_err) = time_statistics_FTZ(@vdw);
+($elec_mean, $elec_sd, $elec_n_eff, $elec_err) = time_statistics_FTZ(@elec);
+($solv_mean, $solv_sd, $solv_n_eff, $solv_err) = time_statistics_FTZ(@solv);
+($np_mean, $np_sd, $np_n_eff, $np_err) = time_statistics_FTZ(@np);
+($full_mean, $full_sd, $full_n_eff, $full_err) = time_statistics_FTZ(@full);
+
+
+
+print OUT "---------------------------------------------------------\n";
+printf OUT ("AVE :  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+	      $bonded_mean, $vdw_mean, $elec_mean, $solv_mean, $np_mean, $full_mean);
+printf OUT ("SD  :  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+	      $bonded_sd, $vdw_sd, $elec_sd, $solv_sd, $np_sd, $full_sd);
+printf OUT ("N_EF:  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+	      $bonded_n_eff, $vdw_n_eff, $elec_n_eff, $solv_n_eff, $np_n_eff, $full_n_eff);
+printf OUT ("ERR :  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+	      $bonded_err, $vdw_err, $elec_err, $solv_err, $np_err, $full_err);
+
+
+close(OUT);
+

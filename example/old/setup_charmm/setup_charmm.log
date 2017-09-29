@@ -1,0 +1,30 @@
+Capping options : 0 0 0 0 0 0 0 0 0 0 0 0
+/pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm
+Extracting complex ...
+Parsing complex ...
+Directory preparing-system already exists. Deleting it.
+
+Segment    1 :    1 (    1 ) to  422 (  422 ) : Included = true : FIRST = NTER : LAST =  CTER 
+Segment    2 :  423 (    1 ) to  844 (  422 ) : Included = true : FIRST = NTER : LAST =  CTER 
+Segment    3 :  845 (    1 ) to 1266 (  422 ) : Included = true : FIRST = NTER : LAST =  CTER 
+Segment    4 : 1267 (  425 ) to 1267 (  425 ) : Included = true : FIRST = NTER : LAST =  CTER 
+Segment    5 : 1268 (  426 ) to 1268 (  426 ) : Included = true : FIRST = NTER : LAST =  CTER 
+Segment    6 : 1269 (  427 ) to 1269 (  427 ) : Included = true : FIRST = NTER : LAST =  CTER 
+Segment    7 : 1270 (    1 ) to 1270 (    1 ) : Included = true : FIRST = NONE : LAST =  NONE 
+Segment    8 : 1271 (    2 ) to 1271 (    2 ) : Included = true : FIRST = NONE : LAST =  NONE 
+Segment    9 : 1272 (    3 ) to 1272 (    3 ) : Included = true : FIRST = NONE : LAST =  NONE 
+Segment   10 : 1273 (    1 ) to 1273 (    1 ) : Included = true : FIRST = NONE : LAST =  NONE 
+Segment   11 : 1274 (    2 ) to 1274 (    2 ) : Included = true : FIRST = NONE : LAST =  NONE 
+Segment   12 : 1275 (    3 ) to 1275 (    3 ) : Included = true : FIRST = NONE : LAST =  NONE 
+Segment   13 : 1276 (    1 ) to 1276 (    1 ) : Included = true : FIRST = NONE : LAST =  NONE 
+Segment   14 : 1277 (    2 ) to 1277 (    2 ) : Included = true : FIRST = NONE : LAST =  NONE 
+Segment   15 : 1278 (    3 ) to 1278 (    3 ) : Included = true : FIRST = NONE : LAST =  NONE 
+
+Running charmm setup ... 
+
+
+
+Running CHARMM. Might take a lot of time, please wait.
+
+                    NORMAL TERMINATION BY NORMAL STOP
+Everything seems Ok 

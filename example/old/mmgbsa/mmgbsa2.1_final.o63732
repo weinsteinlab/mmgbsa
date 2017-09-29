@@ -1,0 +1,19 @@
+Working in directory /tmp/63732.1.standard.q
+tar: mmgbsa2.o*: Cannot stat: No such file or directory
+tar: Error exit delayed from previous errors
+rm: cannot remove `mmgbsa2.o*': No such file or directory
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+WARNING: ignoring environment value of R_HOME
+Number of values 6
+Number of values 6
+Number of values 6
+Done.

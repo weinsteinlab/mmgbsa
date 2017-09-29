@@ -1,0 +1,1090 @@
+1
+                 Chemistry at HARvard Macromolecular Mechanics
+                   (CHARMM) - Developmental Version 36a2  February 15, 2008    
+       Copyright(c) 1984-2001  President and Fellows of Harvard College
+                              All Rights Reserved
+      Current operating system: Linux-2.6.18-128.el5xen(x86_64)@fido.pug.pbt
+                 Created on  1/24/17 at 10:44:38 by user: mac2109     
+
+            Maximum number of ATOMS:     60120, and RESidues:       20040
+            Current HEAP size:        10240000, and STACK size:  10000000
+
+ RDTITL> *
+ RDTITL> No title read.
+
+      ***** LEVEL  1 WARNING FROM <RDTITL> *****
+      ***** Title expected.
+      ******************************************
+      BOMLEV (  0) IS NOT REACHED. WRNLEV IS  5
+
+  
+ CHARMM>     
+  
+ CHARMM>    !------ Aliases
+ CHARMM>    SET lib  ../toppar
+ Parameter: LIB <- "../TOPPAR"
+  
+ CHARMM>     
+  
+ CHARMM>    !------ Topology and Parameters
+ CHARMM>    open unit 1 card read name @lib/top_all36_prot.rtf
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/top_all36_prot.rtf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/top_all36_prot.rtf
+  
+ CHARMM>    read RTF card unit 1
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> *>>>>>>>>CHARMM36 ALL-HYDROGEN TOPOLOGY FILE FOR PROTEINS <<<<<<
+ TITLE> *>>>>> INCLUDES PHI, PSI CROSS TERM MAP (CMAP) CORRECTION <<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>>>>> MAY 2011 <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> * ALL COMMENTS TO THE CHARMM WEB SITE: WWW.CHARMM.ORG
+ TITLE> *             PARAMETER SET DISCUSSION FORUM
+ TITLE> *
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/top_all36_lipid.rtf
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/top_all36_lipid.rtf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/top_all36_lipid.rtf
+  
+ CHARMM>    read RTF card unit 1 append
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> *  \\\\\\\ CHARMM36 ALL-HYDROGEN LIPID TOPOLOGY FILE ///////
+ TITLE> *  ALL COMMENTS AND QUESTIONS SHOULD BE SUBMITTED TO THE
+ TITLE> *  PARAMETER FORUM AT THE CHARMM WEBSITE: WWW.CHARMM.ORG
+ TITLE> *
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/top_all36_cgenff.rtf
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/top_all36_cgenff.rtf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/top_all36_cgenff.rtf
+  
+ CHARMM>    read RTF card unit 1 append
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> *  --------------------------------------------------------------------------  *
+ TITLE> *          CGENFF: TOPOLOGY FOR THE CHARMM GENERAL FORCE FIELD V. 2B8          *
+ TITLE> *                    FOR SMALL MOLECULE DRUG DESIGN                            *
+ TITLE> *  --------------------------------------------------------------------------  *
+ TITLE> *
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/top_all36_carb.rtf
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/top_all36_carb.rtf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/top_all36_carb.rtf
+  
+ CHARMM>    read RTF card unit 1 append
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> * $ID: TOP_ALLXX_SUGAR.INP,V 1.106 2014/08/19 19:07:43 ALEX EXP $
+ TITLE> *>>>>>>>>>>>> ALL-HYDROGEN TOPOLOGIES USED IN THE <<<<<<<<<<<<<<<<
+ TITLE> *>>>>> DEVELOPMENT OF THE CHARMM CARBOHYDRATE  FORCE FIELD<<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>>>> JUNE 2009 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> *>>>>>>>> DIRECT COMMENTS TO ALEXANDER D. MACKERELL JR. <<<<<<<<<<
+ TITLE> *>>>>>>>>>> VIA THE CHARMM WEB SITE: WWW.CHARMM.ORG <<<<<<<<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>> PARAMETER SET DISCUSSION FORUM <<<<<<<<<<<<<<<<<<
+ TITLE> *
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/par_all36_prot.prm
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/par_all36_prot.prm::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/par_all36_prot.prm
+  
+ CHARMM>    read PARA card flex unit 1
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> *>>>> CHARMM36 ALL-HYDROGEN PARAMETER FILE FOR PROTEINS <<<<<<<<<<
+ TITLE> *>>>>> INCLUDES PHI, PSI CROSS TERM MAP (CMAP) CORRECTION <<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>>>>> FEB. 2012 <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> * ALL COMMENTS TO THE CHARMM WEB SITE: WWW.CHARMM.ORG
+ TITLE> *             PARAMETER SET DISCUSSION FORUM
+ TITLE> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/par_all36_lipid.prm
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/par_all36_lipid.prm::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/par_all36_lipid.prm
+  
+ CHARMM>    read PARA card flex unit 1 append
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> *  \\\\\\\ CHARMM36 ALL-HYDROGEN LIPID PARAMETER FILE ///////
+ TITLE> *  ALL COMMENTS AND QUESTIONS SHOULD BE SUBMITTED TO THE
+ TITLE> *  PARAMETER FORUM AT THE CHARMM WEBSITE: WWW.CHARMM.ORG
+ TITLE> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/par_all36_cgenff.prm
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/par_all36_cgenff.prm::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/par_all36_cgenff.prm
+  
+ CHARMM>    read PARA card flex unit 1 append
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> *  --------------------------------------------------------------------------  *
+ TITLE> *         CGENFF: PARAMETERS FOR THE CHARMM GENERAL FORCE FIELD V. 2B8         *
+ TITLE> *                    FOR SMALL MOLECULE DRUG DESIGN                            *
+ TITLE> *  --------------------------------------------------------------------------  *
+ TITLE> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/par_all36_carb.prm
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/par_all36_carb.prm::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/par_all36_carb.prm
+  
+ CHARMM>    read PARA card flex unit 1 append
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> * $ID: PAR_ALLXX_SUGAR.INP,V 1.132 2014/08/19 19:03:21 ALEX EXP $
+ TITLE> *>>>>>>>>>>>> ALL-HYDROGEN PARAMETERS USED IN THE <<<<<<<<<<<<<<<<
+ TITLE> *>>>>> DEVELOPMENT OF THE CHARMM CARBOHYDRATE  FORCE FIELD<<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>>>> JUNE 2009 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> *>>>>>>>> DIRECT COMMENTS TO ALEXANDER D. MACKERELL JR. <<<<<<<<<<
+ TITLE> *>>>>>>>>>> VIA THE CHARMM WEB SITE: WWW.CHARMM.ORG <<<<<<<<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>> PARAMETER SET DISCUSSION FORUM <<<<<<<<<<<<<<<<<<
+ TITLE> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    STREAM @lib/toppar_water_ions.str
+ Parameter: LIB -> "../TOPPAR"
+ VOPEN> Attempting to open::../toppar/toppar_water_ions.str::
+ OPNLGU> Unit 99 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/toppar_water_ions.str
+
+                    INPUT STREAM SWITCHING TO UNIT    99
+ RDTITL> * TOPLOGY AND PARAMETER INFORMATION FOR WATER AND IONS.
+ RDTITL> *
+ Parameter: IN1 <- "" <empty>
+  
+ CHARMM>     
+  
+ CHARMM>    !Testcase
+ CHARMM>    !test_water_ions.inp
+ CHARMM>     
+  
+ CHARMM>    ! IMPORTANT NOTE: this file contains NBFixes between carboxylates and sodium,
+ CHARMM>    ! which will only apply if the main files containing carboxylate atom types
+ CHARMM>    ! have been read in first!
+ CHARMM>     
+  
+ CHARMM>    !references
+ CHARMM>    !
+ CHARMM>    !TIP3P water model
+ CHARMM>    !
+ CHARMM>    !W.L. Jorgensen; J.Chandrasekhar; J.D. Madura; R.W. Impey;
+ CHARMM>    !M.L. Klein; "Comparison of simple potential functions for
+ CHARMM>    !simulating liquid water", J. Chem. Phys. 79 926-935 (1983).
+ CHARMM>    !
+ CHARMM>    !IONS
+ CHARMM>    !
+ CHARMM>    !Ions from Roux and coworkers
+ CHARMM>    !
+ CHARMM>    !Beglov, D. and Roux, B., Finite Representation of an Infinite
+ CHARMM>    !Bulk System: Solvent Boundary Potential for Computer Simulations,
+ CHARMM>    !Journal of Chemical Physics, 1994, 100: 9050-9063
+ CHARMM>    !
+ CHARMM>    !ZINC
+ CHARMM>    !
+ CHARMM>    !Stote, R.H. and Karplus, M. Zinc Binding in Proteins and
+ CHARMM>    !Solution: A Simple but Accurate Nonbonded Representation, PROTEINS:
+ CHARMM>    !Structure, Function, and Genetics 23:12-31 (1995)
+ CHARMM>     
+  
+ CHARMM>    !test "append" to determine if previous toppar files have been read and
+ CHARMM>    !add append to "read rtf card" if true
+ CHARMM>    set nat ?NATC
+ RDCMND substituted energy or value "?NATC" to "411"
+ Parameter: NAT <- "411"
+  
+ CHARMM>    set app
+ Parameter: APP <- "" <empty>
+  
+ CHARMM>    !We're exploiting what is arguably a bug in the parser. On the left hand side,
+ CHARMM>    !the quotes have priority, so NAT is correctly substituted. On the right hand
+ CHARMM>    !side, the ? has priority and NATC" (sic) is not a valid substitution...
+ CHARMM>    if "@NAT" ne "?NATC" if @nat ne 0 set app append
+ Parameter: NAT -> "411"
+ Parameter: NAT -> "411"
+ RDCMND: can not substitute energy "?NATC""
+ Comparing ""411"" and ""?NATC"".
+ IF test evaluated as true.  Performing command
+ Comparing "411" and "0".
+ IF test evaluated as true.  Performing command
+ Parameter: APP <- "APPEND"
+  
+ CHARMM>     
+  
+ CHARMM>    read rtf card @app
+ Parameter: APP -> "APPEND"
+ MAINIO> Residue topology file being read from unit  99.
+ RDTITL> * TOPOLOGY FOR WATER AND IONS
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>    read para card flex @app
+ Parameter: APP -> "APPEND"
+
+          PARAMETER FILE BEING READ FROM UNIT 99
+ RDTITL> * PARAMETERS FOR WATER AND IONS
+ RDTITL> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>     
+  
+ CHARMM>    ! The following section contains NBFixes for sodium interacting with
+ CHARMM>    ! carboxylate oxygens of various CHARMM force fields. It will generate
+ CHARMM>    ! level -1 warnings whenever any of these force fields have not been
+ CHARMM>    ! read prior to the current stream file. Since we don't want to force
+ CHARMM>    ! the user to always read all the force fields, we're suppressing the
+ CHARMM>    ! warnings. The only side effect is that you will have "most severe
+ CHARMM>    ! warning was at level 0" at the end of your output. Also note that
+ CHARMM>    ! the user is responsible for reading the current file last if they
+ CHARMM>    ! want the NBFixes to apply. A more elegant solution would require new
+ CHARMM>    ! features to be added to CHARMM.
+ CHARMM>    ! parallel fix, to avoid duplicated messages in the log
+ CHARMM>    set para
+ Parameter: PARA <- "" <empty>
+  
+ CHARMM>    if ?NUMNODE gt 1 set para node 0
+ RDCMND substituted energy or value "?NUMNODE" to "1"
+ Comparing "1" and "1".
+ IF test evaluated as false.  Skipping command
+  
+ CHARMM>     
+  
+ CHARMM>    set wrn ?WRNLEV
+ RDCMND: can not substitute energy "?WRNLEV"
+ Parameter: WRN <- "?WRNLEV"
+  
+ CHARMM>    ! Some versions of CHARMM don't seem to initialize wrnlev...
+ CHARMM>    if "@WRN" eq "?WRNLEV" set wrn 5
+ Parameter: WRN -> "?WRNLEV"
+ RDCMND: can not substitute energy "?WRNLEV""
+ Comparing ""?WRNLEV"" and ""?WRNLEV"".
+ IF test evaluated as true.  Performing command
+ Parameter: WRN <- "5"
+  
+ CHARMM>    set bom ?bomlev
+ RDCMND substituted energy or value "?BOMLEV" to "0"
+ Parameter: BOM <- "0"
+  
+ CHARMM>    WRNLEV -1 @PARA
+ Parameter: PARA -> "" <empty>
+  
+ CHARMM>    BOMLEV -1 @PARA
+ Parameter: PARA -> "" <empty>
+  
+ CHARMM>    read para card flex append
+
+          PARAMETER FILE BEING READ FROM UNIT 99
+ RDTITL> * NBFIX BETWEEN CARBOXYLATE AND SODIUM
+ RDTITL> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    BOMLEV @bom @PARA
+ Parameter: BOM -> "0"
+ Parameter: PARA -> "" <empty>
+  
+ CHARMM>    WRNLEV @wrn @PARA
+ Parameter: WRN -> "5"
+ Parameter: PARA -> "" <empty>
+  
+ CHARMM>     
+  
+ CHARMM>    return
+ VCLOSE: Closing unit   99 with status "KEEP"
+
+                    RETURNING TO INPUT STREAM     5
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg1.crd
+ VOPEN> Attempting to open::seg1.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg1.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --   422 RESIDUES
+          MET GLY LEU TYR ARG LYS TYR ILE GLU TYR PRO VAL LEU GLN LYS ILE LEU ILE GLY LEU 
+          ILE LEU GLY ALA ILE VAL GLY LEU ILE LEU GLY HSD TYR GLY TYR ALA HSD ALA VAL HSD 
+          THR TYR VAL LYS PRO PHE GLY ASP LEU PHE VAL ARG LEU LEU LYS MET LEU VAL MET PRO 
+          ILE VAL PHE ALA SER LEU VAL VAL GLY ALA ALA SER ILE SER PRO ALA ARG LEU GLY ARG 
+          VAL GLY VAL LYS ILE VAL VAL TYR TYR LEU LEU THR SER ALA PHE ALA VAL THR LEU GLY 
+          ILE ILE MET ALA ARG LEU PHE ASN PRO GLY ALA GLY ILE HSE LEU ALA VAL GLY GLY GLN 
+          GLN PHE GLN PRO HSD GLN ALA PRO PRO LEU VAL HSD ILE LEU LEU ASP ILE VAL PRO THR 
+          ASN PRO PHE GLY ALA LEU ALA ASN GLY GLN VAL LEU PRO THR ILE PHE PHE ALA ILE ILE 
+          LEU GLY ILE ALA ILE THR TYR LEU MET ASN SER GLU ASN GLU LYS VAL ARG LYS SER ALA 
+          GLU THR LEU LEU ASP ALA ILE ASN GLY LEU ALA GLU ALA MET TYR LYS ILE VAL ASN GLY 
+          VAL MET GLN TYR ALA PRO ILE GLY VAL PHE ALA LEU ILE ALA TYR VAL MET ALA GLU GLN 
+          GLY VAL HSD VAL VAL GLY GLU LEU ALA LYS VAL THR ALA ALA VAL TYR VAL GLY LEU THR 
+          LEU GLN ILE LEU LEU VAL TYR PHE VAL LEU LEU LYS ILE TYR GLY ILE ASP PRO ILE SER 
+          PHE ILE LYS HSE ALA LYS ASP ALA MET LEU THR ALA PHE VAL THR ARG SER SER SER GLY 
+          THR LEU PRO VAL THR MET ARG VAL ALA LYS GLU MET GLY ILE SER GLU GLY ILE TYR SER 
+          PHE THR LEU PRO LEU GLY ALA THR ILE ASN MET ASP GLY THR ALA LEU TYR GLN GLY VAL 
+          CYS THR PHE PHE ILE ALA ASN ALA LEU GLY SER HSD LEU THR VAL GLY GLN GLN LEU THR 
+          ILE VAL LEU THR ALA VAL LEU ALA SER ILE GLY THR ALA GLY VAL PRO GLY ALA GLY ALA 
+          ILE MET LEU ALA MET VAL LEU HSD SER VAL GLY LEU PRO LEU THR ASP PRO ASN VAL ALA 
+          ALA ALA TYR ALA MET ILE LEU GLY ILE ASP ALA ILE LEU ASP MET GLY ARG THR MET VAL 
+          ASN VAL THR GLY ASP LEU THR GLY THR ALA ILE VAL ALA LYS THR GLU GLY THR LEU VAL 
+          PRO ARG 
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 52 TITRATABLE GROUPS
+ THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
+ HIS -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 1S SETUP FIRST NTER LAST CTER
+ THE PATCH 'NTER' WILL BE USED FOR THE FIRST RESIDUE
+ THE PATCH 'CTER' WILL BE USED FOR THE LAST  RESIDUE
+ GENPSF> Segment   1 has been generated. Its identifier is 1S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        1   Number of residues   =      422
+         Number of atoms         =     6464   Number of groups     =     2002
+         Number of bonds         =     6526   Number of angles     =    11894
+         Number of dihedrals     =    17284   Number of impropers  =     1045
+         Number of cross-terms   =      420
+         Number of HB acceptors  =      557   Number of HB donors  =      615
+         Number of NB exclusions =        0   Total charge =    4.00000
+ QXFORM> Expanded format used.
+         More than 4 character atom type used.
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg2.crd
+ VOPEN> Attempting to open::seg2.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg2.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --   422 RESIDUES
+          MET     GLY     LEU     TYR     ARG     LYS     TYR     ILE     GLU     TYR     PRO     VAL     LEU     GLN     LYS     ILE     LEU     ILE     GLY     LEU     
+          ILE     LEU     GLY     ALA     ILE     VAL     GLY     LEU     ILE     LEU     GLY     HSD     TYR     GLY     TYR     ALA     HSD     ALA     VAL     HSD     
+          THR     TYR     VAL     LYS     PRO     PHE     GLY     ASP     LEU     PHE     VAL     ARG     LEU     LEU     LYS     MET     LEU     VAL     MET     PRO     
+          ILE     VAL     PHE     ALA     SER     LEU     VAL     VAL     GLY     ALA     ALA     SER     ILE     SER     PRO     ALA     ARG     LEU     GLY     ARG     
+          VAL     GLY     VAL     LYS     ILE     VAL     VAL     TYR     TYR     LEU     LEU     THR     SER     ALA     PHE     ALA     VAL     THR     LEU     GLY     
+          ILE     ILE     MET     ALA     ARG     LEU     PHE     ASN     PRO     GLY     ALA     GLY     ILE     HSE     LEU     ALA     VAL     GLY     GLY     GLN     
+          GLN     PHE     GLN     PRO     HSD     GLN     ALA     PRO     PRO     LEU     VAL     HSD     ILE     LEU     LEU     ASP     ILE     VAL     PRO     THR     
+          ASN     PRO     PHE     GLY     ALA     LEU     ALA     ASN     GLY     GLN     VAL     LEU     PRO     THR     ILE     PHE     PHE     ALA     ILE     ILE     
+          LEU     GLY     ILE     ALA     ILE     THR     TYR     LEU     MET     ASN     SER     GLU     ASN     GLU     LYS     VAL     ARG     LYS     SER     ALA     
+          GLU     THR     LEU     LEU     ASP     ALA     ILE     ASN     GLY     LEU     ALA     GLU     ALA     MET     TYR     LYS     ILE     VAL     ASN     GLY     
+          VAL     MET     GLN     TYR     ALA     PRO     ILE     GLY     VAL     PHE     ALA     LEU     ILE     ALA     TYR     VAL     MET     ALA     GLU     GLN     
+          GLY     VAL     HSD     VAL     VAL     GLY     GLU     LEU     ALA     LYS     VAL     THR     ALA     ALA     VAL     TYR     VAL     GLY     LEU     THR     
+          LEU     GLN     ILE     LEU     LEU     VAL     TYR     PHE     VAL     LEU     LEU     LYS     ILE     TYR     GLY     ILE     ASP     PRO     ILE     SER     
+          PHE     ILE     LYS     HSE     ALA     LYS     ASP     ALA     MET     LEU     THR     ALA     PHE     VAL     THR     ARG     SER     SER     SER     GLY     
+          THR     LEU     PRO     VAL     THR     MET     ARG     VAL     ALA     LYS     GLU     MET     GLY     ILE     SER     GLU     GLY     ILE     TYR     SER     
+          PHE     THR     LEU     PRO     LEU     GLY     ALA     THR     ILE     ASN     MET     ASP     GLY     THR     ALA     LEU     TYR     GLN     GLY     VAL     
+          CYS     THR     PHE     PHE     ILE     ALA     ASN     ALA     LEU     GLY     SER     HSD     LEU     THR     VAL     GLY     GLN     GLN     LEU     THR     
+          ILE     VAL     LEU     THR     ALA     VAL     LEU     ALA     SER     ILE     GLY     THR     ALA     GLY     VAL     PRO     GLY     ALA     GLY     ALA     
+          ILE     MET     LEU     ALA     MET     VAL     LEU     HSD     SER     VAL     GLY     LEU     PRO     LEU     THR     ASP     PRO     ASN     VAL     ALA     
+          ALA     ALA     TYR     ALA     MET     ILE     LEU     GLY     ILE     ASP     ALA     ILE     LEU     ASP     MET     GLY     ARG     THR     MET     VAL     
+          ASN     VAL     THR     GLY     ASP     LEU     THR     GLY     THR     ALA     ILE     VAL     ALA     LYS     THR     GLU     GLY     THR     LEU     VAL     
+          PRO     ARG     
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 52 TITRATABLE GROUPS
+ THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
+ HIS -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 2S SETUP FIRST NTER LAST CTER
+ THE PATCH 'NTER' WILL BE USED FOR THE FIRST RESIDUE
+ THE PATCH 'CTER' WILL BE USED FOR THE LAST  RESIDUE
+ GENPSF> Segment   2 has been generated. Its identifier is 2S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        2   Number of residues   =      844
+         Number of atoms         =    12928   Number of groups     =     4004
+         Number of bonds         =    13052   Number of angles     =    23788
+         Number of dihedrals     =    34568   Number of impropers  =     2090
+         Number of cross-terms   =      840
+         Number of HB acceptors  =     1114   Number of HB donors  =     1230
+         Number of NB exclusions =        0   Total charge =    8.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg3.crd
+ VOPEN> Attempting to open::seg3.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg3.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --   422 RESIDUES
+          MET     GLY     LEU     TYR     ARG     LYS     TYR     ILE     GLU     TYR     PRO     VAL     LEU     GLN     LYS     ILE     LEU     ILE     GLY     LEU     
+          ILE     LEU     GLY     ALA     ILE     VAL     GLY     LEU     ILE     LEU     GLY     HSD     TYR     GLY     TYR     ALA     HSD     ALA     VAL     HSD     
+          THR     TYR     VAL     LYS     PRO     PHE     GLY     ASP     LEU     PHE     VAL     ARG     LEU     LEU     LYS     MET     LEU     VAL     MET     PRO     
+          ILE     VAL     PHE     ALA     SER     LEU     VAL     VAL     GLY     ALA     ALA     SER     ILE     SER     PRO     ALA     ARG     LEU     GLY     ARG     
+          VAL     GLY     VAL     LYS     ILE     VAL     VAL     TYR     TYR     LEU     LEU     THR     SER     ALA     PHE     ALA     VAL     THR     LEU     GLY     
+          ILE     ILE     MET     ALA     ARG     LEU     PHE     ASN     PRO     GLY     ALA     GLY     ILE     HSE     LEU     ALA     VAL     GLY     GLY     GLN     
+          GLN     PHE     GLN     PRO     HSD     GLN     ALA     PRO     PRO     LEU     VAL     HSD     ILE     LEU     LEU     ASP     ILE     VAL     PRO     THR     
+          ASN     PRO     PHE     GLY     ALA     LEU     ALA     ASN     GLY     GLN     VAL     LEU     PRO     THR     ILE     PHE     PHE     ALA     ILE     ILE     
+          LEU     GLY     ILE     ALA     ILE     THR     TYR     LEU     MET     ASN     SER     GLU     ASN     GLU     LYS     VAL     ARG     LYS     SER     ALA     
+          GLU     THR     LEU     LEU     ASP     ALA     ILE     ASN     GLY     LEU     ALA     GLU     ALA     MET     TYR     LYS     ILE     VAL     ASN     GLY     
+          VAL     MET     GLN     TYR     ALA     PRO     ILE     GLY     VAL     PHE     ALA     LEU     ILE     ALA     TYR     VAL     MET     ALA     GLU     GLN     
+          GLY     VAL     HSD     VAL     VAL     GLY     GLU     LEU     ALA     LYS     VAL     THR     ALA     ALA     VAL     TYR     VAL     GLY     LEU     THR     
+          LEU     GLN     ILE     LEU     LEU     VAL     TYR     PHE     VAL     LEU     LEU     LYS     ILE     TYR     GLY     ILE     ASP     PRO     ILE     SER     
+          PHE     ILE     LYS     HSE     ALA     LYS     ASP     ALA     MET     LEU     THR     ALA     PHE     VAL     THR     ARG     SER     SER     SER     GLY     
+          THR     LEU     PRO     VAL     THR     MET     ARG     VAL     ALA     LYS     GLU     MET     GLY     ILE     SER     GLU     GLY     ILE     TYR     SER     
+          PHE     THR     LEU     PRO     LEU     GLY     ALA     THR     ILE     ASN     MET     ASP     GLY     THR     ALA     LEU     TYR     GLN     GLY     VAL     
+          CYS     THR     PHE     PHE     ILE     ALA     ASN     ALA     LEU     GLY     SER     HSD     LEU     THR     VAL     GLY     GLN     GLN     LEU     THR     
+          ILE     VAL     LEU     THR     ALA     VAL     LEU     ALA     SER     ILE     GLY     THR     ALA     GLY     VAL     PRO     GLY     ALA     GLY     ALA     
+          ILE     MET     LEU     ALA     MET     VAL     LEU     HSD     SER     VAL     GLY     LEU     PRO     LEU     THR     ASP     PRO     ASN     VAL     ALA     
+          ALA     ALA     TYR     ALA     MET     ILE     LEU     GLY     ILE     ASP     ALA     ILE     LEU     ASP     MET     GLY     ARG     THR     MET     VAL     
+          ASN     VAL     THR     GLY     ASP     LEU     THR     GLY     THR     ALA     ILE     VAL     ALA     LYS     THR     GLU     GLY     THR     LEU     VAL     
+          PRO     ARG     
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 52 TITRATABLE GROUPS
+ THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
+ HIS -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 3S SETUP FIRST NTER LAST CTER
+ THE PATCH 'NTER' WILL BE USED FOR THE FIRST RESIDUE
+ THE PATCH 'CTER' WILL BE USED FOR THE LAST  RESIDUE
+ GENPSF> Segment   3 has been generated. Its identifier is 3S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        3   Number of residues   =     1266
+         Number of atoms         =    19392   Number of groups     =     6006
+         Number of bonds         =    19578   Number of angles     =    35682
+         Number of dihedrals     =    51852   Number of impropers  =     3135
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1671   Number of HB donors  =     1845
+         Number of NB exclusions =        0   Total charge =   12.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg4.crd
+ VOPEN> Attempting to open::seg4.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg4.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          ASP     
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS  1 TITRATABLE GROUPS
+ THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
+ HIS -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 4S SETUP FIRST NTER LAST CTER
+ THE PATCH 'NTER' WILL BE USED FOR THE FIRST RESIDUE
+ THE PATCH 'CTER' WILL BE USED FOR THE LAST  RESIDUE
+ GENPSF> Segment   4 has been generated. Its identifier is 4S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        4   Number of residues   =     1267
+         Number of atoms         =    19407   Number of groups     =     6009
+         Number of bonds         =    19592   Number of angles     =    35706
+         Number of dihedrals     =    51882   Number of impropers  =     3137
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1675   Number of HB donors  =     1848
+         Number of NB exclusions =        0   Total charge =   11.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg5.crd
+ VOPEN> Attempting to open::seg5.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg5.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          ASP     
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS  1 TITRATABLE GROUPS
+ THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
+ HIS -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 5S SETUP FIRST NTER LAST CTER
+ THE PATCH 'NTER' WILL BE USED FOR THE FIRST RESIDUE
+ THE PATCH 'CTER' WILL BE USED FOR THE LAST  RESIDUE
+ GENPSF> Segment   5 has been generated. Its identifier is 5S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        5   Number of residues   =     1268
+         Number of atoms         =    19422   Number of groups     =     6012
+         Number of bonds         =    19606   Number of angles     =    35730
+         Number of dihedrals     =    51912   Number of impropers  =     3139
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1679   Number of HB donors  =     1851
+         Number of NB exclusions =        0   Total charge =   10.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg6.crd
+ VOPEN> Attempting to open::seg6.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg6.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          ASP     
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS  1 TITRATABLE GROUPS
+ THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
+ HIS -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 6S SETUP FIRST NTER LAST CTER
+ THE PATCH 'NTER' WILL BE USED FOR THE FIRST RESIDUE
+ THE PATCH 'CTER' WILL BE USED FOR THE LAST  RESIDUE
+ GENPSF> Segment   6 has been generated. Its identifier is 6S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        6   Number of residues   =     1269
+         Number of atoms         =    19437   Number of groups     =     6015
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =    9.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg7.crd
+ VOPEN> Attempting to open::seg7.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg7.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 7S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment   7 has been generated. Its identifier is 7S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        7   Number of residues   =     1270
+         Number of atoms         =    19438   Number of groups     =     6016
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   10.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg8.crd
+ VOPEN> Attempting to open::seg8.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg8.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 8S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment   8 has been generated. Its identifier is 8S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        8   Number of residues   =     1271
+         Number of atoms         =    19439   Number of groups     =     6017
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   11.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg9.crd
+ VOPEN> Attempting to open::seg9.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg9.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 9S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment   9 has been generated. Its identifier is 9S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =        9   Number of residues   =     1272
+         Number of atoms         =    19440   Number of groups     =     6018
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   12.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg10.crd
+ VOPEN> Attempting to open::seg10.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg10.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 10S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment  10 has been generated. Its identifier is 10S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =       10   Number of residues   =     1273
+         Number of atoms         =    19441   Number of groups     =     6019
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   13.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg11.crd
+ VOPEN> Attempting to open::seg11.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg11.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 11S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment  11 has been generated. Its identifier is 11S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =       11   Number of residues   =     1274
+         Number of atoms         =    19442   Number of groups     =     6020
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   14.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg12.crd
+ VOPEN> Attempting to open::seg12.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg12.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 12S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment  12 has been generated. Its identifier is 12S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =       12   Number of residues   =     1275
+         Number of atoms         =    19443   Number of groups     =     6021
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   15.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg13.crd
+ VOPEN> Attempting to open::seg13.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg13.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 13S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment  13 has been generated. Its identifier is 13S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =       13   Number of residues   =     1276
+         Number of atoms         =    19444   Number of groups     =     6022
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   16.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg14.crd
+ VOPEN> Attempting to open::seg14.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg14.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 14S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment  14 has been generated. Its identifier is 14S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =       14   Number of residues   =     1277
+         Number of atoms         =    19445   Number of groups     =     6023
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   17.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME seg15.crd
+ VOPEN> Attempting to open::seg15.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg15.crd
+  
+ CHARMM>    READ SEQUENCE COOR RESID UNIT 1
+ MAINIO> Sequence information being read from unit   1.
+ TITLE> *
+ RDTITL> No title read.
+
+          RESIDUE SEQUENCE --     1 RESIDUES
+          SOD     
+  
+ CHARMM>    REWIND UNIT 1
+                    REWINDING UNIT     1
+  
+ CHARMM>    GENE 15S SETUP FIRST NONE LAST NONE
+ NO PATCHING WILL BE DONE ON THE FIRST RESIDUE
+ NO PATCHING WILL BE DONE ON THE LAST  RESIDUE
+ GENPSF> Segment  15 has been generated. Its identifier is 15S.
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =       15   Number of residues   =     1278
+         Number of atoms         =    19446   Number of groups     =     6024
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   18.00000
+  
+ CHARMM>    READ COOR CARD RESID UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    IC FILL
+  
+ CHARMM>    IC PARA ALL
+  
+ CHARMM>    HBUILD
+
+      ***** LEVEL  4 WARNING FROM <GTHBUI> *****
+      ***** Zero selection specified
+      ******************************************
+      BOMLEV (  0) IS NOT REACHED. WRNLEV IS  5
+
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 WRITE CARD NAME ../data/complex.psf
+ VOPEN> Attempting to open::../data/complex.psf::
+ OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../data/complex.psf
+  
+ CHARMM>    WRITE PSF CARD UNIT 1
+ RDTITL> CLOSE UNIT 1
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 WRITE CARD NAME ../data/complex.crd
+ VOPEN> Attempting to open::../data/complex.crd::
+ OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../data/complex.crd
+  
+ CHARMM>    WRITE COOR CARD UNIT 1
+ RDTITL> CLOSE UNIT 1
+ RDTITL> No title read.
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>    CLOSE UNIT 1
+ CLOLGU>  *****  WARNING  ***** Attempt to close unit that was not open.
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 WRITE CARD NAME ../data/complex.pdb
+ VOPEN> Attempting to open::../data/complex.pdb::
+ OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../data/complex.pdb
+  
+ CHARMM>    WRITE COOR PDB UNIT 1
+ RDTITL> CLOSE UNIT 1
+ RDTITL> No title read.
+  Write CHARMM-pdb format
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    ! ------------------------------
+ CHARMM>    ! -----        END         -----
+ CHARMM>    ! ------------------------------
+ CHARMM>     
+  
+ CHARMM>    STOP
+$$$$$$  New timer profile $$$$$
+ Total time                      9.73 Other:            0.00
+
+                    NORMAL TERMINATION BY NORMAL STOP
+                    MAXIMUM STACK SPACE USED IS  252798
+                    STACK CURRENTLY IN USE IS         0
+                    MOST SEVERE WARNING WAS AT LEVEL  1
+                    HEAP PRINTOUT-  HEAP SIZE         10240000
+                    SPACE CURRENTLY IN USE IS            13824
+                    MAXIMUM SPACE USED IS               365894
+                    FREE LIST
+  PRINHP> ADDRESS:               1 LENGTH:        10225676 NEXT:        10239501
+  PRINHP> ADDRESS:        10239501 LENGTH:             500 NEXT:               0
+
+                    $$$$$ JOB ACCOUNTING INFORMATION $$$$$
+                     ELAPSED TIME:     9.73  SECONDS 
+                         CPU TIME:     8.84  SECONDS 

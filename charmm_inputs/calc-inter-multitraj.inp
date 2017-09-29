@@ -1,0 +1,219 @@
+*########################################################
+* Written by Vincent Zoete
+* Modified by Michel A. Cuendet
+* For questions, please contact vincent.zoete _at_ unil.ch
+* or michel.cuendet _at_ unil.ch
+*########################################################
+*
+
+STREAM ./data/loader.str
+
+!=============================
+! Definitions
+!=============================
+
+STREAM ./data/definitions.str
+
+DEFINE bb SELE (ATOM * * CA .OR. ATOM * * C .OR. ATOM * * N -
+   .OR. ATOM * * O .OR. ATOM * * NT .OR. ATOM * * HN .OR. ATOM * * HA -
+   .OR. ATOM * * HT1 .OR. ATOM * * HT2 .OR. ATOM * * HT3 -
+   .OR. ATOM * * OT1 .OR. ATOM * * OT2 .OR. ATOM * * HA1 -
+   .OR. ATOM * * HA2 ) END
+
+
+!================================================================
+! Treat trajectory
+!================================================================
+
+
+
+NBOND @nbstr
+INTER SELE A END
+! #### This first evaluation is necessary for the NBOND to be takein into account. 
+! #### Otherwise the first frame is evaluated with unknown default parameters,
+! #### at least for the global interaction energies. As a precaution, we also put it here.
+
+SET n 0
+LABEL loop
+
+  INCR n BY 1
+  
+  COOR INIT SELE ALL END
+
+  OPEN UNIT 2 READ CARD NAME frames-comp/@n-in.crd
+  READ COOR CARD RESI UNIT 2 
+  ! ###### Here we should use RESI if atoms have been deleted
+  ! ###### But we can't if atom order is not preserved in trajectory CRD files,
+  ! ###### as is the case when using trajectories from NAMD. 
+  ! ###### So here we use pre-processed CRD files with atom order corrected, 
+  CLOSE UNIT 2
+  
+  !--- Open output files for writing
+  OPEN UNIT 12 WRITE CARD NAME inter/inter-byres-@n.dat
+
+  PRNLEV 0
+  ! Loops over residues of A
+  CALC k = @firstresa - 1
+  LABEL l1
+
+     INCR k 
+     
+     ! ##### Select residues based on WCOMP from definitions.crd 
+     COOR COMP STAT SELE ( IRES @k ) END
+     SET key ?WAVE    
+     ! # Convention    A : w=1    Acalc : w=2    B : w=-1   Bcalc : w=-2
+     IF @key .NE. 2  GOTO l2
+
+     ! #####  Non-standard stuff, such as ions or ligands will all be considered "not backbone"
+ 
+     ! ------------------------------------------------------
+     ! Initialize all   
+     ! backbone internal stuff 
+     SET bondbb 0
+     SET anglebb 0
+     SET ureybb 0
+     SET dihebb 0
+     SET imprbb 0
+     SET vdwbb 0
+     SET elecbb 0
+     SET cmap 0
+     
+     ! backbone interaction stuff
+     SET bondbbrest 0
+     SET dihebbrest 0
+     SET vdwbbrest 0
+     SET elecbbrest 0
+
+     ! sc internal stuff
+     SET bondsc 0
+     SET anglesc 0
+     SET ureysc 0
+     SET dihesc 0
+     SET imprsc 0
+     SET vdwsc 0
+     SET elecsc 0
+
+     ! sc interaction stuff
+     SET bondscrest 0
+     SET dihescrest 0
+     SET vdwscrest 0
+     SET elecscrest 0
+
+     ! bb-sc interaction stuff
+     SET bondbbsc 0
+     SET dihebbsc 0
+     SET vdwbbsc 0
+     SET elecbbsc 0
+
+     ! ------------------------------------------------------
+     ! Backbone count      
+     DEFINE thisbb SELECT (IRES @k .AND. bb) END
+     DEFINE COUNT SELECT thisbb END
+     SET nbb ?NSEL
+     IF @nbb .EQ. 0 GOTO g0
+
+     ! ------------------------------------------------------
+     ! Backbone internal 
+     INTER SELE thisbb END 
+     SET bondbb ?BOND
+     SET anglebb ?ANGL
+     SET ureybb ?UREY
+     SET dihebb ?DIHE
+     SET imprbb ?IMPR
+     SET vdwbb ?VDW
+     SET elecbb ?ELEC
+     
+     ! ------------------------------------------------------
+     ! Special case of CMPA
+     ! In charmm INTER, the CMAP energy is atributed to the previous residue. 
+     CALC j = @k - 1      
+     DEFINE thisbbcmap SELECT (IRES @j .AND. bb) END
+     DEFINE COUNT SELECT thisbbcmap END
+     SET d ?NSEL
+     IF @d .EQ. 0 GOTO cmapjump
+     	INTER SELE thisbbcmap END 
+        SET cmap ?CMAP
+     LABEL cmapjump
+     
+     ! ------------------------------------------------------
+     ! Backbone-rest 
+     INTER SELE thisbb END SELE .NOT. IRES @k END
+     SET bondbbrest ?BOND
+     SET dihebbrest ?DIHE
+     SET vdwbbrest ?VDW
+     SET elecbbrest ?ELEC
+     
+     LABEL g0
+
+     ! ------------------------------------------------------
+     ! Sidechain count 
+     DEFINE thissc SELE ( IRES @k .AND. .NOT. bb ) END
+     ! find out if GLY
+     DEFINE COUNT SELE thissc END
+     SET d ?NSEL
+     IF @d .EQ. 0 GOTO g1
+
+     ! ------------------------------------------------------
+     ! Sidechain internal 
+     INTER SELE thissc END 
+     SET bondsc ?BOND
+     SET anglesc ?ANGL
+     SET ureysc ?UREY
+     SET dihesc ?DIHE
+     SET imprsc ?IMPR
+     SET vdwsc ?VDW
+     SET elecsc ?ELEC
+
+     ! ------------------------------------------------------
+     ! Sidechain-rest 
+     INTER SELE thisbb END SELE .NOT. IRES @k END
+     SET bondscrest ?BOND
+     SET dihescrest ?DIHE
+     SET vdwscrest ?VDW
+     SET elecscrest ?ELEC
+     
+     ! ------------------------------------------------------
+     ! Sidechain-Backbone 
+     INTER SELE thisbb END SELE thissc END
+     SET bondbbsc ?BOND
+     SET dihebbsc ?DIHE
+     SET vdwbbsc ?VDW
+     SET elecbbsc ?ELEC
+     
+     LABEL g1
+      
+     ! ------------------------------------------------------
+     ! Sum up stuff
+     ! Non-bonded terms are attributed 0.5 to each side
+     ! Bonded interaction terms are counted fully on both sides by CHARMM
+     ! Bonded terms are also attributed 0.5 to each side
+
+     CALC totbondedbb = @bondbb + @anglebb + @ureybb + @dihebb + @imprbb + @cmap + @bondbbrest/2 + @dihebbrest/2 + @bondbbsc/2 + @dihebbsc/2 
+     CALC totbondedsc = @bondsc + @anglesc + @ureysc + @dihesc + @imprsc +  @bondscrest/2 + @dihescrest/2 + @bondbbsc/2 + @dihebbsc/2 
+     CALC totvdwbb = @vdwbb +  @vdwbbrest/2 + @vdwbbsc/2
+     CALC totelecbb = @elecbb +  @elecbbrest/2 + @elecbbsc/2
+     CALC totvdwsc = @vdwsc +  @vdwscrest/2 + @vdwbbsc/2
+     CALC totelecsc = @elecsc +  @elecscrest/2 + @elecbbsc/2
+
+     WRITE TITLE UNIT 12
+     * @k @totbondedbb @totvdwbb @totelecbb  @totbondedsc @totvdwsc @totelecsc 
+     
+     LABEL l2
+
+  IF @k .LT. @lastresa GOTO l1
+  PRNLEV 5
+  
+IF @n .LT. @nframes GOTO loop
+
+
+CLOSE UNIT 12
+CLOSE UNIT 13
+
+
+
+!================================================================
+!	END
+!================================================================
+
+STOP
+

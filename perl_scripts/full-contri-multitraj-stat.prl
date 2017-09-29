@@ -1,0 +1,199 @@
+#!/usr/bin/perl
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by Michel A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@unil.ch
+#
+#########################################################
+
+# Effective sample size in a correlated time series
+# Estimated from AR(1) process. 
+# According to :
+# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean
+# Journal of Climate 8 : 336 (1995).
+
+# prevent warnings for "smartmatch", i.e. operator "~~".
+use experimental qw(smartmatch switch);
+
+$mmgbsa_path = $ENV{'mmgbsa_path'};
+require "$mmgbsa_path/perl_scripts/time_statistics.prl";
+
+$natom=`grep \"NATOM \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in the system
+chomp $natom;
+print "Total number of atoms in the system : $natom \n";
+
+$nconf=`grep nframes data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # number of conformations (frames)
+chomp $nconf;
+print "Number of conformations : $nconf \n";
+
+$nres=`grep lastresa data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # Total number of residues.
+chomp $nres;
+print "Total number of residues : $nres \n";
+
+$temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
+chomp $temp;
+my @resA = split(/ /,$temp );
+shift @resA;  # Getting rid of the line label in definitions.str
+$nresA = scalar(@resA);
+
+
+open(IN,"data/charges.crd") or die "Could not open file data/charges.crd for reading";
+foreach $line (<IN>) {
+  # For names, look only at C alphas, Ps for lipids and O3 for cholesterol.
+  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /)) {
+    @w=split(" " ,$line);
+    $name[$w[1]]=$w[7]." ".$w[2].$w[8];
+  }
+  #$resnum[$w[0]]=$w[1];
+  #$resname[$w[0]]=$w[2];
+  #$atomname[$w[0]]=$w[3];
+}
+
+#===================================================================================
+#Inter
+
+print "Loading inter ... \n";
+
+for $n (1..$nconf) {
+  $nrA=0;
+  open(IN,"inter/inter-byres-$n.dat") or die "Could not open file inter-byres-$n.dat \n";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);    
+    $bonded_bb[$w[0]][$n]=$w[1];
+    $vdw_bb[$w[0]][$n]=$w[2];
+    $elec_bb[$w[0]][$n]=$w[3];
+    $bonded_sc[$w[0]][$n]=$w[4];
+    $vdw_sc[$w[0]][$n]=$w[5];
+    $elec_sc[$w[0]][$n]=$w[6];
+    $nrA+=1;
+  }
+  close(IN);
+
+  if ( $nrA != $nresA ) { die "Frame $n : number of inter values in part A ($nrA) does not match definitions.str ($nresA) !!" ;}
+}
+
+#print "$res_elec_bb[81][1] $res_elec_sc[81][1]\n";
+
+#===================================================================================
+#Solv
+print "Loading solv ... \n";
+
+# Do in A :       
+for $f (1..$nconf) {
+  open(IN,"solv/solv-frame-$f.dat") or die "Could not open file solv/solv-frame-$f.dat";
+  foreach $line (<IN>) {
+    if ($line !~/TOT/) {
+      @w=split(" ",$line);
+      if ($w[0] =~ /^[0-9,.E]+$/ ) { 
+        $solv_bb[$w[0]][$f]=$w[1];
+      	$solv_sc[$w[0]][$f]=$w[2];
+      	$solv_all[$w[0]][$f]=$w[3];
+      }
+    }
+  }
+}
+
+
+#===================================================================================
+# Surf 
+# Here we need to sum over atoms to get residue (sc /bb) contributions.
+
+print "Loading surf ... \n";
+# Do sas in A :   
+foreach $i (@resA)  {
+  $filename="sas/sas-res-$i.dat";
+  open(IN,$filename) or die "Could not open file $filename";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);
+    if ($w[0] =~ /^[0-9,.E]+$/ ) { 
+    	$sas_bb[$i][$w[0]] =$w[1];
+    	$sas_sc[$i][$w[0]] =$w[2];
+    	$sas_all[$i][$w[0]] =$w[3];
+    }
+  }
+}
+#print "sas-a $sas_a_bb[81][1] $sas_a_sc[81][1] $sas_a_all[81][1] \n";
+
+
+# ====================================================================================================
+# Calculate time series for entire dg
+print "Calculating ... \n";
+
+mkdir "full";
+
+foreach $i (@resA)  {
+  $filename="full/full-res-$i.dat";
+  open(OUT,">$filename");
+  # print "   residue $i ... \n";   
+    
+  my @dg_sc=0;
+  my @dg_bb=0;
+  my @dg_all=0;
+  for $n (1..$nconf) {
+
+    $np_sc =  0.0072*$sas_sc[$i][$n] ;
+    $full_sc[$n] = $bonded_sc[$i][$n] + $vdw_sc[$i][$n] + $elec_sc[$i][$n] + $solv_sc[$i][$n]  + $np_sc ;
+    
+    $np_bb =  0.0072*$sas_bb[$i][$n] ;
+    $full_bb[$n] = $bonded_bb[$i][$n] + $vdw_bb[$i][$n] + $elec_bb[$i][$n] + $solv_bb[$i][$n]  + $np_bb ;
+    
+    $np_all =  0.0072*$sas_all[$i][$n] ;
+    $bonded_all= $bonded_sc[$i][$n] + $bonded_bb[$i][$n];
+    $vdw_all= $vdw_sc[$i][$n] + $vdw_bb[$i][$n];
+    $elec_all= $elec_sc[$i][$n] + $elec_bb[$i][$n];  
+    $full_all[$n] = $bonded_all + $vdw_all + $elec_all + $solv_all[$i][$n]  + $np_all ;
+
+    printf OUT ("%4d    %10.4f %10.4f %10.4f \n",
+                $n, $full_bb[$n], $full_sc[$n], $full_all[$n]);
+  }
+  
+  ($full_sc_mean[$i], $full_sc_sd[$i], $full_sc_neff[$i], $full_sc_err[$i]) = time_statistics_FTZ(@full_sc);
+  ($full_bb_mean[$i], $full_bb_sd[$i], $full_bb_neff[$i], $full_bb_err[$i]) = time_statistics_FTZ(@full_bb);
+  ($full_all_mean[$i], $full_all_sd[$i], $full_all_neff[$i], $full_all_err[$i]) = time_statistics_FTZ(@full_all);
+ 
+
+  printf OUT "# --------------------------------------------\n";
+  printf OUT ("# AVG     %10.4f %10.4f %10.4f \n",
+              $full_bb_mean[$i], $full_sc_mean[$i], $full_all_mean[$i]);
+  printf OUT ("# SD      %10.4f %10.4f %10.4f \n",
+              $full_bb_sd[$i], $full_sc_sd[$i], $full_all_sd[$i]);
+  printf OUT ("# N_eff   %10.4f %10.4f %10.4f \n",
+              $full_bb_neff[$i], $full_sc_neff[$i], $full_all_neff[$i]);
+  printf OUT ("# ERR     %10.4f %10.4f %10.4f \n",
+               $full_bb_err[$i], $full_sc_err[$i], $full_all_err[$i]);
+  close(OUT);
+}
+
+# ====================================================================================================
+# Print final output
+
+open(OUTBB,">full_bb_stat.dat");
+open(OUTSC,">full_sc_stat.dat");
+open(OUTALL,">full_all_stat.dat");
+
+printf OUTBB ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "E", "sd", "n_eff", "err");
+printf OUTSC ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "E", "sd", "n_eff", "err");
+printf OUTALL ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "E", "sd", "n_eff", "err");
+
+foreach $i (@resA)  {
+
+  printf OUTBB (" %-12s  %7.2f    %7.2f    %7.2f    %7.2f  \n", 
+	 $name[$i], $full_bb_mean[$i], $full_bb_sd[$i], $full_bb_neff[$i], $full_bb_err[$i] );
+
+  printf OUTSC (" %-12s  %7.2f    %7.2f    %7.2f    %7.2f   \n", 
+	 $name[$i], $full_sc_mean[$i], $full_sc_sd[$i], $full_sc_neff[$i], $full_sc_err[$i] );
+
+  printf OUTALL (" %-12s  %7.2f    %7.2f    %7.2f    %7.2f   \n", 
+	 $name[$i], $full_all_mean[$i], $full_all_sd[$i], $full_all_neff[$i], $full_all_err[$i] );
+
+}
+
+close(OUTBB);
+close(OUTSC);
+close(OUTALL);
+

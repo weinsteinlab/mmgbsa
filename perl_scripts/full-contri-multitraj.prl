@@ -1,0 +1,159 @@
+#!/usr/bin/perl
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by Michel A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@unil.ch
+#
+#########################################################
+
+
+$nres=`grep lastresa data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # Total number of residues.
+chomp $nres;
+print "Total number of residues : $nres \n";
+
+$temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
+chomp $temp;
+my @resA = split(/ /,$temp );
+shift @resA;  # Getting rid of the line label in definitions.str
+# $nresA = scalar(@resA);
+
+open(IN,"data/charges.crd");
+foreach $line (<IN>) {
+  # Look only at C alphas, Ps for lipids and O3 for cholesterol.
+  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /)) {
+    @w=split(" " ,$line);
+    $name[$w[1]]=$w[7]." ".$w[2].$w[8];
+  }
+}
+
+# --------------------------------------------------------------------
+# Read suff in
+
+open(IN,"inter/inter-res-bb.dat") or die "Could not open inter-res-bb.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  if ($w[0] =~ /^[0-9,.E]+$/ ) {
+    $bonded_bb[$w[0]]=$w[1]; 
+    $vdw_bb[$w[0]]=$w[2];
+    $elec_bb[$w[0]]=$w[3];
+  }
+}
+close(IN);
+
+open(IN,"inter/inter-res-sc.dat") or die "Could not open inter-res-sc.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  if ($w[0] =~ /^[0-9,.E]+$/ ) {
+    $bonded_sc[$w[0]]=$w[1];
+    $vdw_sc[$w[0]]=$w[2];
+    $elec_sc[$w[0]]=$w[3];
+    $bonded_all[$w[0]]=$bonded_bb[$w[0]]+$bonded_sc[$w[0]];
+    $vdw_all[$w[0]]=$vdw_bb[$w[0]]+$vdw_sc[$w[0]];
+    $elec_all[$w[0]]=$elec_bb[$w[0]]+$elec_sc[$w[0]];
+  }
+}
+close(IN);
+
+
+open(IN,"solv/solv-res.dat") or die "Could not open solv-res.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  if ($w[0] =~ /^[0-9,.E]+$/ ) {
+    $solv_bb[$w[0]]=$w[1];
+    $solv_sc[$w[0]]=$w[2];
+    $solv_all[$w[0]]=$w[3];
+  }
+}
+close(IN);
+
+
+open(IN,"sas/sas-res.dat") or die "Could not open sas-comp-res.dat";
+foreach $line (<IN>) {
+  @w=split(" ",$line);
+  if ($w[0] =~ /^[0-9,.E]+$/ ) {
+    $sas_bb[$w[0]]=$w[1];
+    $sas_sc[$w[0]]=$w[2];
+    $sas_all[$w[0]]=$w[3];
+  }
+}
+close(IN);
+
+# --------------------------------------------------------------------
+# Write suff out
+
+open(OUTBB,">full_bb.dat");
+open(OUTSC,">full_sc.dat");
+open(OUTALL,">full_all.dat");
+
+printf OUTBB ("%-12s  %7s  %7s    %7s    %7s    %7s   :    %7s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
+printf OUTSC ("%-12s  %7s  %7s    %7s    %7s    %7s   :    %7s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
+printf OUTALL ("%-12s  %7s  %7s    %7s    %7s    %7s   :    %7s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
+
+foreach $i (@resA)  {
+
+  $bonded_bb_tot+=$bonded_bb[$i];
+  $bonded_sc_tot+=$bonded_sc[$i];
+  $bonded_all_tot+=$bonded_all[$i];
+
+  $vdw_bb_tot+=$vdw_bb[$i];
+  $vdw_sc_tot+=$vdw_sc[$i];
+  $vdw_all_tot+=$vdw_all[$i];
+
+  $elec_bb_tot+=$elec_bb[$i];
+  $elec_sc_tot+=$elec_sc[$i];
+  $elec_all_tot+=$elec_all[$i];
+
+  $solv_bb_tot+=$solv_bb[$i];
+  $solv_sc_tot+=$solv_sc[$i];
+  $solv_all_tot+=$solv_all[$i];
+
+  $np_bb[$i]=0.0072*$sas_bb[$i];
+  $np_sc[$i]=0.0072*$sas_sc[$i];
+  $np_all[$i]=0.0072*$sas_all[$i];
+  $np_bb_tot+=$np_bb[$i];
+  $np_sc_tot+=$np_sc[$i];
+  $np_all_tot+=$np_all[$i];
+
+  $full_bb[$i]=$bonded_bb[$i]+$vdw_bb[$i]+$elec_bb[$i]+$solv_bb[$i]+$np_bb[$i];
+  $full_sc[$i]=$bonded_sc[$i]+$vdw_sc[$i]+$elec_sc[$i]+$solv_sc[$i]+$np_sc[$i];
+  $full_all[$i]=$bonded_all[$i]+$vdw_all[$i]+$elec_all[$i]+$solv_all[$i]+$np_all[$i];
+  $full_bb_tot+=$full_bb[$i];
+  $full_sc_tot+=$full_sc[$i];
+  $full_all_tot+=$full_all[$i];
+
+
+  printf OUTBB ("%-12s  %7.2f  %7.2f    %7.2f    %7.2f    %7.2f   :    %7.2f \n", 
+	 $name[$i], $bonded_bb[$i], $vdw_bb[$i], $elec_bb[$i], $solv_bb[$i], $np_bb[$i], $full_bb[$i]);
+
+  printf OUTSC ("%-12s  %7.2f  %7.2f    %7.2f    %7.2f    %7.2f   :    %7.2f \n", 
+	 $name[$i], $bonded_sc[$i], $vdw_sc[$i], $elec_sc[$i], $solv_sc[$i], $np_sc[$i], $full_sc[$i]);
+
+  printf OUTALL ("%-12s  %7.2f  %7.2f    %7.2f    %7.2f    %7.2f   :    %7.2f \n", 
+	 $name[$i], $bonded_all[$i], $vdw_all[$i], $elec_all[$i], $solv_all[$i], $np_all[$i], $full_all[$i]);
+}
+
+print OUTBB "-------------------------------------------------------------------\n";
+print OUTSC "-------------------------------------------------------------------\n";
+print OUTALL "-------------------------------------------------------------------\n";
+
+printf OUTBB ("TOT            %7.2f  %7.2f    %7.2f    %7.2f   %7.2f   :    %7.2f \n",
+       $bonded_bb_tot, $vdw_bb_tot, $elec_bb_tot, $solv_bb_tot,
+       $np_bb_tot, $full_bb_tot);
+
+printf OUTSC ("TOT            %7.2f  %7.2f    %7.2f    %7.2f   %7.2f   :    %7.2f \n",
+       $bonded_sc_tot, $vdw_sc_tot, $elec_sc_tot, $solv_sc_tot,
+       $np_sc_tot, $full_sc_tot);
+  
+printf OUTALL ("TOT           %7.2f  %7.2f    %7.2f    %7.2f   %7.2f   :    %7.2f \n",
+       $bonded_all_tot, $vdw_all_tot, $elec_all_tot, $solv_all_tot,
+       $np_all_tot, $full_all_tot);
+
+close(OUTBB);
+close(OUTSC);
+close(OUTALL);
+

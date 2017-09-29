@@ -1,0 +1,8 @@
+Scratch path will be : /tmp/63731.2.standard.q/job_0002/mac2109/mmgbsa/
+/tmp/63731.2.standard.q/0002
+framesdir : /tmp/63731.2.standard.q/job_0002/mac2109/mmgbsa/+tmp+63731.2.standard.q+0002_frames-comp
+framesdir_a : /tmp/63731.2.standard.q/job_0002/mac2109/mmgbsa/+tmp+63731.2.standard.q+0002_frames_a
+framesdir_b : /tmp/63731.2.standard.q/job_0002/mac2109/mmgbsa/+tmp+63731.2.standard.q+0002_frames_b
+ Extracting frames ...
+Number of fwrames :  10
+Running charmm chomp-frames.inp ... 

@@ -1,0 +1,616 @@
+1
+                 Chemistry at HARvard Macromolecular Mechanics
+                   (CHARMM) - Developmental Version 36a2  February 15, 2008    
+       Copyright(c) 1984-2001  President and Fellows of Harvard College
+                              All Rights Reserved
+      Current operating system: Linux-2.6.18-128.el5xen(x86_64)@fido.pug.pbt
+                 Created on  1/24/17 at 10:44:51 by user: mac2109     
+
+            Maximum number of ATOMS:     60120, and RESidues:       20040
+            Current HEAP size:        10240000, and STACK size:  10000000
+
+ RDTITL> *########################################################
+ RDTITL> * WRITTEN BY VINCENT ZOETE
+ RDTITL> * MODIFIED BY MICHEL A. CUENDET
+ RDTITL> * FOR QUESTIONS, PLEASE CONTACT VINCENT.ZOETE _AT_ UNIL.CH
+ RDTITL> * OR MICHEL.CUENDET _AT_ UNIL.CH
+ RDTITL> *########################################################
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    STREAM ./data/loader.str
+ VOPEN> Attempting to open::./data/loader.str::
+ OPNLGU> Unit 99 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data/loader.str
+
+                    INPUT STREAM SWITCHING TO UNIT    99
+ RDTITL>  
+ RDTITL> No title read.
+
+      ***** LEVEL  1 WARNING FROM <RDTITL> *****
+      ***** Title expected.
+      ******************************************
+      BOMLEV (  0) IS NOT REACHED. WRNLEV IS  5
+
+ Parameter: IN1 <- "" <empty>
+  
+ CHARMM>     
+  
+ CHARMM>    !------	Aliases
+ CHARMM>    SET lib ./data/
+ Parameter: LIB <- "./DATA/"
+  
+ CHARMM>    ! Note that . cannot contain capital letters, due to a limitation in the way Charmm handles variables.
+ CHARMM>    ! Therefore it is more robust to use relative paths.
+ CHARMM>     
+  
+ CHARMM>    !------ Topology and Parameters
+ CHARMM>    open unit 1 card read name @lib/top_all36_prot.rtf
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//top_all36_prot.rtf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//top_all36_prot.rtf
+  
+ CHARMM>    read RTF card unit 1
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> *>>>>>>>>CHARMM36 ALL-HYDROGEN TOPOLOGY FILE FOR PROTEINS <<<<<<
+ TITLE> *>>>>> INCLUDES PHI, PSI CROSS TERM MAP (CMAP) CORRECTION <<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>>>>> MAY 2011 <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> * ALL COMMENTS TO THE CHARMM WEB SITE: WWW.CHARMM.ORG
+ TITLE> *             PARAMETER SET DISCUSSION FORUM
+ TITLE> *
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/top_all36_lipid.rtf
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//top_all36_lipid.rtf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//top_all36_lipid.rtf
+  
+ CHARMM>    read RTF card unit 1 append
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> *  \\\\\\\ CHARMM36 ALL-HYDROGEN LIPID TOPOLOGY FILE ///////
+ TITLE> *  ALL COMMENTS AND QUESTIONS SHOULD BE SUBMITTED TO THE
+ TITLE> *  PARAMETER FORUM AT THE CHARMM WEBSITE: WWW.CHARMM.ORG
+ TITLE> *
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/top_all36_cgenff.rtf
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//top_all36_cgenff.rtf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//top_all36_cgenff.rtf
+  
+ CHARMM>    read RTF card unit 1 append
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> *  --------------------------------------------------------------------------  *
+ TITLE> *          CGENFF: TOPOLOGY FOR THE CHARMM GENERAL FORCE FIELD V. 2B8          *
+ TITLE> *                    FOR SMALL MOLECULE DRUG DESIGN                            *
+ TITLE> *  --------------------------------------------------------------------------  *
+ TITLE> *
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/top_all36_carb.rtf
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//top_all36_carb.rtf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//top_all36_carb.rtf
+  
+ CHARMM>    read RTF card unit 1 append
+ MAINIO> Residue topology file being read from unit   1.
+ TITLE> * $ID: TOP_ALLXX_SUGAR.INP,V 1.106 2014/08/19 19:07:43 ALEX EXP $
+ TITLE> *>>>>>>>>>>>> ALL-HYDROGEN TOPOLOGIES USED IN THE <<<<<<<<<<<<<<<<
+ TITLE> *>>>>> DEVELOPMENT OF THE CHARMM CARBOHYDRATE  FORCE FIELD<<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>>>> JUNE 2009 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> *>>>>>>>> DIRECT COMMENTS TO ALEXANDER D. MACKERELL JR. <<<<<<<<<<
+ TITLE> *>>>>>>>>>> VIA THE CHARMM WEB SITE: WWW.CHARMM.ORG <<<<<<<<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>> PARAMETER SET DISCUSSION FORUM <<<<<<<<<<<<<<<<<<
+ TITLE> *
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    ! open unit 1 card read name @lib/ligand.rtf
+ CHARMM>    ! read RTF card unit 1 append
+ CHARMM>    ! close unit 1
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/par_all36_prot.prm
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//par_all36_prot.prm::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//par_all36_prot.prm
+  
+ CHARMM>    read PARA card flex unit 1
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> *>>>> CHARMM36 ALL-HYDROGEN PARAMETER FILE FOR PROTEINS <<<<<<<<<<
+ TITLE> *>>>>> INCLUDES PHI, PSI CROSS TERM MAP (CMAP) CORRECTION <<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>>>>> FEB. 2012 <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> * ALL COMMENTS TO THE CHARMM WEB SITE: WWW.CHARMM.ORG
+ TITLE> *             PARAMETER SET DISCUSSION FORUM
+ TITLE> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/par_all36_lipid.prm
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//par_all36_lipid.prm::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//par_all36_lipid.prm
+  
+ CHARMM>    read PARA card flex unit 1 append
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> *  \\\\\\\ CHARMM36 ALL-HYDROGEN LIPID PARAMETER FILE ///////
+ TITLE> *  ALL COMMENTS AND QUESTIONS SHOULD BE SUBMITTED TO THE
+ TITLE> *  PARAMETER FORUM AT THE CHARMM WEBSITE: WWW.CHARMM.ORG
+ TITLE> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/par_all36_cgenff.prm
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//par_all36_cgenff.prm::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//par_all36_cgenff.prm
+  
+ CHARMM>    read PARA card flex unit 1 append
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> *  --------------------------------------------------------------------------  *
+ TITLE> *         CGENFF: PARAMETERS FOR THE CHARMM GENERAL FORCE FIELD V. 2B8         *
+ TITLE> *                    FOR SMALL MOLECULE DRUG DESIGN                            *
+ TITLE> *  --------------------------------------------------------------------------  *
+ TITLE> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    open unit 1 card read name @lib/par_all36_carb.prm
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//par_all36_carb.prm::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//par_all36_carb.prm
+  
+ CHARMM>    read PARA card flex unit 1 append
+
+          PARAMETER FILE BEING READ FROM UNIT  1
+ TITLE> * $ID: PAR_ALLXX_SUGAR.INP,V 1.132 2014/08/19 19:03:21 ALEX EXP $
+ TITLE> *>>>>>>>>>>>> ALL-HYDROGEN PARAMETERS USED IN THE <<<<<<<<<<<<<<<<
+ TITLE> *>>>>> DEVELOPMENT OF THE CHARMM CARBOHYDRATE  FORCE FIELD<<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>>>>>>>>>>>> JUNE 2009 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ TITLE> *>>>>>>>> DIRECT COMMENTS TO ALEXANDER D. MACKERELL JR. <<<<<<<<<<
+ TITLE> *>>>>>>>>>> VIA THE CHARMM WEB SITE: WWW.CHARMM.ORG <<<<<<<<<<<<<<
+ TITLE> *>>>>>>>>>>>>>>> PARAMETER SET DISCUSSION FORUM <<<<<<<<<<<<<<<<<<
+ TITLE> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    close unit 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    ! open unit 1 card read name @lib/ligand.par
+ CHARMM>    ! read PARA card unit 1 append
+ CHARMM>    ! close unit 1
+ CHARMM>     
+  
+ CHARMM>    STREAM @lib/toppar_water_ions.str
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//toppar_water_ions.str::
+ OPNLGU> Unit 98 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//toppar_water_ions.str
+
+                    INPUT STREAM SWITCHING TO UNIT    98
+ RDTITL> * TOPLOGY AND PARAMETER INFORMATION FOR WATER AND IONS.
+ RDTITL> *
+ Parameter: IN1 <- "" <empty>
+  
+ CHARMM>     
+  
+ CHARMM>    !Testcase
+ CHARMM>    !test_water_ions.inp
+ CHARMM>     
+  
+ CHARMM>    ! IMPORTANT NOTE: this file contains NBFixes between carboxylates and sodium,
+ CHARMM>    ! which will only apply if the main files containing carboxylate atom types
+ CHARMM>    ! have been read in first!
+ CHARMM>     
+  
+ CHARMM>    !references
+ CHARMM>    !
+ CHARMM>    !TIP3P water model
+ CHARMM>    !
+ CHARMM>    !W.L. Jorgensen; J.Chandrasekhar; J.D. Madura; R.W. Impey;
+ CHARMM>    !M.L. Klein; "Comparison of simple potential functions for
+ CHARMM>    !simulating liquid water", J. Chem. Phys. 79 926-935 (1983).
+ CHARMM>    !
+ CHARMM>    !IONS
+ CHARMM>    !
+ CHARMM>    !Ions from Roux and coworkers
+ CHARMM>    !
+ CHARMM>    !Beglov, D. and Roux, B., Finite Representation of an Infinite
+ CHARMM>    !Bulk System: Solvent Boundary Potential for Computer Simulations,
+ CHARMM>    !Journal of Chemical Physics, 1994, 100: 9050-9063
+ CHARMM>    !
+ CHARMM>    !ZINC
+ CHARMM>    !
+ CHARMM>    !Stote, R.H. and Karplus, M. Zinc Binding in Proteins and
+ CHARMM>    !Solution: A Simple but Accurate Nonbonded Representation, PROTEINS:
+ CHARMM>    !Structure, Function, and Genetics 23:12-31 (1995)
+ CHARMM>     
+  
+ CHARMM>    !test "append" to determine if previous toppar files have been read and
+ CHARMM>    !add append to "read rtf card" if true
+ CHARMM>    set nat ?NATC
+ RDCMND substituted energy or value "?NATC" to "411"
+ Parameter: NAT <- "411"
+  
+ CHARMM>    set app
+ Parameter: APP <- "" <empty>
+  
+ CHARMM>    !We're exploiting what is arguably a bug in the parser. On the left hand side,
+ CHARMM>    !the quotes have priority, so NAT is correctly substituted. On the right hand
+ CHARMM>    !side, the ? has priority and NATC" (sic) is not a valid substitution...
+ CHARMM>    if "@NAT" ne "?NATC" if @nat ne 0 set app append
+ Parameter: NAT -> "411"
+ Parameter: NAT -> "411"
+ RDCMND: can not substitute energy "?NATC""
+ Comparing ""411"" and ""?NATC"".
+ IF test evaluated as true.  Performing command
+ Comparing "411" and "0".
+ IF test evaluated as true.  Performing command
+ Parameter: APP <- "APPEND"
+  
+ CHARMM>     
+  
+ CHARMM>    read rtf card @app
+ Parameter: APP -> "APPEND"
+ MAINIO> Residue topology file being read from unit  98.
+ RDTITL> * TOPOLOGY FOR WATER AND IONS
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>    read para card flex @app
+ Parameter: APP -> "APPEND"
+
+          PARAMETER FILE BEING READ FROM UNIT 98
+ RDTITL> * PARAMETERS FOR WATER AND IONS
+ RDTITL> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>     
+  
+ CHARMM>    ! The following section contains NBFixes for sodium interacting with
+ CHARMM>    ! carboxylate oxygens of various CHARMM force fields. It will generate
+ CHARMM>    ! level -1 warnings whenever any of these force fields have not been
+ CHARMM>    ! read prior to the current stream file. Since we don't want to force
+ CHARMM>    ! the user to always read all the force fields, we're suppressing the
+ CHARMM>    ! warnings. The only side effect is that you will have "most severe
+ CHARMM>    ! warning was at level 0" at the end of your output. Also note that
+ CHARMM>    ! the user is responsible for reading the current file last if they
+ CHARMM>    ! want the NBFixes to apply. A more elegant solution would require new
+ CHARMM>    ! features to be added to CHARMM.
+ CHARMM>    ! parallel fix, to avoid duplicated messages in the log
+ CHARMM>    set para
+ Parameter: PARA <- "" <empty>
+  
+ CHARMM>    if ?NUMNODE gt 1 set para node 0
+ RDCMND substituted energy or value "?NUMNODE" to "1"
+ Comparing "1" and "1".
+ IF test evaluated as false.  Skipping command
+  
+ CHARMM>     
+  
+ CHARMM>    set wrn ?WRNLEV
+ RDCMND: can not substitute energy "?WRNLEV"
+ Parameter: WRN <- "?WRNLEV"
+  
+ CHARMM>    ! Some versions of CHARMM don't seem to initialize wrnlev...
+ CHARMM>    if "@WRN" eq "?WRNLEV" set wrn 5
+ Parameter: WRN -> "?WRNLEV"
+ RDCMND: can not substitute energy "?WRNLEV""
+ Comparing ""?WRNLEV"" and ""?WRNLEV"".
+ IF test evaluated as true.  Performing command
+ Parameter: WRN <- "5"
+  
+ CHARMM>    set bom ?bomlev
+ RDCMND substituted energy or value "?BOMLEV" to "0"
+ Parameter: BOM <- "0"
+  
+ CHARMM>    WRNLEV -1 @PARA
+ Parameter: PARA -> "" <empty>
+  
+ CHARMM>    BOMLEV -1 @PARA
+ Parameter: PARA -> "" <empty>
+  
+ CHARMM>    read para card flex append
+
+          PARAMETER FILE BEING READ FROM UNIT 98
+ RDTITL> * NBFIX BETWEEN CARBOXYLATE AND SODIUM
+ RDTITL> *
+ PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
+  
+ CHARMM>    BOMLEV @bom @PARA
+ Parameter: BOM -> "0"
+ Parameter: PARA -> "" <empty>
+  
+ CHARMM>    WRNLEV @wrn @PARA
+ Parameter: WRN -> "5"
+ Parameter: PARA -> "" <empty>
+  
+ CHARMM>     
+  
+ CHARMM>    return
+ VCLOSE: Closing unit   98 with status "KEEP"
+
+                    RETURNING TO INPUT STREAM    99
+  
+ CHARMM>    ! STREAM @lib/sapi24_renamed_sapi.str
+ CHARMM>     
+  
+ CHARMM>    !------ System
+ CHARMM>    OPEN UNIT 1 READ CARD NAME @lib/complex.psf
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//complex.psf::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//complex.psf
+  
+ CHARMM>    READ PSF CARD UNIT 1
+ MAINIO> Protein structure file being read from unit   1.
+ PSFRD2> Reading PSF in the expanded format.
+ TITLE>  * NONE *
+ TITLE>  *  DATE:     1/24/17     10:44:47      CREATED BY USER: mac2109
+ TITLE>  *
+ PSFSUM> PSF modified: NONBOND lists and IMAGE atoms cleared.
+ PSFSUM> Summary of the structure file counters :
+         Number of segments      =       15   Number of residues   =     1278
+         Number of atoms         =    19446   Number of groups     =     6024
+         Number of bonds         =    19620   Number of angles     =    35754
+         Number of dihedrals     =    51942   Number of impropers  =     3141
+         Number of cross-terms   =     1260
+         Number of HB acceptors  =     1683   Number of HB donors  =     1854
+         Number of NB exclusions =        0   Total charge =   18.00000
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME @lib/complex.crd
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//complex.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//complex.crd
+  
+ CHARMM>    READ COOR CARD UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> * NONE *
+ TITLE> *  DATE:     1/24/17     10:44:48      CREATED BY USER: MAC2109
+ TITLE> *
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 1 READ CARD NAME @lib/definitions.crd
+ Parameter: LIB -> "./DATA/"
+ VOPEN> Attempting to open::./data//definitions.crd::
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data//definitions.crd
+  
+ CHARMM>    READ COOR COMP CARD UNIT 1
+          SPATIAL COORDINATES BEING READ FROM UNIT  1
+ TITLE> *
+ RDTITL> No title read.
+  
+ CHARMM>    CLOSE UNIT 1
+ VCLOSE: Closing unit    1 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ VCLOSE: Closing unit   99 with status "KEEP"
+
+                    RETURNING TO INPUT STREAM     5
+  
+ CHARMM>     
+  
+ CHARMM>    STREAM ./data/definitions.str
+ VOPEN> Attempting to open::./data/definitions.str::
+ OPNLGU> Unit 99 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data/definitions.str
+
+                    INPUT STREAM SWITCHING TO UNIT    99
+ RDTITL>  
+ RDTITL> No title read.
+ Parameter: IN1 <- "" <empty>
+  
+ CHARMM>     
+  
+ CHARMM>    DEFINE A SELE PROPERTY WCOMP .GT. 0.5 END
+ SELRPN>   2896 atoms have been selected out of  19446
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    DEFINE B SELE PROPERTY WCOMP .LT. -0.5 END
+ SELRPN>    641 atoms have been selected out of  19446
+  
+ CHARMM>     
+  
+ CHARMM>    SET firstresa     223
+ Parameter: FIRSTRESA <- "223"
+  
+ CHARMM>    SET lastresa      417
+ Parameter: LASTRESA <- "417"
+  
+ CHARMM>    SET firstresb     34
+ Parameter: FIRSTRESB <- "34"
+  
+ CHARMM>    SET lastresb      74
+ Parameter: LASTRESB <- "74"
+  
+ CHARMM>     
+  
+ CHARMM>    SET nframes XXXNFRAMES
+ Parameter: NFRAMES <- "XXXNFRAMES"
+  
+ CHARMM>     
+  
+ CHARMM>    !A 223 224 225 226 227 228 229 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 2
+ CHARMM>     
+  
+ CHARMM>    !B 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+ CHARMM>     
+  
+ CHARMM>    !Ares 351 352 353
+ CHARMM>     
+  
+ CHARMM>    !Bres 51 52 53
+ CHARMM>     
+  
+ CHARMM>    SET nbstr ctonnb 30 ctofnb 30 cutnb 34 TRUNC
+ Parameter: NBSTR <- "CTONNB 30 CTOFNB 30 CUTNB 34 TRUNC"
+  
+ CHARMM>     
+  
+ CHARMM>    !cutoff 30
+ CHARMM>     
+  
+ CHARMM>    SET kappa 0.124007
+ Parameter: KAPPA <- "0.124007"
+  
+ CHARMM>     
+  
+ CHARMM>    !monovalent_ion_concentration 0.154000
+ VCLOSE: Closing unit   99 with status "KEEP"
+
+                    RETURNING TO INPUT STREAM     5
+  
+ CHARMM>     
+  
+ CHARMM>    OPEN UNIT 10 WRITE CARD NAME ./data/system.dat
+ VOPEN> Attempting to open::./data/system.dat::
+ OPNLGU> Unit 10 opened for WRITE access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/mmgbsa/./data/system.dat
+  
+ CHARMM>     
+  
+ CHARMM>    WRITE TITLE UNIT 10
+ RDTITL> * NATOM 19446
+ RDTITL> * NRES 1278
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>    COOR STAT SELE A .OR. B END
+ SELRPN>   3537 atoms have been selected out of  19446
+ STATISTICS FOR      3537 SELECTED ATOMS:
+    XMIN =   31.336000 XMAX =   83.921000 XAVE =   53.125237
+    YMIN =   -1.925000 YMAX =   40.513000 YAVE =   17.286609
+    ZMIN =  -23.903000 ZMAX =   34.778000 ZAVE =    4.051475
+    WMIN =    1.000000 WMAX =    1.000000 WAVE =    1.000000
+  
+ CHARMM>     
+  
+ CHARMM>    WRITE TITLE UNIT 10
+ RDTITL> * NATOMAB 3537
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    COOR STAT SELE A END
+ SELRPN>   2896 atoms have been selected out of  19446
+ STATISTICS FOR      2896 SELECTED ATOMS:
+    XMIN =   31.336000 XMAX =   69.185000 XAVE =   51.135610
+    YMIN =   -1.925000 YMAX =   29.594000 YAVE =   14.554371
+    ZMIN =  -22.642000 ZMAX =   34.778000 ZAVE =    5.097639
+    WMIN =    1.000000 WMAX =    1.000000 WAVE =    1.000000
+  
+ CHARMM>     
+  
+ CHARMM>    WRITE TITLE UNIT 10
+ RDTITL> * NATOMA 2896
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    COOR STAT SELE B END
+ SELRPN>    641 atoms have been selected out of  19446
+ STATISTICS FOR       641 SELECTED ATOMS:
+    XMIN =   33.916000 XMAX =   83.921000 XAVE =   62.114254
+    YMIN =   16.342000 YMAX =   40.513000 YAVE =   29.630699
+    ZMIN =  -23.903000 ZMAX =   22.323000 ZAVE =   -0.675031
+    WMIN =    1.000000 WMAX =    1.000000 WAVE =    1.000000
+  
+ CHARMM>     
+  
+ CHARMM>    WRITE TITLE UNIT 10
+ RDTITL> * NATOMB 641
+ RDTITL> *
+  
+ CHARMM>     
+  
+ CHARMM>    CLOSE UNIT 10
+ VCLOSE: Closing unit   10 with status "KEEP"
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>     
+  
+ CHARMM>    !================================================================
+ CHARMM>    !	END
+ CHARMM>    !================================================================
+ CHARMM>     
+  
+ CHARMM>    STOP
+$$$$$$  New timer profile $$$$$
+ Total time                      1.63 Other:            0.00
+
+                    NORMAL TERMINATION BY NORMAL STOP
+                    MAXIMUM STACK SPACE USED IS   77788
+                    STACK CURRENTLY IN USE IS         0
+                    MOST SEVERE WARNING WAS AT LEVEL  1
+                    HEAP PRINTOUT-  HEAP SIZE         10240000
+                    SPACE CURRENTLY IN USE IS            13824
+                    MAXIMUM SPACE USED IS               111554
+                    FREE LIST
+  PRINHP> ADDRESS:               1 LENGTH:        10225676 NEXT:        10239501
+  PRINHP> ADDRESS:        10239501 LENGTH:             500 NEXT:               0
+
+                    $$$$$ JOB ACCOUNTING INFORMATION $$$$$
+                     ELAPSED TIME:     1.63  SECONDS 
+                         CPU TIME:     1.54  SECONDS 
