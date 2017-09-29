@@ -1,0 +1,123 @@
+#!/usr/bin/perl
+
+
+# ====================================================================================================
+# Subroutine definition
+
+# Should be called as :
+#
+# $mmgbsa_path = $ENV{'mmgbsa_path'};
+# require "$mmgbsa_path/perl_scripts/time_statistics.prl";
+# ...
+# my ($mean, $sd, $neff, $err) = time_statistics(@time_series);
+#  
+# If the time series is in a 2-dimensional array, call as :
+# my ($mean, $sd, $neff, $err) = time_statistics(@{ $time_series_array[$i] } );
+
+sub time_statistics {
+	my @a = @_;
+	# Arrays usually start at zero, but here we start at 1...
+	my $nconf = scalar(@a)-1;
+	
+	my $a_tot = 0;
+	my $a2_tot = 0;
+	for $n (1..$nconf) {
+        	$a_tot+=  $a[$n];
+        	$a2_tot+=  $a[$n]**2;
+ 
+	}
+	my $a_mean = $a_tot/$nconf;
+	# Unbiased standard deviation estimate 
+	my $a_sd = sqrt( ( $a2_tot - $nconf*$a_mean**2 ) / ($nconf -1) );
+
+	# Effective sample size in an AR(1)  correlated time series according to :
+	# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean, Journal of Climate 8 : 336 (1995).
+
+	# Now that we have the mean, we can calculate the moments :
+	my $a2_norm_tot=0;
+	my $a2_shift_tot=0;
+	my $a_old=0;
+	for $n (1..$nconf) {
+  		$a2_norm_tot+=($a[$n] -  $a_mean)**2; 
+  		if ($n >1) {
+     			$a2_shift_tot+=($a[$n] -  $a_mean) * ($a_old -  $a_mean);
+  		}
+  		$a_old=$a[$n];
+ 	}
+	
+	# For each, calculate n_effective and standard error.
+	my $r1 = 0;
+	my $n_eff = 0;
+	my $err = 0;
+	if ($a2_norm_tot > 0) {
+	  $r1 = $a2_shift_tot / $a2_norm_tot;
+	  $n_eff = $nconf * (1.0-$r1) / (1.0+$r1) ;
+	  if ( $n_eff > $nconf) {$n_eff = $nconf };
+	  $err = $a_sd / sqrt($n_eff ) ; 
+	}
+
+	return ($a_mean, $a_sd, $n_eff, $err);
+}	
+
+# ================================================================================
+
+sub time_statistics_FTZ {
+	my @a = @_;
+	# Arrays usually start at zero, but here we start at 1...
+	my $nconf = scalar(@a)-1;
+	# print "Number of time points : $nconf\n";
+	
+	my $a_tot = 0;
+	my $a2_tot = 0;
+	for $n (1..$nconf) {
+        	$a_tot+=  $a[$n];
+        	$a2_tot+=  $a[$n]**2;
+ 
+	}
+	my $a_mean = $a_tot/$nconf;
+	# Unbiased standard deviation estimate 
+	my $a_sd = sqrt( ( $a2_tot - $nconf*$a_mean**2 ) / ($nconf -1) );
+
+	# Effective sample size in an AR(1)  correlated time series according to :
+	# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean, Journal of Climate 8 : 336 (1995).
+
+	# Now that we have the mean, we can calculate the moments :
+	my $a2_norm_tot=0;
+        for $n (1..$nconf) {
+	   $a2_norm_tot+=($a[$n] -  $a_mean)**2; 
+	}
+	
+	if ($a2_norm_tot > 0) {	
+	 for $k (1..$nconf) {
+	   my $a2_shift_tot=0;
+	   for $n (($k+1)..$nconf) {
+     			$a2_shift_tot+=($a[$n] -  $a_mean) * ($a[$n - $k]-  $a_mean);
+ 	   }
+	   $r[$k] = $a2_shift_tot / $a2_norm_tot;
+	   if ($r[$k] < 0 ) {
+	   	$nstop = $k - 1;
+		last;
+	   }
+	 }
+	} else {
+	   $nstop = 0;
+	}
+	
+	my $ss = 0;
+	for $k (1..$nstop) {
+   	   # original version :
+           # $ss += ($nconf-$k)/$nconf * $r[$k];
+           # Unbiased version (according to Zieba and Ramza 2011) :
+	   $ss += $r[$k];
+	}
+		
+	# Calculate n_effective and standard error.
+	my $n_eff = $nconf / (1.0  + 2.0*$ss) ;
+	my $err = $a_sd / sqrt($n_eff ) ; 
+
+	return ($a_mean, $a_sd, $n_eff, $err);
+}	
+
+
+# This is required by perl for subroutine files :
+1;
