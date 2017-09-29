@@ -29,6 +29,10 @@ $nconf=`grep nframes data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # nu
 chomp $nconf;
 print "Number of conformations : $nconf \n";
 
+$nres=`grep lastresb data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # Total number of residues.
+chomp $nres;
+print "Total number of residues : $nres \n";
+
 $temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
 chomp $temp;
 my @resA = split(/ /,$temp );
@@ -53,14 +57,6 @@ foreach $line (<IN>) {
   if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /) or ($line =~ / SOD /) ) {
     @w=split(" " ,$line);
     $name[$w[1]]=$w[7]." ".$w[2].$w[8];
-  }
-  $resnum[$w[0]]=$w[1];
-  $resname[$w[0]]=$w[2];
-  $atomname[$w[0]]=$w[3];
-  if ( $atomname[$i] eq "CA" or  $atomname[$i] eq "HA" or $atomname[$i] eq "C" or $atomname[$i] eq "O" or $atomname[$i] eq "N"  or $atomname[$i] eq "NT" or $atomname[$i] eq "HN" or $atomname[$i] eq "HT1" or $atomname[$i] eq "HT2" or $atomname[$i] eq "HT3" or $atomname[$i] eq "OT1" or $atomname[$i] eq "OT2"or $atomname[$i] eq "HA1" or $atomname[$i] eq "HA2") {
-    $is_bb[$i]=1;
-  } else {
-    $is_bb[$i]=0;
   }
 }
 
