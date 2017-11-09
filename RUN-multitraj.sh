@@ -12,22 +12,13 @@ set -u
 ###################################################################
 
 # Path to MMGBSA distribution 
-mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1.1/
+mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.2/
 
 # Selection for the MMGBSA system
 system_selection='protein'
 
-# Selection text for parts A and B of the complex
-partA_selection=" chain A "
-partB_selection=" chain B "
-
-# Cutoff to choose residues within each part, for which the decomposition will be made. 
-# If set to zero, we use the alternative selections below. 
-cutoff_residues=0
-
-# Alternatively, one can select residues explicitly for the decomposition.
-partA_residues_selection="chain A and resid 351 to 353 "
-partB_residues_selection="chain B and resid 51 to 53 "
+# Select residues explicitly for the decomposition.
+residue_selection="chain A and resid 351 to 353 "
 
 # Trajectory of the full system (can be a DCD file or an XTC file). 
 traj=/path/to/traj.xtc
@@ -104,6 +95,9 @@ if [[  $HOSTNAME =~ panda ]]; then
     # This requests nodes where the /senodotus file system is mounted
 fi
 
+# Variables for compatibility with one-traj code.
+partA_selection=$system_selection
+partA_residues_selection=$residue_selection
 
 ###################################################################
 # Charmm setup
@@ -149,22 +143,7 @@ set cutoff_residues $cutoff_residues
 
 EOF
 
-# There are two possibilities for the definition of residues of interest. 
-# 1) If a cutoff has been defined :
-if [ $cutoff_residues -gt 0 ]; then
-
-cat >> vmd_selections.tcl << EOF
-
-# Selection text for interesting residues of part A
-set Aresidues_sel_text  " ( \$A_sel_text ) and same residue as within \$cutoff_residues of ( \$B_sel_text ) "
-
-# Selection text for interesting residues of part B
-set Bresidues_sel_text  " ( \$B_sel_text ) and same residue as within \$cutoff_residues of ( \$A_sel_text ) "
-
-EOF
-
-else
-# 2) with explicit residue selections :
+# Definition of residues of interest. 
 cat >> vmd_selections.tcl << EOF
 
 # Selection text for interesting residues of part A
@@ -174,9 +153,6 @@ set Aresidues_sel_text  "( \$A_sel_text ) and ( $partA_residues_selection )"
 set Bresidues_sel_text  " ( \$B_sel_text ) and ( $partB_residues_selection )"
 
 EOF
-
-fi
-
 
 ###################################################################
 # Prepare mmgbsa (part common to all subjobs)
@@ -212,7 +188,7 @@ cd ..
 
 echo "Submitting all sub-jobs ... "
 
-jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path $res_req  -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
+jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path $res_req  -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit_multitraj.sh $traj $start_frame $frame_stride $frames_per_job )
 # The -v option to qsub pushes the  environment variables from the shell executing qsub
 # This is needed to pass the mmgbsa_path global variable. 
 
@@ -223,7 +199,7 @@ jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
 
 echo "Submitting final post-processing job ... "
 
-qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job
+qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit_multitraj.sh $traj $n_jobs $frames_per_job
 
 qstat
 exit
