@@ -91,8 +91,8 @@ fi
 # Select the correct resource requirement depending on which cluster we run 
 res_req=""
 if [[  $HOSTNAME =~ panda ]]; then
-    res_req="-l zeno=true"
-    # This requests nodes where the /senodotus file system is mounted
+    res_req="-l h_vmem=2G"
+    # This required argment requests memory
 fi
 
 # Variables for compatibility with one-traj code.
