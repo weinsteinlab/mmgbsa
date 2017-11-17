@@ -12,7 +12,7 @@ pwd
 # -------------------------------------------------------------------------
 #inter
 
-$charmm < $inputs/calc-inter-multitraj.inp > outputs/alc-inter-multitraj.out 
+$charmm < $inputs/calc-inter-multitraj.inp > outputs/calc-inter-multitraj.out 
 wait
 
 $charmm < $inputs/calc-inter-global-multitraj.inp > outputs/calc-inter-global-multitraj.out 
@@ -32,6 +32,7 @@ echo "Finished sas charmm."
 
 $perl $perl_scripts/sas-contri-multitraj.prl > log/sas-multitraj.log
 wait
+echo "Finished sas perl."
 
 # -------------------------------------------------------------------------
 #solv

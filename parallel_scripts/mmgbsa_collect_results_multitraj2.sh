@@ -53,7 +53,7 @@ fi
 # cp $current/0001/data/* ./data/.
 
 # Now we collect results in the original MMGBSA directory. 
-mkdir inter sas solv total log_collect
+mkdir inter sas solv total
 
 
 sed -i "s/SET nframes XXXNFRAMES/SET nframes $frame_num/" ./data/definitions.str
@@ -66,8 +66,9 @@ sed -i "s/SET nframes XXXNFRAMES/SET nframes $frame_num/" ./data/definitions.str
 #####  from each of the sub-jobs.                                                          #####
 #####                                                                                      #####
 ################################################################################################
-counter=1
 
+# transfer and renumber the /inter/inter-byres-*.dat files
+counter=1
 while [ $counter -le $job_num ]
 do
 
@@ -103,52 +104,10 @@ done
 
 unset counter i job_num_formatted multiplier end_multiplier end tmp_num
 
-#===================================================================================
-# MAC to check later :
-# All this seems to amount to concatenating and renumbering the rows in the file...
 # This relies on the fact that cat * will take the files in the right order...
-# I prefer the version below, which involves much less file manipulation and does not rely on the cat * order.
+cat $current/*/total/inter-global.dat |  awk '{print NR, $2,$3,$4}' > ./total/inter-global.dat
 
-counter=1
-rm -f ./total/inter-global.dat
-while [ $counter -le $job_num ]
-do
-	job_num_formatted=`printf %04i $counter`
-	cat $current/$job_num_formatted/total/inter-global.dat >> ./total/inter-global.tmp
-	counter=$((counter+1))
-done
-unset counter job_num_formatted 
-
-#echo -e "inter_global <- read.csv('./total/inter-global.dat', header=FALSE)\n\
-#\n\
-#i <- seq(1, nrow(inter_global), by=1)\n\
-#inter_global <- inter_global[,2:4]\n\
-#inter_global <- cbind(i, inter_global)\n\
-#write.table(inter_global, './total/inter-global.dat', row.names=FALSE, col.names=FALSE, sep=',')\n\
-#q(save='no')" > ./tmp.R 
-#
-#Rscript tmp.R
-#rm tmp.R
-#
-#sed -i 's/^/ /' ./total/inter-global.dat
-#sed -i 's/,/  /' ./total/inter-global.dat
-#sed -i 's/,/ /' ./total/inter-global.dat
-#sed -i 's/,/   /' ./total/inter-global.dat
-
-# Replace all of the above with:
-awk '{print NR, $2,$3,$4}' ./total/inter-global.tmp > ./total/inter-global.dat
-rm  ./total/inter-global.
-
-# We apply these modifications everywhere below...
-
-# We could do even simpler (if we rely also on the right cat * order):
-# cat $current/*/total/inter-global.dat |  awk '{print NR, $2,$3,$4}' > ./total/inter-global.dat
-
-# MAC end of remark =============================================================
-
-$perl_scripts/inter-contri-multitraj.prl > ./log_collect/inter-contri-multitraj.log
-
-################################################################################################
+$perl_scripts/inter-contri-multitran.prl > ./log/inter-contri-multitraj.log
 
 
 ################################################################################################
@@ -161,16 +120,40 @@ resA=$(grep '!Ares' ./data/definitions.str | grep -Eo '[0-9]+')
 
 for i in $resA
 do
+
+        cat $current/*/sas/sas-res-${i}.dat | grep -v "---" -v "AVE" -v "SD" | awk '
+             {   for(i=2;i<=NF;i++) {sum[i] += $i; sumsq[i] += ($i)^2}
+                print NR, $2,$3,$4 ;
+             };
+             EMD{
+                print "--------------------------------------------";
+                printf " AVE    ";
+                for(i=2;i<=NF;i++) { printf "%10.4f ",  sum[i]/NR };
+                printf "\n";
+                printf "  SD    ";
+                for(i=2;i<=NF;i++) { printf "%10.4f ",  sqrt((sumsq[i]-sum[i]^2/NR)/NR };
+                printf "\n";
+             }'
+             
+
+	mkdir ./sas/res-${i}
 	counter=1
 
-    rm -f ./sas/sas-res-${i}.dat
+
+
 	while [ $counter -le $job_num ]
 	do
 		job_num_formatted=`printf %04i $counter`
-		awk '($1~/[0-9]/)' $current/$job_num_formatted/sas/sas-res-${i}.dat >> ./sas/sas-res-${i}.dat
+		cp $current/$job_num_formatted/sas/sas-res-${i}.dat ./sas/res-${i}/sas-res-${i}-${job_num_formatted}.dat
+		num_lines=$(wc -l ./sas/res-${i}/sas-res-${i}-${job_num_formatted}.dat | grep -Eo '[0-9]+' | head -1)
+		num_lines=$((num_lines-3))
+		sed -i -n -e "1,$num_lines p" ./sas/res-${i}/sas-res-${i}-${job_num_formatted}.dat
 		counter=$((counter+1))
 	done
 	
+	cat ./sas/res-${i}/*.dat > ./sas/sas-res-${i}.dat
+	rm -r ./sas/res-${i}
+
 	sed -i 's/[[:space:]]\{1,\}/,/g' ./sas/sas-res-${i}.dat
         sed -i 's/^,//g' ./sas/sas-res-${i}.dat
 
@@ -262,23 +245,7 @@ rm ./sas/line.txt ./sas/sas-res_stat.dat
 
 ################################################################################################
 
-################################################################################################
-
-counter=1
-rm -f ./total/sasa.dat
-while [ $counter -le $job_num ]
-do
-        job_num_formatted=`printf %04i $counter`
-        cat $current/$job_num_formatted/total/sasa.dat >> ./total/sasa.dat
-        counter=$((counter+1))
-done
-unset counter job_num_formatted
-
-awk '{print NR, $2,$3,$4}' ./total/sasa.tmp > ./total/sasa.dat
-rm  ./total/sasa.tmp
-
-
-################################################################################################
+cat $current/*/total/sasa.dat |  awk '{print NR, $2,$3,$4,$5,$6}' > ./total/sasa.dat
 
 
 ################################################################################################
@@ -326,14 +293,21 @@ unset counter i job_num_formatted multiplier end_multiplier end tmp_num
 ################################################################################################
 for i in $resA
 do
+	mkdir ./solv/res-${i}
 	counter=1
-	rm -f ./solv/solv-res-${i}.dat
+
 	while [ $counter -le $job_num ]
 	do
 		job_num_formatted=`printf %04i $counter`
-    	awk '($1~/[0-9]/)' $current/$job_num_formatted/solv/solv-res-${i}.dat >>./solv/solv-res-${i}.dat
+		cp $current/$job_num_formatted/solv/solv-res-${i}.dat ./solv/res-${i}/solv-res-${i}-${job_num_formatted}.dat
+                num_lines=$(wc -l ./solv/res-${i}/solv-res-${i}-${job_num_formatted}.dat | grep -Eo '[0-9]+' | head -1)
+                num_lines=$((num_lines-3))
+                sed -i -n -e "1,$num_lines p" ./solv/res-${i}/solv-res-${i}-${job_num_formatted}.dat	
 		counter=$((counter+1))
 	done
+	
+	cat ./solv/res-${i}/*.dat > ./solv/solv-res-${i}.dat
+	rm -r ./solv/res-${i}
 
 	sed -i 's/[[:space:]]\{1,\}/,/g' ./solv/solv-res-${i}.dat
         sed -i 's/^,//g' ./solv/solv-res-${i}.dat
@@ -424,26 +398,14 @@ sed -i 's/ TOT/TOT /' ./solv/solv-res.dat
 
 rm ./solv/line.txt ./solv/solv-res_stat.dat
 ################################################################################################
-
-counter=1
-rm -f ./total/solv-global.dat
-while [ $counter -le $job_num ]
-do
-        job_num_formatted=`printf %04i $counter`
-        cat $current/$job_num_formatted/total/solv-global.dat >> ./total/solv-global.dat
-        counter=$((counter+1))
-done
-unset counter job_num_formatted
-
-awk '{print NR, $2,$3,$4}' ./total/solv-global.tmp > ./total/solv-global.dat
-rm  ./total/solv-global.
-
+m
+cat $current/*/total/solv-global.dat |  awk '{print NR, $2}' > ./total/solv-global.dat
 
 ################################################################################################
 
-$perl $perl_scripts/full-contri-multitraj.prl  > ./log_collect/full-contri-multitraj.log
-$perl $perl_scripts/full-contri-multitraj-stat.prl  > ./log_collect/full-contri-multitraj-stat.log
-$perl $perl_scripts/full-global-multitraj.prl > ./log_collect/full-global-multitraj.log
+$perl $perl_scripts/full-contri-multitraj.prl  > ./log/full-contri-multitraj.log
+$perl $perl_scripts/full-contri-multitraj-stat.prl  > ./log/full-contri-multitraj-stat.log
+$perl $perl_scripts/full-global-multitraj.prl > ./log/full-global-multitraj.log
 
 
 echo "Done."

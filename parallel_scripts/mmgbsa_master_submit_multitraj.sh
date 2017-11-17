@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#$ -N mmgbsa2.1
+#$ -N mmgbsa2.2
 #$ -j y
 #$ -cwd
 #$ -q standard.q
@@ -135,20 +135,18 @@ echo "DCD directory : $dcd_tmp"
 
 echo " "
 echo " Preparing local MMGBSA job ... "
-$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$SGE_TASK_ID.log
+$mmgbsa_path/scripts/prepare_mmgbsa_local_multitraj.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$SGE_TASK_ID.log
 
 ###################################################################
 # Run local mmgbsa 
 
 echo " Running local MMGBSA job ... "
-$mmgbsa_path/scripts/run_one_mmgbsa-multitraj.sh  >  $current/log/run_job_$SGE_TASK_ID.log
+$mmgbsa_path/scripts/run_one_mmgbsa_multitraj.sh  >  $current/log/run_job_$SGE_TASK_ID.log
 
 
 sleep 10
 
 echo " Cleaning up ... "
-#rm -r ./frames-a 
-#rm -r ./frames-b 
 #rm -r ./frames-comp 
 #rm -r ./data
 

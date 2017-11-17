@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#$ -N mmgbsa2.1_final
+#$ -N mmgbsa2.2_final
 #$ -j y
 #$ -cwd
 #$ -q standard.q

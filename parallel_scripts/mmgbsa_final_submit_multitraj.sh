@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#$ -N mmgbsa2.1_final
+#$ -N mmgbsa2.2_final
 #$ -j y
 #$ -cwd
 #$ -q standard.q
@@ -22,8 +22,8 @@ source $mmgbsa_path/scripts/setenv.sh
 
 cwd=$(pwd)
 
-tar czf ./sub_job_logs.tar.gz ./mmgbsa2.1.o*
-rm ./mmgbsa2.1.o*
+tar czf ./sub_job_logs.tar.gz ./mmgbsa2.2.o*
+rm ./mmgbsa2.2.o*
 
 cd ..
 
@@ -37,15 +37,15 @@ for file in `ls [0-9][0-9][0-9][0-9].tar.gz`; do
 done
 rm *.gz
 
-$parallel_scripts/mmgbsa_collect_results.sh ${traj} ${sub_job_num}  ${frames_per_job}
+$parallel_scripts/mmgbsa_collect_results_multitraj.sh ${traj} ${sub_job_num}  ${frames_per_job}
 
 rm -r [0-9][0-9][0-9][0-9]
 
-tar czf $cwd/final_results.tar.gz inter sas-a sas-b sas-comp solv-a solv-b solv-comp total *.dat
+tar czf $cwd/final_results.tar.gz inter sas solv total log_collect *.dat
 
 cp *.dat $cwd/.
 
-rm -r inter sas-a sas-b sas-comp solv-a solv-b solv-comp total
+rm -r inter sas solv total
 
 
 exit
