@@ -1,0 +1,83 @@
+#!/usr/bin/perl
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by Michel A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@unil.ch
+#
+#########################################################
+
+# Reads a raw concatenated file as argument with:
+#  - first column : frame number to be renumbered 
+#  - any number of subsequent columns : time series for which stats will be calculated. 
+
+
+#########################################################
+# Setup some variables
+
+$mmgbsa_path = $ENV{'mmgbsa_path'};
+require "$mmgbsa_path/perl_scripts/time_statistics.prl";
+
+#$nconf=`grep nframes data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # number of conformations (frames)
+#chomp $nconf;
+#print "Number of conformations : $nconf \n";
+
+$filename = $ARGV[0] ;
+
+########################################################
+# Read file and pring renumbered rows. 
+
+open(IN,$filename) or die "Could not open file $filename";
+$n=1;
+my @data=0;
+foreach $line (<IN>) {
+    @w=split(" ",$line);
+    if ($w[0] =~ /^[0-9,.E]+$/ ) {
+	$ll = $#w;
+ 	printf STDOUT ("%8d ",$n);
+        for $i (1..$ll) {
+        	$data[$i][$n] =$w[$i];
+		printf STDOUT ("%16.8f ", $data[$i][$n]);
+	}
+	printf STDOUT ("\n");
+    	$n=$n+1;
+    }
+}
+close(IN);
+
+########################################################
+# calculate statistics for each time series
+
+for $i (1..$ll) {
+	($mean[$i], $sd[$i], $neff[$i], $err[$i]) = time_statistics_FTZ(@{ $data[$i] });
+}
+
+########################################################
+# Print statistics
+printf STDOUT "# ---------------------------------------------------------\n";
+printf STDOUT ("AVG      ");
+for $i (1..$ll) { 
+	printf STDOUT ("%16.8f ", $mean[$i]);
+}
+printf STDOUT ("\n");
+printf STDOUT ("SD       ");
+for $i (1..$ll) {
+        printf STDOUT ("%16.8f ", $sd[$i]);
+}
+printf STDOUT ("\n");
+printf STDOUT ("N_eff    ");
+for $i (1..$ll) {
+        printf STDOUT ("%16.8f ", $neff[$i]);
+}
+printf STDOUT ("\n");
+printf STDOUT ("Errpr    ");
+for $i (1..$ll) {
+        printf STDOUT ("%16.8f ", $err[$i]);
+}
+printf STDOUT ("\n");
+
+close(STDOUT)
