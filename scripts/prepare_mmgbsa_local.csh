@@ -135,12 +135,12 @@ while ( $i <= $numframes )
 end
 
 # Find number of frames
-echo "Number of fwrames : " $numframes
+echo "Number of frames : " $numframes
 
 cd $basedir
 
 # Put the number of frames into the definitions file
-sed -i "s/XXXNFRAMES/$numframes/" data/definitions.str 
+sed -i "s/XXXNFRAMES/${numframes}/" data/definitions.str 
 
 # ..........................................................................
 # CHARMM RUNS

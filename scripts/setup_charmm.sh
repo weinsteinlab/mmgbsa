@@ -114,6 +114,8 @@ cp -p $top_path/par_all36_cgenff.prm toppar/.
 cp -p $top_path/par_all36_carb.prm toppar/.
 cp -p $top_path/toppar_water_ions.str toppar/.
 cp -p $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str toppar/.
+cp -p $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str toppar/.
+cp -p $top_path/toppar_all36_lipid_inositol.str toppar/.
 
 echo "    Running charmm setup ... "
 $perl $scripts/prepare-charmm36.prl

@@ -423,7 +423,8 @@ IC  C316   C317   C318   H18X       1.5985  130.92  180.00  110.90   1.1113
 IC  H18X   C317   *C318  H18Y       1.5396  113.52 -123.43  110.53   1.1101
 IC  H18X   C317   *C318  H18Z       1.5192  121.35  123.34  106.97   1.1128
 
-RESI SAPI13      -3.00 ! Phosphatidylinositol-(3)-phosphate (PIP1)
+!RESI SAPI13      -3.00 ! Phosphatidylinositol-(3)-phosphate (PIP1)
+RESI SAP3        -3.00 ! Phosphatidylinositol-(3)-phosphate (PIP1)
 !
 !     Stearoyl - CH2                    Uses RESI INI1 - cyclic myi-inositol,
 !                |                           

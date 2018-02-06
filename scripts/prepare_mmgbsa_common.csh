@@ -64,6 +64,7 @@ cp -p $top_path/par_all36_carb.prm data/.
 
 cp -rp $top_path/toppar_water_ions.str data/.
 cp -rp $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str data/.
+cp -rp $top_path/stream/lipid/toppar_all36_lipid_inositol.str data/.
 
 # ..........................................................................
 # DEFINITIONS :
