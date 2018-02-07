@@ -44,6 +44,10 @@ n_jobs=3
 #    Maximum number of jobs junning simultaneourly, in order not to invate an entire cluter.
 max_jobs_running_simultaneously=50   
 
+#    Slurm or SGE? Set variable to "1" if SGE, Set variable to "2" if Slurm  
+scheduler="2"
+
+
 # Non-bonded interaction parameters :
 #    Cutoff for electro and VdW interactions in Angstroms.
 cutoff=30
@@ -210,24 +214,36 @@ cd ..
 
 echo "Submitting all sub-jobs ... "
 
-jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path $res_req  -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
-# The -v option to qsub pushes the  environment variables from the shell executing qsub
-# This is needed to pass the mmgbsa_path global variable. 
+if [ $scheduler -eq 1 ] 
+then 
+	jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path $res_req  -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
+	# The -v option to qsub pushes the  environment variables from the shell executing qsub
+	# This is needed to pass the mmgbsa_path global variable. 
 
-jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
+	jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
+	qstat
 
-###################################################################
-# Submit post-processing job
+	###################################################################
+	# Submit post-processing job
 
-echo "Submitting final post-processing job ... "
+	echo "Submitting final post-processing job ... "
 
-qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
+	qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
 
-qstat
+	qstat
+	exit
+else
+	jobid=`sbatch --array=1-${n_jobs}%${max_jobs_running_simultaneously} $parallel_scripts/mmgbsa_master_submit_slurm.sh $traj $start_frame $frame_stride $frames_per_job | egrep -o -e "\b[0-9]+$"`
+	squeue -u `whoami`
+
+        ###################################################################
+        # Submit post-processing job
+
+	echo "Submitting final post-processing job ... "
+	 
+	sbatch --dependency=afterok:${jobid} $parallel_scripts/mmgbsa_final_submit_slurm.sh $traj $n_jobs $frames_per_job
+	squeue -u `whoami`
+	exit
+fi
+
 exit
-
-
-
-
-
-
