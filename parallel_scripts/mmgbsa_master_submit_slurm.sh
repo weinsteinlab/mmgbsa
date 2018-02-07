@@ -1,9 +1,9 @@
 #!/bin/bash -l
-#$ -N mmgbsa2.1
-#$ -j y
-#$ -cwd
-#$ -q standard.q
-#$ -l h_vmem=10G
+
+#SBATCH --job-name=mmgbsa2.1
+#SBATCH -p cryo-cpu
+#SBATCH --nodes=1
+#SBATCH --mem=60G
 
 ###################################################################
 #                                                                 #
@@ -11,7 +11,8 @@
 #                                                                 #
 ###################################################################
 
-# TEST! Just to see how GitLab documents command line-pushed changes. 
+# We have to sourcce the .bashrc, as Slurm does not do this!
+source ~/.bashrc
 
 # Trajectory of the full system (can be a DCD file or an XTC file)
 mytraj=$1
@@ -28,11 +29,10 @@ js=$4 # number of frames in each sub-job
 
 psf=./data/system.namd.psf
 
-A=$SGE_TASK_ID
+A=$SLURM_ARRAY_TASK_ID
 B=`printf %04i $A`
 
-# mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
-# This is now inherited by the environment through qsub -V
+# $mmgbsa_path is now inherited by the environment, default Slurm behavior.
 source $mmgbsa_path/scripts/setenv.sh
 catdcd=$mmgbsa_path/parallel_scripts/catdcd 
 
@@ -55,7 +55,7 @@ fi
 ###################################################################
 # Make directories and small trajectory
 
-time_to_sleep=$(( $SGE_TASK_ID % 3 ))
+time_to_sleep=$(( $SLURM_ARRAY_TASK_ID % 3 ))
 sleep $time_to_sleep  
 
 mkdir $dcd_tmp
@@ -126,7 +126,7 @@ cd $main_tmp
 $catdcd -o ./data/first_frame_of_dcd.pdb -otype pdb -s $psf -stype psf -first $real_first -last 1 $small_traj
 
 echo " "
-echo "Task ID : $SGE_TASK_ID"
+echo "Task ID : $SLURM_ARRAY_TASK_ID"
 echo "Host : " `hostname`
 echo "Base directory : $current"
 echo "Working directory : $main_tmp"
@@ -134,13 +134,13 @@ echo "DCD directory : $dcd_tmp"
 
 echo " "
 echo " Preparing local MMGBSA job ... "
-$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$SGE_TASK_ID.log
+$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$SLURM_ARRAY_TASK_ID.log
 
 ###################################################################
 # Run local mmgbsa 
 
 echo " Running local MMGBSA job ... "
-$mmgbsa_path/scripts/run_one_mmgbsa.sh  >  $current/log/run_job_$SGE_TASK_ID.log
+$mmgbsa_path/scripts/run_one_mmgbsa.sh  >  $current/log/run_job_$SLURM_ARRAY_TASK_ID.log
 
 
 sleep 10
