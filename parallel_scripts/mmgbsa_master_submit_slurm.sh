@@ -3,7 +3,7 @@
 #SBATCH --job-name=mmgbsa2.1
 #SBATCH -p cryo-cpu
 #SBATCH --nodes=1
-#SBATCH --mem=20G
+#SBATCH --mem=40G
 
 ###################################################################
 #                                                                 #
