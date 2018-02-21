@@ -23,8 +23,8 @@ source $mmgbsa_path/scripts/setenv.sh
 
 cwd=$(pwd)
 
-tar czf ./sub_job_logs.tar.gz ./mmgbsa2.1.o*
-rm ./mmgbsa2.1.o*
+tar czf ./sub_job_logs.tar.gz ./slurm-*.out
+rm ./slurm-*.out
 
 cd ..
 
