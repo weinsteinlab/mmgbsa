@@ -38,7 +38,7 @@ for file in `ls [0-9][0-9][0-9][0-9].tar.gz`; do
 done
 rm *.gz
 
-$parallel_scripts/mmgbsa_collect_results.sh ${traj} ${sub_job_num}  ${frames_per_job}
+$parallel_scripts/mmgbsa_collect_results_spack_R.sh ${traj} ${sub_job_num}  ${frames_per_job}
 
 rm -r [0-9][0-9][0-9][0-9]
 
