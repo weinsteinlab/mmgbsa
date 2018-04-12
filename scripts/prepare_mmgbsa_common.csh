@@ -28,9 +28,8 @@ endif
 #set top_path="/home/mac2109/top_files/mackerell/"
 #set mmgbsa_path="/home/mac2109/mmgbsa/mmgbsa2.0/"
 # set inputs=$mmgbsa_path/charmm_inputs/
-
 # The path to the main mmgbsa directory where the ./setup_charmm/ directory is located
-set main_path=".."
+#set main_path=".."a
 
 # set basedir_backslash=`pwd | awk '{gsub("/","\\/"); print $0}'`
 # We need a relative path to loader.str with tmp directories assigned by SGE...
@@ -48,8 +47,10 @@ endif
 
 # .......................................................................
 # HERE WE USE THE ORIGINAL CHARMM SETUP !
-cp  -p $main_path/setup_charmm/data/complex* data/.
-cp  -p $main_path/input/*.psf data/system.namd.psf
+cp  -p $system_path/setup_charmm/data/complex* data/.
+cp  -p $system_path/setup_charmm/complex_raw.pdb data/.
+#cp -p $system_path/input/*.psf data/system.namd.psf
+cp -p $system_path/input/*.pdb data/system.namd.pdb
 
 # We make local copies of charmm input files so that the node does not read 100 times from main disk. 
 cp -p $top_path/top_all36_prot.rtf data/.
@@ -83,7 +84,7 @@ endif
 cat data/definitions.pdb | $scripts/pdb2crd.prl >  data/definitions.crd
 
 # Non-bonded cutoff. 
-@ cuton = $nb_cutoff 
+@ cuton = $nb_cutoff - 2 
 @ cutnb = $nb_cutoff + 4
 
 printf 'SET nbstr ctonnb %d ctofnb %d cutnb %d TRUNC \n\n' $cuton $nb_cutoff $cutnb >> data/definitions.str

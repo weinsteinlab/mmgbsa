@@ -94,7 +94,8 @@ echo framesdir_b : $framesdir_b
 # FRAME EXTRACTION
 #
 echo " Extracting frames ..."
-set mypsf="./data/system.namd.psf"
+#set mypsf="./data/system.namd.psf"
+set mypsf="./data/system.namd.pdb"
 
 cat > extract_frames.tcl  << EOF
   source ./vmd_selections.tcl
@@ -130,6 +131,7 @@ set numframes=`ls -1 *.pdb | wc -l`
 set i=1
 while ( $i <= $numframes )
   cat $i-alpha.pdb |  $mmgbsa_path/scripts/pdb2crd.prl > $i-raw.crd
+  
   rm $i-alpha.pdb
   @ i++
 end

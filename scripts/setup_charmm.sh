@@ -40,8 +40,10 @@ echo "    Capping options : ${capping[*]}"
  #ln -fs $charmm_toppar/par_all36_prot.prm .
 
  # Make links with generic names 
- ln -fs ../input/*.pdb system.pdb
- ln -fs ../input/*.psf system.namd.psf
+# ln -fs ../input/*.pdb system.pdb
+sed 's/CYS2/ CYS/' ../input/*.pdb > system.pdb
+# Try to do without NAMD psf
+# ln -fs ../input/*.psf system.namd.psf
 
 # DEREK : Change cholesterol name 
 #sed -i 's/CHL1/CLOL/' system.namd.psf system.pdb
@@ -50,8 +52,10 @@ echo "    Capping options : ${capping[*]}"
  # Extract complex from full system in NAMD format:
 echo "    Extracting complex ..."
 cat > extract_complex.tcl  << EOF
-  mol new system.namd.psf
-  mol addfile system.pdb
+# Try to do without NAMD psf
+#   mol new system.namd.psf
+#   mol addfile system.pdb
+  mol new system.pdb
   set sel [atomselect top "$complex_sel_text" ]
   \$sel writepdb complex_raw.pdb
   \$sel writepsf complex_raw.psf

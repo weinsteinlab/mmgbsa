@@ -1,17 +1,11 @@
-#!/bin/bash -l
-#$ -N mmgbsa2.1
-#$ -j y
-#$ -cwd
-#$ -q standard.q
-#$ -l h_vmem=5G
+
+# BSUB options passed directly on the command line.
 
 ###################################################################
 #                                                                 #
 # User-defined parameters, now passed as arguments                #
 #                                                                 #
 ###################################################################
-
-# TEST! Just to see how GitLab documents command line-pushed changes. 
 
 # Trajectory of the full system (can be a DCD file or an XTC file)
 mytraj=$1
@@ -22,17 +16,24 @@ stride=$3
 # Number of frames per job
 js=$4 # number of frames in each sub-job
 
-
 ###################################################################
 # Setup some variables 
 
 psf=./data/system.namd.psf
 
-A=$SGE_TASK_ID
+#SGE :
+#A=$SGE_TASK_ID
+#LSF :
+A=$LSB_JOBINDEX
 B=`printf %04i $A`
 
+#SGE :
+#mytmpdir=$TMPDIR
+#LSF :
+mytmpdir=$__LSF_JOB_TMPDIR__
+
 # mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
-# This is now inherited by the environment through qsub -V
+# This is now inherited by the environment through qsub -v
 source $mmgbsa_path/scripts/setenv.sh
 catdcd=$mmgbsa_path/parallel_scripts/catdcd 
 
@@ -40,8 +41,8 @@ current=$(pwd)
 
 mj=$(( $js - 1 ))
 
-dcd_tmp=$TMPDIR/job_${B}
-main_tmp=$TMPDIR/${B}
+dcd_tmp=$mytmpdir/job_${B}
+main_tmp=$mytmpdir/${B}
 
 if [[ ${mytraj##*.} == "xtc" ]] ; then
 	trajtypeflag="-xtc"
@@ -55,7 +56,7 @@ fi
 ###################################################################
 # Make directories and small trajectory
 
-time_to_sleep=$(( $SGE_TASK_ID % 3 ))
+time_to_sleep=$(( $A % 3 ))
 sleep $time_to_sleep  
 
 mkdir $dcd_tmp
@@ -87,32 +88,34 @@ then
 
 	if [ $A -le 1 ]
 	then	
-		$catdcd -o $dcd_tmp/$B.dcd -otype dcd -first 1 -last $js $trajtypeflag $mytraj
+		first=1
+		last=$js
 	else
 		last=$(($A*$js))
         	first=$((last-$mj))
-		$catdcd -o $dcd_tmp/$B.dcd -otype dcd -first $first -last $last $trajtypeflag $mytraj
 	fi
 else
 	final_job=$(((frame_num/$js)+1))
 
         if [ $A -le 1 ]
         then
-                $catdcd -o $dcd_tmp/$B.dcd -otype dcd -first 1 -last $js $trajtypeflag $mytraj
+                first=1
+                last=$js
         elif [ $A -lt $final_job ] 
 	then
                 last=$(($A*$js))
                 first=$((last-$mj))
-                $catdcd -o $dcd_tmp/$B.dcd -otype dcd -first $first -last $last $trajtypeflag $mytraj
 	else 
                 first=$((($A*$js)-$mj))
-		$catdcd -o $dcd_tmp/$B.dcd -otype dcd -first $first -last $frame_num $trajtypeflag $mytraj
+		last=$frame_num
         fi	
 fi
 
 unset frame_num
 
 small_traj=$dcd_tmp/$B.dcd
+$catdcd -o $small_traj -otype dcd -first $first -last $last $trajtypeflag $mytraj
+
 
 # Get the number of frames in the local trajectory bit
 last=`$catdcd -num $small_traj | awk '($1=="Total"){print $3}'`
@@ -126,7 +129,7 @@ cd $main_tmp
 $catdcd -o ./data/first_frame_of_dcd.pdb -otype pdb -s $psf -stype psf -first $real_first -last 1 $small_traj
 
 echo " "
-echo "Task ID : $SGE_TASK_ID"
+echo "Task ID : $A"
 echo "Host : " `hostname`
 echo "Base directory : $current"
 echo "Working directory : $main_tmp"
@@ -134,13 +137,13 @@ echo "DCD directory : $dcd_tmp"
 
 echo " "
 echo " Preparing local MMGBSA job ... "
-$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$SGE_TASK_ID.log
+$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$A.log
 
 ###################################################################
 # Run local mmgbsa 
 
 echo " Running local MMGBSA job ... "
-$mmgbsa_path/scripts/run_one_mmgbsa.sh  >  $current/log/run_job_$SGE_TASK_ID.log
+$mmgbsa_path/scripts/run_one_mmgbsa.sh  >  $current/log/run_job_$A.log
 
 
 sleep 10
@@ -153,7 +156,7 @@ rm -r ./data
 
 rm -r $dcd_tmp
 
-cd $TMPDIR
+cd $mytmpdir
 
 tar czf $B.tar.gz $B 
 rm -r $B

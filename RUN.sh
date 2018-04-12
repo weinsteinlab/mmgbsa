@@ -12,7 +12,7 @@ set -u
 ###################################################################
 
 # Path to MMGBSA distribution 
-mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+mmgbsa_path=/home/mcuendet/mmgbsa/mmgbsa2.1/
 
 # Selection for the MMGBSA system
 system_selection='protein'
@@ -189,7 +189,9 @@ $scripts/prepare_mmgbsa_common.csh "$cutoff" "$ionconc"
 echo "Testing trajectory ... "
 mkdir -p test_traj
 cd test_traj
-mypsf="../data/system.namd.psf"
+# Try to use only the PDB 
+#mypsf="../data/system.namd.psf"
+mypsf=../system.pdb
 
 cat > test_traj.tcl  << EOF
   source ../vmd_selections.tcl
@@ -212,29 +214,33 @@ cd ..
 
 echo "Submitting all sub-jobs ... "
 
-jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path $res_req  -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
+# SGE : 
+#jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path $res_req  -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
 # The -v option to qsub pushes the  environment variables from the shell executing qsub
 # This is needed to pass the mmgbsa_path global variable. 
+# jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
 
-jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
+# LSF :
+jobid_raw=$( bsub -q 3dmodel-big -n 1 -o "mmgbsa2.1.o%J.%I" -e "mmgbsa2.1.e%J.%I"  -J "mmgbsa.[1-$n_jobs]"  " sh $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job" )
+echo $jobid_raw
+jobid=$( echo $jobid_raw  | awk '{print substr($2,2,length($2)-2)}' )
+# In LSF, (almost) all environment variables are passed by default.
+# Passing arguments is not as easy, and requires the sub-sh construct. 
 
 ###################################################################
 # Submit post-processing job
 
 echo "Submitting final post-processing job ... "
 
-if [ $frames_per_job -lt 100 ]
-then
-	qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
-else
-        qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit_more_frames.sh $traj $n_jobs $frames_per_job
-fi
+# SGE : 
+#qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
+# qstat
 
-qstat
+# LSF :
+bsub -q 3dmodel-big -n 1 -o "mmgbsa2.1_final.o%J.%I" -e "mmgbsa2.1_final.e%J.%I" -w "done($jobid)" -J "mmgbsa_final" " sh $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job "
+# Passing arguments is not as easy, and requires the sub-sh construct. 
+bjobs
+
 exit
-
-
-
-
 
 

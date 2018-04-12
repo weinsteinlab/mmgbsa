@@ -5,6 +5,8 @@
 #$ -q standard.q
 #$ -l h_vmem=10G
 
+# BSUB options submitted directly on the command line. 
+
 ###################################################################
 #                                                                 #
 # User-defined parameters                                         #
@@ -21,15 +23,21 @@ source $mmgbsa_path/scripts/setenv.sh
 
 cwd=$(pwd)
 
-tar czf ./sub_job_logs.tar.gz ./mmgbsa2.1.o*
-rm ./mmgbsa2.1.o*
+#SGE :
+#mytmpdir=$TMPDIR
+#LSF :
+mytmpdir=$__LSF_JOB_TMPDIR__
+
+
+tar czf ./sub_job_logs.tar.gz ./mmgbsa2.1.o* ./mmgbsa2.1.e*
+rm ./mmgbsa2.1.o* ./mmgbsa2.1.e*
 
 cd ..
 
-cp -rp $cwd $TMPDIR/final_job_tmp
+cp -rp $cwd $mytmpdir/final_job_tmp
 
-cd $TMPDIR/final_job_tmp
-echo "Working in directory $TMPDIR/final_job_tmp/"
+cd $mytmpdir/final_job_tmp
+echo "Working in directory $mytmpdir/final_job_tmp/"
 
 for file in `ls [0-9][0-9][0-9][0-9].tar.gz`; do
 	tar -xzf $file
