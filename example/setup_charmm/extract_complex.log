@@ -5,8 +5,8 @@ Info) Please include this reference in published work using VMD:
 Info)    Humphrey, W., Dalke, A. and Schulten, K., `VMD - Visual   
 Info)    Molecular Dynamics', J. Molec. Graphics 1996, 14.1, 33-38.
 Info) -------------------------------------------------------------
-Info) Multithreading available, 8 CPUs detected.
-Info) Free system memory: 1253MB (33%)
+Info) Multithreading available, 1 CPU detected.
+Info) Free system memory: 1180MB (57%)
 Warning) Detected a mismatch between CUDA runtime and GPU driver
 Warning) Check to make sure that GPU drivers are up to date.
 Info) No CUDA accelerator devices available.

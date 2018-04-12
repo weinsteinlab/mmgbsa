@@ -1,12 +1,14 @@
 1
                  Chemistry at HARvard Macromolecular Mechanics
-           (CHARMM) - Developmental Version 39b2   February 15, 2015            
-       Copyright(c) 1984-2014  President and Fellows of Harvard College
+                   (CHARMM) - Developmental Version 36a2  February 15, 2008    
+       Copyright(c) 1984-2001  President and Fellows of Harvard College
                               All Rights Reserved
-     Current operating system: Linux-2.6.32-279.el6.x86_64(x86_64)@panda2.p     
-                 Created on  9/12/17 at 19:45:59 by user: mac2109     
+      Current operating system: Linux-2.6.18-128.el5xen(x86_64)@fido.pug.pbt
+                 Created on  1/24/17 at 10:44:38 by user: mac2109     
 
-            Maximum number of ATOMS:    360720, and RESidues:      120240
+            Maximum number of ATOMS:     60120, and RESidues:       20040
+            Current HEAP size:        10240000, and STACK size:  10000000
+
  RDTITL> *
  RDTITL> No title read.
 
@@ -28,7 +30,7 @@
  CHARMM>    open unit 1 card read name @lib/top_all36_prot.rtf
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/top_all36_prot.rtf::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/top_all36_prot.rtf
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/top_all36_prot.rtf
   
  CHARMM>    read RTF card unit 1
  MAINIO> Residue topology file being read from unit   1.
@@ -47,7 +49,7 @@
  CHARMM>    open unit 1 card read name @lib/top_all36_lipid.rtf
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/top_all36_lipid.rtf::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/top_all36_lipid.rtf
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/top_all36_lipid.rtf
   
  CHARMM>    read RTF card unit 1 append
  MAINIO> Residue topology file being read from unit   1.
@@ -64,7 +66,7 @@
  CHARMM>    open unit 1 card read name @lib/top_all36_cgenff.rtf
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/top_all36_cgenff.rtf::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/top_all36_cgenff.rtf
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/top_all36_cgenff.rtf
   
  CHARMM>    read RTF card unit 1 append
  MAINIO> Residue topology file being read from unit   1.
@@ -82,7 +84,7 @@
  CHARMM>    open unit 1 card read name @lib/top_all36_carb.rtf
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/top_all36_carb.rtf::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/top_all36_carb.rtf
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/top_all36_carb.rtf
   
  CHARMM>    read RTF card unit 1 append
  MAINIO> Residue topology file being read from unit   1.
@@ -103,7 +105,7 @@
  CHARMM>    open unit 1 card read name @lib/par_all36_prot.prm
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/par_all36_prot.prm::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/par_all36_prot.prm
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/par_all36_prot.prm
   
  CHARMM>    read PARA card flex unit 1
 
@@ -124,7 +126,7 @@
  CHARMM>    open unit 1 card read name @lib/par_all36_lipid.prm
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/par_all36_lipid.prm::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/par_all36_lipid.prm
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/par_all36_lipid.prm
   
  CHARMM>    read PARA card flex unit 1 append
 
@@ -143,7 +145,7 @@
  CHARMM>    open unit 1 card read name @lib/par_all36_cgenff.prm
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/par_all36_cgenff.prm::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/par_all36_cgenff.prm
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/par_all36_cgenff.prm
   
  CHARMM>    read PARA card flex unit 1 append
 
@@ -163,7 +165,7 @@
  CHARMM>    open unit 1 card read name @lib/par_all36_carb.prm
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/par_all36_carb.prm::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/par_all36_carb.prm
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/par_all36_carb.prm
   
  CHARMM>    read PARA card flex unit 1 append
 
@@ -183,114 +185,10 @@
   
  CHARMM>     
   
- CHARMM>    STREAM @lib/toppar_all36_lipid_cholesterol.str
- Parameter: LIB -> "../TOPPAR"
- VOPEN> Attempting to open::../toppar/toppar_all36_lipid_cholesterol.str::
- OPNLGU> Unit 99 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/toppar_all36_lipid_cholesterol.str
-
-                    INPUT STREAM SWITCHING TO UNIT    99
- RDTITL> * TOPPAR STREAM FILE FOR CHOLESTEROL.  STREAM FOLLOWING READING OF
- RDTITL> * TOP_ALL36_LIPID.RTF
- RDTITL> * PAR_ALL36_LIPID.RTF
- RDTITL> * TOP_ALL36_CGENFF.RTF
- RDTITL> * AND PAR_ALL36_CGENFF.PRM
- RDTITL> *
- Parameter: IN1 <- "" <empty>
-  
- CHARMM>     
-  
- CHARMM>    !topology and parameters are included for two cholesterol models. the
- CHARMM>    !model may be selected by setting variable chol_model to 1 or 2, as
- CHARMM>    !specified below
- CHARMM>    !
- CHARMM>     
-  
- CHARMM>    set chol_model 1 !2 for original Suits et al. model
- Parameter: CHOL_MODEL <- "1"
-  
- CHARMM>     
-  
- CHARMM>    !
- CHARMM>    !1) Revised model of Lim et al.  This contains a number of NBFIXes that
- CHARMM>    !makes it unsuitable for ANTON (set chol_model 1)
- CHARMM>    !
- CHARMM>    !2) Original model of Suits et al., which is used on ANTON as well as
- CHARMM>    !being suitable for other systems (set chol_model 2 (or anything but 1....))
- CHARMM>    !
- CHARMM>    !references
- CHARMM>    !
- CHARMM>    !Lim, J.B., Rogaski, B. and Klauda, J.B.. "Update of the Cholesterol Force Field
- CHARMM>    !Parameters in CHARMM" 116: 203-210 (2012).
- CHARMM>    !
- CHARMM>    !Suits, F., Pitman, M., MacKerell, A.D., Jr., Feller, S.E. "Molecular Level
- CHARMM>    !Organization of Saturated and Polyunsaturated Fatty Acids in a
- CHARMM>    !Phosphatidylcholine Bilayer Containing Cholesterol" Biochemistry,
- CHARMM>    !43(49):15318-28, 2004
- CHARMM>    !
- CHARMM>     
-  
- CHARMM>    !test "append"
- CHARMM>    set nat ?NATC
- RDCMND substituted energy or value "?NATC" to "411"
- Parameter: NAT <- "411"
-  
- CHARMM>    set app
- Parameter: APP <- "" <empty>
-  
- CHARMM>    !We're exploiting what is arguably a bug in the parser. On the left hand side,
- CHARMM>    !the quotes have priority, so NAT is correctly substituted. On the right hand
- CHARMM>    !side, the ? has priority and NATC" (sic) is not a valid substitution...
- CHARMM>    if "@NAT" ne "?NATC" if @nat ne 0 set app append
- Parameter: NAT -> "411"
- Parameter: NAT -> "411"
- RDCMND: can not substitute energy "?NATC""
- Comparing ""411"" and ""?NATC"".
- IF test evaluated as true.  Performing command
- Comparing "411" and "0".
- IF test evaluated as true.  Performing command
- Parameter: APP <- "APPEND"
-  
- CHARMM>     
-  
- CHARMM>    if chol_model eq 1 then
- Comparing "1" and "1".
- IF test evaluated as true.  Performing command
-  
- CHARMM>     
-  
- CHARMM>    ! reference
- CHARMM>    ! Lim, J.B., Rogaski, B. and Klauda, J.B.. "Update of the Cholesterol Force Field
- CHARMM>    ! Parameters in CHARMM" 116: 203-210 (2012).
- CHARMM>    !
- CHARMM>     
-  
- CHARMM>    read rtf card @app
- Parameter: APP -> "APPEND"
- MAINIO> Residue topology file being read from unit  99.
- RDTITL> * TOPOLOGY FOR CHOLESTEROL
- RDTITL> *
-  
- CHARMM>     
-  
- CHARMM>    read param card flex @app
- Parameter: APP -> "APPEND"
-
-          PARAMETER FILE BEING READ FROM UNIT 99
- RDTITL> * CHOLESTEROL PARAMETERS
- RDTITL> *
- PARMIO> NONBOND, HBOND lists and IMAGE atoms cleared.
-  
- CHARMM>     
-  
- CHARMM>    return
- VCLOSE: Closing unit   99 with status "KEEP"
-
-                    RETURNING TO INPUT STREAM     5
-  
  CHARMM>    STREAM @lib/toppar_water_ions.str
  Parameter: LIB -> "../TOPPAR"
  VOPEN> Attempting to open::../toppar/toppar_water_ions.str::
- OPNLGU> Unit 99 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../toppar/toppar_water_ions.str
+ OPNLGU> Unit 99 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../toppar/toppar_water_ions.str
 
                     INPUT STREAM SWITCHING TO UNIT    99
  RDTITL> * TOPLOGY AND PARAMETER INFORMATION FOR WATER AND IONS.
@@ -395,15 +293,16 @@
  CHARMM>     
   
  CHARMM>    set wrn ?WRNLEV
- RDCMND substituted energy or value "?WRNLEV" to "5"
- Parameter: WRN <- "5"
+ RDCMND: can not substitute energy "?WRNLEV"
+ Parameter: WRN <- "?WRNLEV"
   
  CHARMM>    ! Some versions of CHARMM don't seem to initialize wrnlev...
  CHARMM>    if "@WRN" eq "?WRNLEV" set wrn 5
- Parameter: WRN -> "5"
+ Parameter: WRN -> "?WRNLEV"
  RDCMND: can not substitute energy "?WRNLEV""
- Comparing ""5"" and ""?WRNLEV"".
- IF test evaluated as false.  Skipping command
+ Comparing ""?WRNLEV"" and ""?WRNLEV"".
+ IF test evaluated as true.  Performing command
+ Parameter: WRN <- "5"
   
  CHARMM>    set bom ?bomlev
  RDCMND substituted energy or value "?BOMLEV" to "0"
@@ -441,7 +340,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg1.crd
  VOPEN> Attempting to open::seg1.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg1.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg1.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -471,9 +370,9 @@
           ALA ALA TYR ALA MET ILE LEU GLY ILE ASP ALA ILE LEU ASP MET GLY ARG THR MET VAL 
           ASN VAL THR GLY ASP LEU THR GLY THR ALA ILE VAL ALA LYS THR GLU GLY THR LEU VAL 
           PRO ARG 
- ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 62 TITRATABLE GROUPS
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 52 TITRATABLE GROUPS
  THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
- HIS -  0  HSD -  8  HSE -  2  HSP -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
+ HIS -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
   
  CHARMM>    REWIND UNIT 1
                     REWINDING UNIT     1
@@ -506,7 +405,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg2.crd
  VOPEN> Attempting to open::seg2.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg2.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg2.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -536,9 +435,9 @@
           ALA     ALA     TYR     ALA     MET     ILE     LEU     GLY     ILE     ASP     ALA     ILE     LEU     ASP     MET     GLY     ARG     THR     MET     VAL     
           ASN     VAL     THR     GLY     ASP     LEU     THR     GLY     THR     ALA     ILE     VAL     ALA     LYS     THR     GLU     GLY     THR     LEU     VAL     
           PRO     ARG     
- ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 62 TITRATABLE GROUPS
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 52 TITRATABLE GROUPS
  THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
- HIS -  0  HSD -  8  HSE -  2  HSP -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
+ HIS -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
   
  CHARMM>    REWIND UNIT 1
                     REWINDING UNIT     1
@@ -569,7 +468,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg3.crd
  VOPEN> Attempting to open::seg3.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg3.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg3.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -599,9 +498,9 @@
           ALA     ALA     TYR     ALA     MET     ILE     LEU     GLY     ILE     ASP     ALA     ILE     LEU     ASP     MET     GLY     ARG     THR     MET     VAL     
           ASN     VAL     THR     GLY     ASP     LEU     THR     GLY     THR     ALA     ILE     VAL     ALA     LYS     THR     GLU     GLY     THR     LEU     VAL     
           PRO     ARG     
- ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 62 TITRATABLE GROUPS
+ ***** Message from SEQRDR ***** THE SYSTEM CONTAINS 52 TITRATABLE GROUPS
  THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
- HIS -  0  HSD -  8  HSE -  2  HSP -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
+ HIS -  0  ASP - 10  GLU - 10  LYS - 14  TYR - 18
   
  CHARMM>    REWIND UNIT 1
                     REWINDING UNIT     1
@@ -632,7 +531,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg4.crd
  VOPEN> Attempting to open::seg4.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg4.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg4.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -643,7 +542,7 @@
           ASP     
  ***** Message from SEQRDR ***** THE SYSTEM CONTAINS  1 TITRATABLE GROUPS
  THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
- HIS -  0  HSD -  0  HSE -  0  HSP -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
+ HIS -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
   
  CHARMM>    REWIND UNIT 1
                     REWINDING UNIT     1
@@ -674,7 +573,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg5.crd
  VOPEN> Attempting to open::seg5.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg5.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg5.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -685,7 +584,7 @@
           ASP     
  ***** Message from SEQRDR ***** THE SYSTEM CONTAINS  1 TITRATABLE GROUPS
  THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
- HIS -  0  HSD -  0  HSE -  0  HSP -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
+ HIS -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
   
  CHARMM>    REWIND UNIT 1
                     REWINDING UNIT     1
@@ -716,7 +615,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg6.crd
  VOPEN> Attempting to open::seg6.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg6.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg6.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -727,7 +626,7 @@
           ASP     
  ***** Message from SEQRDR ***** THE SYSTEM CONTAINS  1 TITRATABLE GROUPS
  THE USER MUST PREDETERMINE THE PROTONATION STATE THROUGH THE SEQUENCE AND RTF
- HIS -  0  HSD -  0  HSE -  0  HSP -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
+ HIS -  0  ASP -  1  GLU -  0  LYS -  0  TYR -  0
   
  CHARMM>    REWIND UNIT 1
                     REWINDING UNIT     1
@@ -758,7 +657,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg7.crd
  VOPEN> Attempting to open::seg7.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg7.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg7.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -797,7 +696,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg8.crd
  VOPEN> Attempting to open::seg8.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg8.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg8.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -836,7 +735,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg9.crd
  VOPEN> Attempting to open::seg9.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg9.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg9.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -875,7 +774,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg10.crd
  VOPEN> Attempting to open::seg10.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg10.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg10.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -914,7 +813,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg11.crd
  VOPEN> Attempting to open::seg11.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg11.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg11.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -953,7 +852,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg12.crd
  VOPEN> Attempting to open::seg12.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg12.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg12.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -992,7 +891,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg13.crd
  VOPEN> Attempting to open::seg13.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg13.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg13.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -1031,7 +930,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg14.crd
  VOPEN> Attempting to open::seg14.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg14.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg14.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -1070,7 +969,7 @@
   
  CHARMM>    OPEN UNIT 1 READ CARD NAME seg15.crd
  VOPEN> Attempting to open::seg15.crd::
- OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/seg15.crd
+ OPNLGU> Unit  1 opened for READONLY access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/seg15.crd
   
  CHARMM>    READ SEQUENCE COOR RESID UNIT 1
  MAINIO> Sequence information being read from unit   1.
@@ -1125,7 +1024,7 @@
   
  CHARMM>    OPEN UNIT 1 WRITE CARD NAME ../data/complex.psf
  VOPEN> Attempting to open::../data/complex.psf::
- OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../data/complex.psf
+ OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../data/complex.psf
   
  CHARMM>    WRITE PSF CARD UNIT 1
  RDTITL> CLOSE UNIT 1
@@ -1138,7 +1037,7 @@
   
  CHARMM>    OPEN UNIT 1 WRITE CARD NAME ../data/complex.crd
  VOPEN> Attempting to open::../data/complex.crd::
- OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../data/complex.crd
+ OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../data/complex.crd
   
  CHARMM>    WRITE COOR CARD UNIT 1
  RDTITL> CLOSE UNIT 1
@@ -1152,7 +1051,7 @@
   
  CHARMM>    OPEN UNIT 1 WRITE CARD NAME ../data/complex.pdb
  VOPEN> Attempting to open::../data/complex.pdb::
- OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa2.1.1/example/preparing-system/preparing-system/../data/complex.pdb
+ OPNLGU> Unit  1 opened for WRITE access to /pbtech_mounts/hwlab_store/mac2109/mmgbsa/mmgbsa2.1/example/setup_charmm/preparing-system/../data/complex.pdb
   
  CHARMM>    WRITE COOR PDB UNIT 1
  RDTITL> CLOSE UNIT 1
@@ -1173,11 +1072,19 @@
   
  CHARMM>    STOP
 $$$$$$  New timer profile $$$$$
- Total time                  17518.00 Other:            0.00
+ Total time                      9.73 Other:            0.00
 
                     NORMAL TERMINATION BY NORMAL STOP
-                    MOST SEVERE WARNING WAS AT LEVEL  4
+                    MAXIMUM STACK SPACE USED IS  252798
+                    STACK CURRENTLY IN USE IS         0
+                    MOST SEVERE WARNING WAS AT LEVEL  1
+                    HEAP PRINTOUT-  HEAP SIZE         10240000
+                    SPACE CURRENTLY IN USE IS            13824
+                    MAXIMUM SPACE USED IS               365894
+                    FREE LIST
+  PRINHP> ADDRESS:               1 LENGTH:        10225676 NEXT:        10239501
+  PRINHP> ADDRESS:        10239501 LENGTH:             500 NEXT:               0
 
                     $$$$$ JOB ACCOUNTING INFORMATION $$$$$
-                     ELAPSED TIME:     4.87  HOURS   
-                         CPU TIME:    17.48  SECONDS 
+                     ELAPSED TIME:     9.73  SECONDS 
+                         CPU TIME:     8.84  SECONDS 

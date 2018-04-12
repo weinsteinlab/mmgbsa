@@ -36,7 +36,6 @@ open unit 1 card read name @lib/par_all36_carb.prm
 read PARA card flex unit 1 append
 close unit 1 
 
-STREAM @lib/toppar_all36_lipid_cholesterol.str 
 STREAM @lib/toppar_water_ions.str 
 
 OPEN UNIT 1 READ CARD NAME seg1.crd 
