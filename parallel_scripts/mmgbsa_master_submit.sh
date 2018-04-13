@@ -126,7 +126,7 @@ last=`$catdcd -num $small_traj | awk '($1=="Total"){print $3}'`
 
 cd $main_tmp
 
-$catdcd -o ./data/first_frame_of_dcd.pdb -otype pdb -s $psf -stype psf -first $real_first -last 1 $small_traj
+# $catdcd -o ./data/first_frame_of_dcd.pdb -otype pdb -s $psf -stype psf -first $real_first -last 1 $small_traj
 
 echo " "
 echo "Task ID : $A"

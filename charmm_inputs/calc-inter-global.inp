@@ -23,7 +23,7 @@ OPEN UNIT 12 CARD WRITE NAME total/inter-global.dat
 NBOND @nbstr
 
 INTER SELE A END  SELE B END
-! #### This first evaluation is necessary for the NBOND to be takein into account. 
+! #### This first evaluation is necessary for the NBOND to be taken into account. 
 ! #### Otherwise the first frame is evaluated with unknown default parameters. 
 
 SET n 0

@@ -58,7 +58,7 @@ close(IN);
 
 open(OUT, ">binding-time.dat");
 
-printf OUT ("       %7s   %7s  %7s  %7s  :   %7s \n","VdW","Elec","GB","SA", "TOTAL");
+printf OUT ("       %8s   %8s  %8s  %8s  :   %8s \n","VdW","Elec","GB","SA", "TOTAL");
 print OUT "---------------------------------------------------------\n";
 
 my $vdw_tot=0;
@@ -96,7 +96,7 @@ for $i (1..$nconf) {
   $bind2_tot+=$bind[$i]**2;
 
 
-  printf OUT ("%3d :  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+  printf OUT ("%3d :  %8.2f   %8.2f  %8.2f  %8.2f  :   %8.2f \n",
 	      $i, $vdw[$i], $elec[$i], $desolv[$i], $bur[$i], $bind[$i]);
 }
 
@@ -200,13 +200,13 @@ if ($bind2_tot > 0) {
 
 
 print OUT "---------------------------------------------------------\n";
-printf OUT ("AVE :  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+printf OUT ("AVE :  %8.2f   %8.2f  %8.2f  %8.2f  :   %8.2f \n",
 	      $vdw_mean, $elec_mean, $desolv_mean, $bur_mean, $bind_mean);
-printf OUT ("SD  :  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+printf OUT ("SD  :  %8.2f   %8.2f  %8.2f  %8.2f  :   %8.2f \n",
 	      $vdw_sd, $elec_sd, $desolv_sd, $bur_sd, $bind_sd);
-printf OUT ("N_EF:  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+printf OUT ("N_EF:  %8.2f   %8.2f  %8.2f  %8.2f  :   %8.2f \n",
 	      $vdw_n_eff, $elec_n_eff, $desolv_n_eff, $bur_n_eff, $bind_n_eff);
-printf OUT ("ERR :  %7.2f   %7.2f  %7.2f  %7.2f  :   %7.2f \n",
+printf OUT ("ERR :  %8.2f   %8.2f  %8.2f  %8.2f  :   %8.2f \n",
 	      $vdw_err, $elec_err, $desolv_err, $bur_err, $bind_err);
 
 

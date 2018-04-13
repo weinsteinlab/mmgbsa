@@ -100,6 +100,9 @@ set mypsf="./data/system.namd.pdb"
 cat > extract_frames.tcl  << EOF
   source ./vmd_selections.tcl
   mol new $mypsf
+  # When using a pdb file for topology, we have to delete the coordinates before loading the trajectory!!
+  animate delete all
+
   mol addfile $trajname waitfor all
 
   set nf [molinfo top get numframes]
