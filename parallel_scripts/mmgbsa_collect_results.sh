@@ -73,14 +73,7 @@ counter=1
 
 while [ $counter -le $job_num ]
 do
-
-	if [ $counter -le 1 ]
-	then
-		job_num_formatted=`printf %04i $counter`
-		cp $current/$job_num_formatted/inter/inter-byres-[0-9]-[a-b].dat ./inter/.
-		cp $current/$job_num_formatted/inter/inter-byres-[0-9][0-9]-[a-b].dat ./inter/.
-#		cp $current/$job_num_formatted/inter/inter-byres-[0-9][0-9][0-9]-[a-b].dat ./inter/.
-	elif [ $counter -lt $job_num ]
+	if [ $counter -lt $job_num ]
 	then
 		job_num_formatted=`printf %04i $counter`
 		multiplier=$(((counter-1) * frames_per_job))
@@ -530,14 +523,7 @@ counter=1
 
 while [ $counter -le $job_num ]
 do
-
-        if [ $counter -le 1 ]
-        then 
-                job_num_formatted=`printf %04i $counter`
-                cp $current/$job_num_formatted/solv-a/solv-a-frame-[0-9].dat ./solv-a/.
-                cp $current/$job_num_formatted/solv-a/solv-a-frame-[0-9][0-9].dat ./solv-a/.
-               # cp $current/$job_num_formatted/solv-a/solv-a-frame-[0-9][0-9][0-9].dat ./solv-a/.
-        elif [ $counter -lt $job_num ]
+        if [ $counter -lt $job_num ]
         then 
                 job_num_formatted=`printf %04i $counter`
                 multiplier=$(((counter-1) * frames_per_job))
@@ -676,14 +662,7 @@ counter=1
 
 while [ $counter -le $job_num ]
 do
-
-        if [ $counter -le 1 ]
-        then 
-                job_num_formatted=`printf %04i $counter`
-                cp $current/$job_num_formatted/solv-b/solv-b-frame-[0-9].dat ./solv-b/.
-                cp $current/$job_num_formatted/solv-b/solv-b-frame-[0-9][0-9].dat ./solv-b/.
-               # cp $current/$job_num_formatted/solv-b/solv-b-frame-[0-9][0-9][0-9].dat ./solv-b/.
-        elif [ $counter -lt $job_num ]
+        if [ $counter -lt $job_num ]
         then 
                 job_num_formatted=`printf %04i $counter`
                 multiplier=$(((counter-1) * frames_per_job))
@@ -822,14 +801,7 @@ counter=1
 
 while [ $counter -le $job_num ]
 do
-
-        if [ $counter -le 1 ]
-        then 
-                job_num_formatted=`printf %04i $counter`
-                cp $current/$job_num_formatted/solv-comp/solv-comp-frame-[0-9].dat ./solv-comp/.
-                cp $current/$job_num_formatted/solv-comp/solv-comp-frame-[0-9][0-9].dat ./solv-comp/.
-                #cp $current/$job_num_formatted/solv-comp/solv-comp-frame-[0-9][0-9][0-9].dat ./solv-comp/.
-        elif [ $counter -lt $job_num ]
+        if [ $counter -lt $job_num ]
         then 
                 job_num_formatted=`printf %04i $counter`
                 multiplier=$(((counter-1) * frames_per_job))
