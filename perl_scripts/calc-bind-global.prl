@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-ead suff in
 ##############################################
 #
 # Written by Vincent Zoete
@@ -67,7 +66,7 @@ close(IN);
 
 open(OUT, ">binding-time.dat");
 
-printf OUT ("       %8s   %8s  %8s  %8s  :   %8s \n","VdW","Elec","GB","SA", "TOTAL");
+printf OUT ("       %8s  %8s  %8s  %8s  :   %8s \n","VdW","Elec","GB","SA", "TOTAL");
 print OUT "---------------------------------------------------------\n";
 
 for $i (1..$nconf) {
@@ -78,8 +77,8 @@ for $i (1..$nconf) {
   # as (a + b -comp) (to get a positive number)
   $bind[$i] = $vdw[$i] + $elec[$i] + $desolv[$i] + $np[$i];
 
-  printf OUT ("%3d :  %8.2f   %8.2f  %8.2f  %8.2f  :   %8.2f \n",
-	      $i, $vdw[$i], $elec[$i], $desolv[$i], $bur[$i], $bind[$i]);
+  printf OUT ("%3d :  %8.2f  %8.2f  %8.2f  %8.2f  :   %8.2f \n",
+	      $i, $vdw[$i], $elec[$i], $desolv[$i], $np[$i], $bind[$i]);
 }
 
 
@@ -91,19 +90,19 @@ for $i (1..$nconf) {
 ($elec_mean, $elec_sd, $elec_n_eff, $elec_err) = time_statistics_FTZ(@elec);
 ($desolv_mean, $desolv_sd, $desolv_n_eff, $desolv_err) = time_statistics_FTZ(@desolv);
 ($np_mean, $np_sd, $np_n_eff, $np_err) = time_statistics_FTZ(@np);
-($full_mean, $full_sd, $full_n_eff, $full_err) = time_statistics_FTZ(@full);
+($bind_mean, $bind_sd, $bind_n_eff, $bind_err) = time_statistics_FTZ(@bind);
 
 
 
 print OUT "---------------------------------------------------------\n";
-printf OUT ("AVE :  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
-              $vdw_mean, $elec_mean, $desolv_mean, $np_mean, $full_mean);
-printf OUT ("SD  :  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
-              $vdw_sd, $elec_sd, $desolv_sd, $np_sd, $full_sd);
-printf OUT ("N_EF:  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
-              $vdw_n_eff, $elec_n_eff, $desolv_n_eff, $np_n_eff, $full_n_eff);
-printf OUT ("ERR :  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
-              $vdw_err, $elec_err, $desolv_err, $np_err, $full_err);
+printf OUT ("AVE :  %8.2f  %8.2f  %8.2f  %8.2f  :   %8.2f \n",
+              $vdw_mean, $elec_mean, $desolv_mean, $np_mean, $bind_mean);
+printf OUT ("SD  :  %8.2f  %8.2f  %8.2f  %8.2f  :   %8.2f \n",
+              $vdw_sd, $elec_sd, $desolv_sd, $np_sd, $bind_sd);
+printf OUT ("N_EF:  %8.2f  %8.2f  %8.2f  %8.2f  :   %8.2f \n",
+              $vdw_n_eff, $elec_n_eff, $desolv_n_eff, $np_n_eff, $bind_n_eff);
+printf OUT ("ERR :  %8.2f  %8.2f  %8.2f  %8.2f  :   %8.2f \n",
+              $vdw_err, $elec_err, $desolv_err, $np_err, $bind_err);
 
 close(OUT);
 
