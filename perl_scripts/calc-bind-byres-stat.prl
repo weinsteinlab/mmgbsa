@@ -21,6 +21,12 @@
 # use experimental qw(smartmatch switch);
 
 
+$mmgbsa_path = $ENV{'mmgbsa_path'};
+require "$mmgbsa_path/perl_scripts/time_statistics.prl";
+
+# --------------------------------------------------------------------
+# Read suff in
+
 $natom=`grep \"NATOM \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in the system
 chomp $natom;
 print "Total number of atoms in the system : $natom \n";
@@ -50,6 +56,9 @@ my @resAB = @resA;
 push( @resAB, @resB) ; 
 $nresAB = $nresA + $nresB;
 
+
+# --------------------------------------------------------------------
+# Find backbone
 
 
 open(IN,"data/charges.crd");
@@ -212,21 +221,6 @@ mkdir "dg";
 foreach $i (@resAB)  {
   $filename="dg/dg-res-$i.dat";
   open(OUT,">$filename");
-  # print "   residue $i ... \n";
-
-  # debug :
-  #my $vdw_sc_tot=0;
-  #my $vdw_bb_tot=0;
-  #my $vdw_all_tot=0;
-  #my $elec_sc_tot=0;
-  #my $elec_bb_tot=0;
-  #my $elec_all_tot=0;
-  #my $solv_sc_tot=0;
-  #my $solv_bb_tot=0;
-  #my $solv_all_tot=0;
-  #my $np_sc_tot=0;
-  #my $np_bb_tot=0;
-  #my $np_all_tot=0;
   
   my $dg_sc_tot=0;
   my $dg_bb_tot=0;
@@ -258,115 +252,14 @@ foreach $i (@resAB)  {
     $np_all =  0.0072*($sas_comp_all[$i][$n] - $sas_a_all[$i][$n] -$sas_b_all[$i][$n]) ;
     $dg_all[$n] = $vdw_all + $elec_all + $solv_all  + $np_all ;
     
-    # debug :
-    #if ( ($i==81) and ($n==1)) {
-    #    print "step 1:\n";
-    #	print "bb  $dg_bb = $vdw_bb + $elec_bb + $solv_bb  + $np_bb \n";
-    #	print "sc  $dg_sc = $vdw_sc + $elec_sc + $solv_sc  + $np_sc \n";
-    #	print "all  $dg_all = $vdw_all + $elec_all + $solv_all  + $np_all \n";
-    #}
-
-    #$vdw_sc_tot+=$vdw_sc;
-    #$vdw_bb_tot+=$vdw_bb;
-    #$vdw_all_tot+=$vdw_all;
-    #$elec_sc_tot+=$elec_sc; 
-    #$elec_bb_tot+=$elec_bb; 
-    #$elec_all_tot+=$elec_all; 
-    #$solv_sc_tot+=$solv_sc;
-    #$solv_bb_tot+=$solv_bb;
-    #$solv_all_tot+=$solv_all;
-    #$np_sc_tot+=$np_sc;
-    #$np_bb_tot+=$np_bb;
-    #$np_all_tot+=$np_all;
-
-    $dg_sc_tot+=$dg_sc[$n];
-    $dg_bb_tot+=$dg_bb[$n];
-    $dg_all_tot+=$dg_all[$n];
-    $dg2_sc_tot+=$dg_sc[$n]**2;
-    $dg2_bb_tot+=$dg_bb[$n]**2;
-    $dg2_all_tot+=$dg_all[$n]**2;
-
     printf OUT ("%4d    %10.4f %10.4f %10.4f \n",
                 $n, $dg_bb[$n], $dg_sc[$n], $dg_all[$n]);
   }
  
-  $dg_sc_mean[$i] = $dg_sc_tot/$nconf;
-  $dg_bb_mean[$i] = $dg_bb_tot/$nconf;
-  $dg_all_mean[$i] = $dg_all_tot/$nconf;
+  ($dg_sc_mean, $dg_sc_sd, $n_eff_sc, $dg_sc_err) = time_statistics_FTZ(@dg_sc);
+  ($dg_bb_mean, $dg_bb_sd, $n_eff_bb, $dg_bb_err) = time_statistics_FTZ(@dg_bb);
+  ($dg_all_mean, $dg_all_sd, $n_eff_all, $dg_all_err) = time_statistics_FTZ(@dg_all);
 
-  # debug
-  #$vdw_sc_mean[$i] =  $vdw_sc_tot/$nconf;
-  #$elec_sc_mean[$i] =  $elec_sc_tot/$nconf;
-  #$solv_sc_mean[$i] =  $solv_sc_tot/$nconf;
-  #$np_sc_mean[$i] =  $np_sc_tot/$nconf;
- 
-  #if ($i == 81) {
-  #  printf("%f   %f   %f\n",$vdw_sc_tot, $vdw_sc_tot/$nconf, $vdw_sc_mean[$i]);
-  #  print "final for 81 sc : wdv elec solv np\n"; 
-  #  print "$dg_sc_mean[$i] = + $vdw_sc_mean[$i] + $elec_sc_mean[$i] + $solv_sc_mean[$i]  + $np_sc_mean[$i] \n"; 
-  #}
-
-  # Unbiased standard deviation estimate 
-  $dg_sc_sd[$i] = sqrt( ( $dg2_sc_tot - $nconf*$dg_sc_mean[$i]**2 ) / ($nconf -1) );
-  $dg_bb_sd[$i] = sqrt( ( $dg2_bb_tot - $nconf*$dg_bb_mean[$i]**2 ) / ($nconf -1) );
-  $dg_all_sd[$i] = sqrt( ( $dg2_all_tot - $nconf*$dg_all_mean[$i]**2 ) / ($nconf -1) );
-
-  # Effective sample size in an AR(1)  correlated time series according to :
-  # Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean, Journal of Climate 8 : 336 (1995).
-
-  # Now that we have the mean, we can calculate the moments :
-  my $dg2_sc_norm_tot=0;
-  my $dg2_bb_norm_tot=0;
-  my $dg2_all_norm_tot=0;
-  my $dg2_shift_sc_tot=0;
-  my $dg2_shift_bb_tot=0;
-  my $dg2_shift_all_tot=0;
-  for $n (1..$nconf) {
-    $dg2_sc_norm_tot+=($dg_sc[$n] -  $dg_sc_mean[$i])**2; 
-    $dg2_bb_norm_tot+=($dg_bb[$n] -  $dg_bb_mean[$i])**2;
-    $dg2_all_norm_tot+=($dg_all[$n] -  $dg_all_mean[$i])**2;
- 
-    if ($n >1) {
-       $dg2_shift_sc_tot+=($dg_sc[$n] -  $dg_sc_mean[$i]) * ($dg_sc_old -  $dg_sc_mean[$i]);
-       $dg2_shift_bb_tot+=($dg_bb[$n] -  $dg_bb_mean[$i]) * ($dg_bb_old -  $dg_bb_mean[$i]);
-       $dg2_shift_all_tot+=($dg_all[$n] -  $dg_all_mean[$i]) * ($dg_all_old -  $dg_all_mean[$i]);
-    }
-
-    $dg_sc_old=$dg_sc[$n];
-    $dg_bb_old=$dg_bb[$n];
-    $dg_all_old=$dg_all[$n];
-  }
-
-# For each, calculate n_effective and standard error.
-  if ($dg2_sc_tot > 0) {
-    $r1_sc = $dg2_shift_sc_tot / $dg2_sc_norm_tot;
-    $n_eff_sc[$i] = $nconf * (1-$r1_sc) / (1+$r1_sc) ;
-    if ( $n_eff_sc[$i] gt $nconf) {$n_eff_sc[$i] = $nconf};
-    $dg_sc_err[$i] = $dg_sc_sd[$i] / sqrt($n_eff_sc[$i] ) ; 
-  }else{
-    $n_eff_sc[$i] = 0;
-    $dg_sc_err[$i] = 0;
-  }
-
-  if ($dg2_bb_tot > 0) {
-    $r1_bb = $dg2_shift_bb_tot / $dg2_bb_norm_tot;
-    $n_eff_bb[$i] = $nconf * (1-$r1_bb) / (1+$r1_bb) ;
-    if ( $n_eff_bb[$i] gt $nconf) {$n_eff_bb[$i] = $nconf};
-    $dg_bb_err[$i] = $dg_bb_sd[$i] / sqrt($n_eff_bb[$i] ) ;
-  }else{
-    $n_eff_bb[$i] = 0;
-    $dg_bb_err[$i] = 0;
-  }
-
-  if ($dg2_all_tot > 0) {
-    $r1_all = $dg2_shift_all_tot / $dg2_all_norm_tot;
-    $n_eff_all[$i] = $nconf * (1-$r1_all) / (1+$r1_all) ;
-    if ( $n_eff_all[$i] gt $nconf) {$n_eff_all[$i] = $nconf};
-    $dg_all_err[$i] = $dg_all_sd[$i] / sqrt($n_eff_all[$i] ) ;
-  }else{
-    $n_eff_all[$i] = 0;
-    $dg_all_err[$i] = 0;
-  }
 
   printf OUT "# --------------------------------------------\n";
   printf OUT ("# TOT     %10.4f %10.4f %10.4f \n",
