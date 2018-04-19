@@ -41,6 +41,10 @@ frames_per_job=10 	# number of frames in each sub-job.
 n_jobs=3		# number of sub-jobs. Together with $frames_per_job, determines the total number of frames.
 max_jobs_running_simultaneously=50    # Option for SGE, in order not to invate an entire cluter.
 
+# Queuing system (one of "SGE" or "LSF") and queue name
+queueing_system="LSF"
+queue_name="3dmodel-big"
+
 # Non-bonded interaction parameters
 cutoff=30	# Cutoff for electro and VdW interactions in Angstroms
 ionconc=0.154   # Monovalent ion concentration in M (default = 0.154). 
@@ -81,6 +85,7 @@ capping[12]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for ye
 
 export mmgbsa_path  
 # It is very important that mmgbsa_path be a global variable.
+export queueing_system
 
 source $mmgbsa_path/scripts/setenv.sh
 
@@ -215,17 +220,21 @@ cd ..
 echo "Submitting all sub-jobs ... "
 
 # SGE : 
-#jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path $res_req  -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
-# The -v option to qsub pushes the  environment variables from the shell executing qsub
-# This is needed to pass the mmgbsa_path global variable. 
-# jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
+if [ $queueing_system == "SGE" ]; then 
+	jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
+	# The -v option to qsub pushes the  environment variables from the shell executing qsub
+	# This is needed to pass the mmgbsa_path global variable. 
+	jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
+fi
 
 # LSF :
-jobid_raw=$( bsub -q 3dmodel-big -n 1 -o "mmgbsa2.1.o%J.%I" -e "mmgbsa2.1.e%J.%I"  -J "mmgbsa.[1-$n_jobs]"  " sh $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job" )
-echo $jobid_raw
-jobid=$( echo $jobid_raw  | awk '{print substr($2,2,length($2)-2)}' )
-# In LSF, (almost) all environment variables are passed by default.
-# Passing arguments is not as easy, and requires the sub-sh construct. 
+if [ $queueing_system == "LSF" ]; then
+	jobid_raw=$( bsub -q $queue_name -n 1 -o "mmgbsa2.1.o%J.%I" -e "mmgbsa2.1.e%J.%I"  -J "mmgbsa.[1-$n_jobs]"  " sh $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job" )
+	echo $jobid_raw
+	jobid=$( echo $jobid_raw  | awk '{print substr($2,2,length($2)-2)}' )
+	# In LSF, (almost) all environment variables are passed by default.
+	# Passing arguments is not as easy, and requires the sub-sh construct. 
+fi
 
 ###################################################################
 # Submit post-processing job
@@ -233,13 +242,17 @@ jobid=$( echo $jobid_raw  | awk '{print substr($2,2,length($2)-2)}' )
 echo "Submitting final post-processing job ... "
 
 # SGE : 
-#qsub -v mmgbsa_path=$mmgbsa_path  $res_req -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
-# qstat
+if [ $queueing_system == "SGE" ]; then
+	qsub -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
+ 	qstat
+fi
 
 # LSF :
-bsub -q 3dmodel-big -n 1 -o "mmgbsa2.1_final.o%J.%I" -e "mmgbsa2.1_final.e%J.%I" -w "done($jobid)" -J "mmgbsa_final" " sh $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job "
-# Passing arguments is not as easy, and requires the sub-sh construct. 
-bjobs
+if [ $queueing_system == "LSF" ]; then
+	bsub -q $queue_name -n 1 -o "mmgbsa2.1_final.o%J.%I" -e "mmgbsa2.1_final.e%J.%I" -w "done($jobid)" -J "mmgbsa_final" " sh $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job "
+	# Passing arguments is not as easy, and requires the sub-sh construct. 
+	bjobs
+fi
 
 exit
 

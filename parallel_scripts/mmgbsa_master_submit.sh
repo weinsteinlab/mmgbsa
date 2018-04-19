@@ -22,15 +22,16 @@ js=$4 # number of frames in each sub-job
 psf=./data/system.namd.psf
 
 #SGE :
-#A=$SGE_TASK_ID
+if [ $queueing_system == "SGE" ]; then
+        mytmpdir=$TMPDIR
+	A=$SGE_TASK_ID
+fi
 #LSF :
-A=$LSB_JOBINDEX
+if [ $queueing_system == "LSF" ]; then
+        mytmpdir=$__LSF_JOB_TMPDIR__
+	A=$LSB_JOBINDEX
+fi
 B=`printf %04i $A`
-
-#SGE :
-#mytmpdir=$TMPDIR
-#LSF :
-mytmpdir=$__LSF_JOB_TMPDIR__
 
 # mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
 # This is now inherited by the environment through qsub -v

@@ -24,10 +24,13 @@ source $mmgbsa_path/scripts/setenv.sh
 cwd=$(pwd)
 
 #SGE :
-#mytmpdir=$TMPDIR
+if [ $queueing_system == "SGE" ]; then
+	mytmpdir=$TMPDIR
+fi
 #LSF :
-mytmpdir=$__LSF_JOB_TMPDIR__
-
+if [ $queueing_system == "LSF" ]; then
+	mytmpdir=$__LSF_JOB_TMPDIR__
+fi
 
 tar czf ./sub_job_logs.tar.gz ./mmgbsa2.1.o* ./mmgbsa2.1.e*
 rm ./mmgbsa2.1.o* ./mmgbsa2.1.e*
