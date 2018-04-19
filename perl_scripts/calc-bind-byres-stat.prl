@@ -18,7 +18,7 @@
 # Journal of Climate 8 : 336 (1995).
 
 # prevent warnings for "smartmatch", i.e. operator "~~".
-# use experimental qw(smartmatch switch);
+use experimental qw(smartmatch switch);
 
 
 $mmgbsa_path = $ENV{'mmgbsa_path'};
@@ -34,7 +34,6 @@ print "Total number of atoms in the system : $natom \n";
 $nconf=`grep nframes data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # number of conformations (frames)
 chomp $nconf;
 print "Number of conformations : $nconf \n";
-
 
 $nres=`grep lastresb data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # Total number of residues.
 chomp $nres;
@@ -63,8 +62,8 @@ $nresAB = $nresA + $nresB;
 
 open(IN,"data/charges.crd");
 foreach $line (<IN>) {
-  # For names, look only at C alphas, Ps for lipids and O3 for cholesterol.
-  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /)) {
+  # Look only at C alphas, P for lipids, O3 for cholesterol, Na for sodium ions...
+  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /) or ($line =~ / SOD /) ) {
     @w=split(" " ,$line);
     $name[$w[1]]=$w[7]." ".$w[2].$w[8];
   }

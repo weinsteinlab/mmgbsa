@@ -82,7 +82,9 @@ print "*\n";
 printf("%5d\n",$numatom);
 
 for $i (1..$numatom) {
+  # Protect against atom numbers larger than 99999
+  $j=$i%100000;
   printf("%5d%5d %4s %4s%10.5f%10.5f%10.5f %-4s %-5d%9.5f\n",
-	$i,$resid[$i],$res_name[$i],$atom_name[$i],$x[$i],$y[$i],$z[$i],
+	$j,$resid[$i],$res_name[$i],$atom_name[$i],$x[$i],$y[$i],$z[$i],
 	 $segname[$i],$res_num[$i],$weight[$i]);
 }

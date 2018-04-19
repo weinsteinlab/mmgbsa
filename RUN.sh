@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -l
 
 # Needs a directory ./input with *.psf and *.pdb files
 
@@ -12,7 +12,7 @@ set -u
 ###################################################################
 
 # Path to MMGBSA distribution 
-mmgbsa_path=/home/mcuendet/mmgbsa/mmgbsa2.1/
+mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
 
 # Selection for the MMGBSA system
 system_selection='protein'
@@ -32,44 +32,41 @@ partB_residues_selection="chain B and resid 51 to 53 "
 # Trajectory of the full system (can be a DCD file or an XTC file). 
 traj=/path/to/traj.xtc
 
-# Frames used 
+# Frames used :
 start_frame=1
 frame_stride=1
 
-# Number of jobs
-frames_per_job=10 	# number of frames in each sub-job.
-n_jobs=3		# number of sub-jobs. Together with $frames_per_job, determines the total number of frames.
-max_jobs_running_simultaneously=50    # Option for SGE, in order not to invate an entire cluter.
+# Parallelization settings :
+#    number of frames in each sub-job.
+frames_per_job=10
+#    number of sub-jobs. Together with $frames_per_job, determines the total number of frames.
+n_jobs=3
+#    Maximum number of jobs junning simultaneourly, in order not to invate an entire cluter.
+max_jobs_running_simultaneously=50   
 
-# Queuing system (one of "SGE" or "LSF") and queue name
-queueing_system="LSF"
-queue_name="3dmodel-big"
-
-# Non-bonded interaction parameters
-cutoff=30	# Cutoff for electro and VdW interactions in Angstroms
-ionconc=0.154   # Monovalent ion concentration in M (default = 0.154). 
+#    Queuing system (one of "SGE" or "LSF") and queue name                                                                                                                                                                                                                   
+queueing_system="LSF"                                                                                                                                                                                                                                                     
+queue_name="3dmodel-big"                                                                                                                                                                                                                                                  
+  
+# Non-bonded interaction parameters :
+#    Cutoff for electro and VdW interactions in Angstroms.
+cutoff=30
+#    Monovalent ion concentration in M for Deheye-Huckel screening (default = 0.154). 
+ionconc=0.154 
 
 # System details - proteins are assumed to come first in the PSF.
-proteins=2 # number of separate (i.e. not covalently bonded) protein/peptide segments 
+#    Number of separate (i.e. not covalently bonded) protein/peptide segments
+proteins=3 
 
 # For each protein/peptide, include the following variables ###
 capping[1]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
 capping[2]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
 
-capping[3]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[4]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
+capping[3]=0 # is the 2nd protein/peptide's n-term capped? 0 for no, 1 for yes. 
+capping[4]=0 # is the 2nd protein/peptide's c-term capped? 0 for no, 1 for yes.
 
-capping[5]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[6]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
-
-capping[7]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[8]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
-
-capping[9]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[10]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
-
-capping[11]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[12]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes.
+capping[5]=0 # is the 3rd protein/peptide's n-term capped? 0 for no, 1 for yes. 
+capping[6]=0 # is the 3rd protein/peptide's c-term capped? 0 for no, 1 for yes.
 # et caetera ...
 
 
@@ -105,8 +102,9 @@ fi
 # Select the correct resource requirement depending on which cluster we run 
 res_req=""
 if [[  $HOSTNAME =~ panda ]]; then
-    res_req="-l zeno=true"
-    # This requests nodes where the /senodotus file system is mounted
+    res_req="-l zeno=true,operating_system=rhel6.3"
+    # This requests nodes where the /zenodotus file system is mounted
+    # and where charmm39 will run (on panda).
 fi
 
 
@@ -194,7 +192,7 @@ $scripts/prepare_mmgbsa_common.csh "$cutoff" "$ionconc"
 echo "Testing trajectory ... "
 mkdir -p test_traj
 cd test_traj
-# Try to use only the PDB 
+# Try to use only the PDB (this is useful when the trajectory comes from gromacs, where there is no psf) 
 #mypsf="../data/system.namd.psf"
 mypsf=../system.pdb
 
@@ -207,7 +205,7 @@ EOF
 $vmd -dispdev text -e test_traj.tcl >& ../log/test_traj.log
 if [ "`grep ERROR ../log/test_traj.log`" != "" ]; then
 	echo "ERROR with trajectory !"
-	echo "See file ./log/test_traj.log"
+	echo "See file ./mmgbsa/log/test_traj.log"
 	exit 1
 fi
 cd ..

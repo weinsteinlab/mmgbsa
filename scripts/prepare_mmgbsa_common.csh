@@ -86,7 +86,6 @@ cat data/definitions.pdb | $scripts/pdb2crd.prl >  data/definitions.crd
 # Non-bonded cutoff. 
 @ cuton = $nb_cutoff - 2 
 @ cutnb = $nb_cutoff + 4
-
 printf 'SET nbstr ctonnb %d ctofnb %d cutnb %d TRUNC \n\n' $cuton $nb_cutoff $cutnb >> data/definitions.str
 # No quotes around the value of nbstr. This would confuse charmm !
 printf '\!cutoff %d\n\n' $nb_cutoff >> data/definitions.str

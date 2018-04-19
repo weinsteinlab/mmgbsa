@@ -1,0 +1,324 @@
+#!/usr/bin/perl
+
+#########################################################
+#
+# Written by Vincent Zoete
+#
+# Modified by Michel A. Cuendet 
+#
+# For questions, please contact vincent.zoete@unil.ch
+# or michel.cuendet@unil.ch
+#
+#########################################################
+
+# Calculate the free energy contributions and errors for a group of residues
+# The group if defined in the !group entry in the data/definitions.str file
+#
+# Effective sample size in a correlated time series
+# Estimated from AR(1) process. 
+# According to :
+# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean
+# Journal of Climate 8 : 336 (1995).
+
+# prevent warnings for "smartmatch", i.e. operator "~~".
+use experimental qw(smartmatch switch);
+
+
+$natom=`grep \"NATOM \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in the system
+chomp $natom;
+print "Total number of atoms in the system : $natom \n";
+
+$nconf=`grep nframes data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # number of conformations (frames)
+chomp $nconf;
+print "Number of conformations : $nconf \n";
+
+$temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
+chomp $temp;
+my @resA = split(/ /,$temp );
+shift @resA;  # Getting rid of the line label in definitions.str
+$nresA = scalar(@resA);
+
+$temp = `awk '(\$1=="!Bres") '  data/definitions.str `;
+chomp $temp;
+my @resB = split(/ /,$temp );
+shift @resB;  # Getting rid of the line label in definitions.str
+$nresB = scalar(@resB);
+
+my @resAB = @resA;
+push( @resAB, @resB) ; 
+$nresAB = $nresA + $nresB;
+
+$temp = `awk '(\$1=="!group") '  data/definitions.str `;
+chomp $temp;
+my @group = split(/ /,$temp );
+shift @group;  # Getting rid of the line label in definitions.str
+$ngroup = scalar(@group);
+
+print "Number of residues in analysis group : $ngroup \n";
+
+
+open(IN,"data/charges.crd");
+foreach $line (<IN>) {
+  # Look only at C alphas, P for lipids, O3 for cholesterol, Na for sodium ions...
+  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /) or ($line =~ / SOD /) ) {
+    @w=split(" " ,$line);
+    $name[$w[1]]=$w[7]." ".$w[2].$w[8];
+  }
+  $resnum[$w[0]]=$w[1];
+  $resname[$w[0]]=$w[2];
+  $atomname[$w[0]]=$w[3];
+  if ( $atomname[$i] eq "CA" or  $atomname[$i] eq "HA" or $atomname[$i] eq "C" or $atomname[$i] eq "O" or $atomname[$i] eq "N"  or $atomname[$i] eq "NT" or $atomname[$i] eq "HN" or $atomname[$i] eq "HT1" or $atomname[$i] eq "HT2" or $atomname[$i] eq "HT3" or $atomname[$i] eq "OT1" or $atomname[$i] eq "OT2"or $atomname[$i] eq "HA1" or $atomname[$i] eq "HA2") {
+    $is_bb[$i]=1;
+  } else {
+    $is_bb[$i]=0;
+  }
+}
+
+#===================================================================================
+#Inter
+
+print "Loading inter ... \n";
+
+for $n (1..$nconf) {
+  $nrA=0;
+  open(IN,"inter/inter-byres-$n-a.dat") or die "Could not open file inter-byres-$n-b.dat \n";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);
+    $res_vdw_bb[$w[0]][$n]=$w[1];
+    $res_elec_bb[$w[0]][$n]=$w[2];
+    $res_vdw_sc[$w[0]][$n]=$w[3];
+    $res_elec_sc[$w[0]][$n]=$w[4];
+    $nrA+=1;
+  }
+  close(IN);
+  $nrB=0;
+  open(IN,"inter/inter-byres-$n-b.dat") or die "Could not open file inter-byres-$n-b.dat \n";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);
+    $res_vdw_bb[$w[0]][$n]+=$w[1];
+    $res_elec_bb[$w[0]][$n]+=$w[2];
+    $res_vdw_sc[$w[0]][$n]+=$w[3];
+    $res_elec_sc[$w[0]][$n]+=$w[4];
+    $nrB+=1;
+  }
+
+  if ( $nrA != $nresA ) { die "Frame $n : number of inter values in part A ($nrA) does not match definitions.str ($nresA) !!" ;}
+  if ( $nrB != $nresB ) { die "Frame $n : number of inter values in part B ($nrB) does not match definitions.str ($nresB) !!" ;}
+
+  close(IN);
+
+}
+
+#print "$res_elec_bb[81][1] $res_elec_sc[81][1]\n";
+
+#===================================================================================
+#Solv
+print "Loading solv ... \n";
+
+# Do in A :       
+@res_bb_mean=0; @res_sc_mean=0; @res_all_mean=0;
+for $f (1..$nconf) {
+  open(IN,"solv-a/solv-a-frame-$f.dat") or die "Could not open file solv-a/solv-a-frame-$f.dat";
+  foreach $line (<IN>) {
+    if ($line !~/TOT/) {
+      @w=split(" ",$line);
+      $solv_a_bb[$w[0]][$f]=$w[1];
+      $solv_a_sc[$w[0]][$f]=$w[2];
+      $solv_a_all[$w[0]][$f]=$w[3];
+    }
+  }
+}
+
+# Do in B :    
+@res_bb_mean=0; @res_sc_mean=0; @res_all_mean=0;
+for $f (1..$nconf) {
+  open(IN,"solv-b/solv-b-frame-$f.dat") or die "Could not open file solv-b/solv-b-frame-$f.dat";
+  foreach $line (<IN>) {
+    if ($line !~/TOT/) {
+      @w=split(" ",$line);
+      $solv_b_bb[$w[0]][$f]=$w[1];
+      $solv_b_sc[$w[0]][$f]=$w[2];
+      $solv_b_all[$w[0]][$f]=$w[3];
+    }
+  }
+}
+
+#Do in complex :   
+@res_bb_mean=0; @res_sc_mean=0; @res_all_mean=0;
+for $f (1..$nconf) {
+  open(IN,"solv-comp/solv-comp-frame-$f.dat") or die "Could not open file solv-comp/solv-comp-frame-$f.dat";
+  foreach $line (<IN>) {
+    if ($line !~/TOT/) {
+      @w=split(" ",$line);
+      $solv_comp_bb[$w[0]][$f]=$w[1];
+      $solv_comp_sc[$w[0]][$f]=$w[2];
+      $solv_comp_all[$w[0]][$f]=$w[3];
+    }
+  }
+}
+
+#$temp = $solv_comp_all[81][1]- $solv_a_all[81][1] - $solv_b_all[81][1];
+#print "$solv_comp_all[81][1] $solv_a_all[81][1]  $solv_b_all[81][1]  $temp \n";
+
+#===================================================================================
+# Surf 
+# Here we need to sum over atoms to get residue (sc /bb) contributions.
+
+print "Loading surf ... \n";
+# Do sas in A :   
+foreach $i (@resA)  {
+  $filename="sas-a/sas-a-res-$i.dat";
+  open(IN,$filename) or die "Could not open file $filename";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);
+    $sas_a_bb[$i][$w[0]] =$w[1];
+    $sas_a_sc[$i][$w[0]] =$w[2];
+    $sas_a_all[$i][$w[0]] =$w[3];
+  }
+}
+#print "sas-a $sas_a_bb[81][1] $sas_a_sc[81][1] $sas_a_all[81][1] \n";
+
+
+# Do sas in B :  
+foreach $i (@resB)  {
+  $filename="sas-b/sas-b-res-$i.dat";
+  open(IN,$filename) or die "Could not open file $filename";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);
+    $sas_b_bb[$i][$w[0]] =$w[1];
+    $sas_b_sc[$i][$w[0]] =$w[2];
+    $sas_b_all[$i][$w[0]] =$w[3];
+  }
+}
+#print "sas-b $sas_b_bb[81][1] $sas_b_sc[81][1] $sas_b_all[81][1] \n";
+
+
+# Do sas in complex :  
+foreach $i (@resAB)  {
+  $filename="sas-comp/sas-comp-res-$i.dat";
+  open(IN,$filename) or die "Could not open file $filename";
+  foreach $line (<IN>) {
+    @w=split(" ",$line);
+    $sas_comp_bb[$i][$w[0]] =$w[1];
+    $sas_comp_sc[$i][$w[0]] =$w[2];
+    $sas_comp_all[$i][$w[0]] =$w[3];
+  }
+}
+#print "sas-comp $sas_comp_bb[81][1] $sas_comp_sc[81][1] $sas_comp_all[81][1] \n";
+
+
+
+# ====================================================================================================
+# Calculate and print time series for the sums
+print "Calculating ... \n";
+
+my @vdw_group=0;	# Arrays with all time points for the group
+my @elec_group=0;
+my @solv_group=0;
+my @np_group=0;
+my @dg_group=0;
+
+foreach $i (@group)  {
+   
+  
+  for $n (1..$nconf) {
+  
+    $vdw_all = 0.5*$res_vdw_sc[$i][$n] + 0.5*$res_vdw_bb[$i][$n] ;
+    $elec_all = 0.5*$res_elec_sc[$i][$n] + 0.5*$res_elec_bb[$i][$n] ;
+    $solv_all = $solv_comp_all[$i][$n] - $solv_a_all[$i][$n] - $solv_b_all[$i][$n];
+    $np_all =  0.0072*($sas_comp_all[$i][$n] - $sas_a_all[$i][$n] -$sas_b_all[$i][$n]) ;
+    
+    $vdw_group[$n] += $vdw_all;
+    $elec_group[$n] += $elec_all;
+    $solv_group[$n] += $solv_all;
+    $np_group[$n] += $np_all;
+    $dg_group[$n] += $vdw_all + $elec_all + $solv_all  + $np_all ;
+   
+  }
+}
+
+
+open(OUT,">binding_group_stat.dat");
+
+printf OUT ("# frame %10s %10s %10s %10s %10s %10s \n","vdw","elec","solv","elec+solv","np","dg");
+printf OUT "# -----------------------------------------------------------------------\n";
+for $n (1..$nconf) {
+     $polar_group[$n]=$elec_group[$n]+$solv_group[$n];
+     printf OUT ("%4d    %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+                $n, $vdw_group[$n], $elec_group[$n], $solv_group[$n],$polar_group[$n] , $np_group[$n], $dg_group[$n]);
+}
+ 
+# ====================================================================================================
+# Calculate statistics using subroutine and print
+
+my ($vdw_mean, $vdw_sd, $vdw_neff, $vdw_err) = time_statistics(@vdw_group);
+my ($elec_mean, $elec_sd, $elec_neff, $elec_err) = time_statistics(@elec_group);
+my ($solv_mean, $solv_sd, $solv_neff, $solv_err) = time_statistics(@solv_group);
+my ($polar_mean, $polar_sd, $polar_neff, $polar_err) = time_statistics(@polar_group);
+my ($np_mean, $np_sd, $np_neff, $np_err) = time_statistics(@np_group);
+my ($dg_mean, $dg_sd, $dg_neff, $dg_err) = time_statistics(@dg_group);
+
+
+
+printf OUT "# -----------------------------------------------------------------------\n";
+printf OUT ("# MEAN	%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_mean, $elec_mean, $solv_mean, $polar_mean, $np_mean, $dg_mean); 
+printf OUT ("# SD	%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_sd, $elec_sd, $solv_sd, $polar_sd, $np_sd, $dg_sd);
+printf OUT ("# N_eff	%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_neff, $elec_neff, $solv_neff, $polar_neff, $np_neff, $dg_neff);
+printf OUT ("# ERR	%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n",
+	$vdw_err, $elec_err, $solv_err, $polar_err, $np_err, $dg_err);
+close(OUT);
+
+# ====================================================================================================
+# Subroutine definition
+
+sub time_statistics {
+	my @a = @_;
+	# Arrays usually start at zero, but here we start at 1...
+	my $nconf = scalar(@a)-1;
+	
+	my $a_tot = 0;
+	my $a2_tot = 0;
+	for $n (1..$nconf) {
+        	$a_tot+=  $a[$n];
+        	$a2_tot+=  $a[$n]**2;
+ 
+	}
+	my $a_mean = $a_tot/$nconf;
+	# Unbiased standard deviation estimate 
+	my $a_sd = sqrt( ( $a2_tot - $nconf*$a_mean**2 ) / ($nconf -1) );
+
+	# Effective sample size in an AR(1)  correlated time series according to :
+	# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean, Journal of Climate 8 : 336 (1995).
+
+	# Now that we have the mean, we can calculate the moments :
+	my $a2_norm_tot=0;
+	my $a2_shift_tot=0;
+	my $a_old=0;
+	for $n (1..$nconf) {
+  		$a2_norm_tot+=($a[$n] -  $a_mean)**2; 
+  		if ($n >1) {
+     			$a2_shift_tot+=($a[$n] -  $a_mean) * ($a_old -  $a_mean);
+  		}
+  		$a_old=$a[$n];
+ 	}
+	
+	# For each, calculate n_effective and standard error.
+	my $r1 = 0;
+	my $n_eff = 0;
+	my $err = 0;
+	if ($a2_norm_tot > 0) {
+	  $r1 = $a2_shift_tot / $a2_norm_tot;
+	  $n_eff = $nconf * (1.0-$r1) / (1.0+$r1) ;
+	  if ( $n_eff > $nconf) {$n_eff = $nconf };
+	  $err = $a_sd / sqrt($n_eff ) ; 
+	}
+
+	return ($a_mean, $a_sd, $n_eff, $err);
+}	
+
+
+
+

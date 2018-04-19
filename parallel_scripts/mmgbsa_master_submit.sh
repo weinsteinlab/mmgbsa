@@ -1,5 +1,12 @@
+#!/bin/bash -l  
 
 # BSUB options passed directly on the command line.
+
+#$ -N mmgbsa2.1
+#$ -j y
+#$ -cwd
+#$ -q standard.q
+#$ -l h_vmem=10G
 
 ###################################################################
 #                                                                 #
