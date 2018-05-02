@@ -18,7 +18,7 @@
 # Journal of Climate 8 : 336 (1995).
 
 # prevent warnings for "smartmatch", i.e. operator "~~".
-use experimental qw(smartmatch switch);
+# use experimental qw(smartmatch switch);
 
 
 $mmgbsa_path = $ENV{'mmgbsa_path'};
@@ -255,19 +255,19 @@ foreach $i (@resAB)  {
                 $n, $dg_bb[$n], $dg_sc[$n], $dg_all[$n]);
   }
  
-  ($dg_sc_mean, $dg_sc_sd, $n_eff_sc, $dg_sc_err) = time_statistics_FTZ(@dg_sc);
-  ($dg_bb_mean, $dg_bb_sd, $n_eff_bb, $dg_bb_err) = time_statistics_FTZ(@dg_bb);
-  ($dg_all_mean, $dg_all_sd, $n_eff_all, $dg_all_err) = time_statistics_FTZ(@dg_all);
+  ($dg_sc_mean[$i], $dg_sc_sd[$i], $n_eff_sc[$i], $dg_sc_err[$i]) = time_statistics_FTZ(@dg_sc);
+  ($dg_bb_mean[$i], $dg_bb_sd[$i], $n_eff_bb[$i], $dg_bb_err[$i]) = time_statistics_FTZ(@dg_bb);
+  ($dg_all_mean[$i], $dg_all_sd[$i], $n_eff_all[$i], $dg_all_err[$i]) = time_statistics_FTZ(@dg_all);
 
 
   printf OUT "# --------------------------------------------\n";
-  printf OUT ("# TOT     %10.4f %10.4f %10.4f \n",
+  printf OUT ("# TOT   %10.4f %10.4f %10.4f \n",
               $dg_bb_mean[$i], $dg_sc_mean[$i], $dg_all_mean[$i]);
-  printf OUT ("# SD      %10.4f %10.4f %10.4f \n",
+  printf OUT ("# SD    %10.4f %10.4f %10.4f \n",
               $dg_bb_sd[$i], $dg_sc_sd[$i], $dg_all_sd[$i]);
-  printf OUT ("# N_eff   %10.4f %10.4f %10.4f \n",
+  printf OUT ("# N_eff %10.4f %10.4f %10.4f \n",
               $n_eff_bb[$i], $n_eff_sc[$i], $n_eff_all[$i]);
-  printf OUT ("# ERR     %10.4f %10.4f %10.4f \n",
+  printf OUT ("# ERR   %10.4f %10.4f %10.4f \n",
               $dg_bb_err[$i], $dg_sc_err[$i], $dg_all_err[$i]);
   close(OUT);
 }
@@ -279,9 +279,9 @@ open(OUTBB,">binding_bb_stat.dat");
 open(OUTSC,">binding_sc_stat.dat");
 open(OUTALL,">binding_all_stat.dat");
 
-printf OUTBB ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "dG", "sd", "n_eff", "err");
-printf OUTSC ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "dG", "sd", "n_eff", "err");
-printf OUTALL ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "dG", "sd", "n_eff", "err");
+printf OUTBB ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "dG", "sd", "N_eff", "err");
+printf OUTSC ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "dG", "sd", "N_eff", "err");
+printf OUTALL ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "dG", "sd", "N_eff", "err");
 
 foreach $i (@resAB)  {
 
