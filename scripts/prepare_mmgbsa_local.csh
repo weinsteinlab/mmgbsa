@@ -18,9 +18,9 @@ set endframe = $3
 set stride = $4
 
 # Paths
-set dcd_tmp = $5
+set frames_tmp = $5
 
-set scratch_path="$dcd_tmp/$USER/mmgbsa/"
+set scratch_path="$frames_tmp/$USER/mmgbsa/"
 echo "Scratch path will be : $scratch_path"
 
 # paths ( now read from environment variables )
@@ -116,7 +116,7 @@ cat > extract_frames.tcl  << EOF
   for {set i $startframe} {\$i <= $endframe} {incr i $stride} {
     set frameidx [ expr {\$i -1 }]
     \$sel frame \$frameidx
-    \$sel writepdb "frames-comp/\$j-alpha.pdb"
+    \$sel writepdb "frames-comp/\$j-raw.pdb"
     puts "Done writing frame \$i to file \$j-raw.pdb"
     set j [ expr {\$j + 1} ]
   }
@@ -133,14 +133,14 @@ cd frames-comp/
 set numframes=`ls -1 *.pdb | wc -l`
 set i=1
 while ( $i <= $numframes )
-  cat $i-alpha.pdb |  $mmgbsa_path/scripts/pdb2crd.prl > $i-raw.crd
+  cat $i-raw.pdb |  $mmgbsa_path/scripts/pdb2crd.prl > $i-raw.crd
   
-  rm $i-alpha.pdb
+  rm $i-raw.pdb
   @ i++
 end
 
 # Find number of frames
-echo "Number of fwrames : " $numframes
+echo "Number of frames : " $numframes
 
 cd $basedir
 
