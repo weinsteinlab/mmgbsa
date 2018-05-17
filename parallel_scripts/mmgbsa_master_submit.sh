@@ -49,7 +49,7 @@ current=$(pwd)
 
 mj=$(( $js - 1 ))
 
-dcd_tmp=$mytmpdir/job_${B}
+frames_tmp=$mytmpdir/frames_${B}
 main_tmp=$mytmpdir/${B}
 
 if [[ ${mytraj##*.} == "xtc" ]] ; then
@@ -67,7 +67,7 @@ fi
 time_to_sleep=$(( $A % 3 ))
 sleep $time_to_sleep  
 
-mkdir $dcd_tmp
+mkdir $frames_tmp
 mkdir $main_tmp
 
 cp -rp data $main_tmp/.
@@ -89,7 +89,7 @@ then
 fi
 
 
-echo " Extracting small trajectory ... "
+# echo " Extracting small trajectory ... "
 if (( $frame_num % $js == 0 ))
 then
 	final_job=$((frame_num/$js))
@@ -121,12 +121,12 @@ fi
 
 unset frame_num
 
-small_traj=$dcd_tmp/$B.dcd
-$catdcd -o $small_traj -otype dcd -first $first -last $last $trajtypeflag $mytraj
+# small_traj=$frames_tmp/$B.dcd
+# $catdcd -o $small_traj -otype dcd -first $first -last $last $trajtypeflag $mytraj
 
 
 # Get the number of frames in the local trajectory bit
-last=`$catdcd -num $small_traj | awk '($1=="Total"){print $3}'`
+# last=`$catdcd -num $small_traj | awk '($1=="Total"){print $3}'`
 
 
 ###################################################################
@@ -134,18 +134,16 @@ last=`$catdcd -num $small_traj | awk '($1=="Total"){print $3}'`
 
 cd $main_tmp
 
-# $catdcd -o ./data/first_frame_of_dcd.pdb -otype pdb -s $psf -stype psf -first $real_first -last 1 $small_traj
-
 echo " "
 echo "Task ID : $A"
 echo "Host : " `hostname`
 echo "Base directory : $current"
 echo "Working directory : $main_tmp"
-echo "DCD directory : $dcd_tmp"
+echo "Frames directory : $frames_tmp"
 
 echo " "
 echo " Preparing local MMGBSA job ... "
-$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$A.log
+$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $mytraj $first $last $stride $frames_tmp > $current/log/prepare_job_$A.log
 
 ###################################################################
 # Run local mmgbsa 
@@ -162,7 +160,7 @@ rm -r ./frames-b
 rm -r ./frames-comp 
 rm -r ./data
 
-rm -r $dcd_tmp
+rm -r $frames_tmp
 
 cd $mytmpdir
 

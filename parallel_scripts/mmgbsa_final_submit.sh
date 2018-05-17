@@ -52,11 +52,11 @@ $parallel_scripts/mmgbsa_collect_results.sh ${traj} ${sub_job_num}  ${frames_per
 
 rm -r [0-9][0-9][0-9][0-9]
 
-tar czf $cwd/final_results.tar.gz inter sas-a sas-b sas-comp solv-a solv-b solv-comp total *.dat
+tar czf $cwd/final_results.tar.gz inter sas-a sas-b sas-comp solv-a solv-b solv-comp total dg  *.dat
 
 cp *.dat $cwd/.
 
-rm -r inter sas-a sas-b sas-comp solv-a solv-b solv-comp total
+rm -r inter sas-a sas-b sas-comp solv-a solv-b solv-comp total dg
 
 
 exit

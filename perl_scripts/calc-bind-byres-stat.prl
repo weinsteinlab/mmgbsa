@@ -37,7 +37,7 @@ print "Number of conformations : $nconf \n";
 
 $nres=`grep lastresb data/definitions.str | awk '(\$1=="SET"){print \$3}'`; # Total number of residues.
 chomp $nres;
-print "Total number of residues : $nres \n";
+print "Total number of residues in the system : $nres \n";
 
 $temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
 chomp $temp;
@@ -54,7 +54,7 @@ $nresB = scalar(@resB);
 my @resAB = @resA;
 push( @resAB, @resB) ; 
 $nresAB = $nresA + $nresB;
-
+print "Number of residues to analyze : $nresAB \n";
 
 # --------------------------------------------------------------------
 # Find backbone
