@@ -2,7 +2,7 @@
 
 # Needs a directory ./input with *.psf and *.pdb files
 
-#set -e
+# set -e
 set -u
 
 ###################################################################
@@ -10,38 +10,34 @@ set -u
 # User-defined parameters                                         #
 #                                                                 #
 ###################################################################
-
 echo "    Starting ..."
 
 # Path to MMGBSA distribution 
+#mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
 mmgbsa_path=/home/mcuendet/archive/mmgbsa/mmgbsa-multitraj/
 
-# Name of mmgbsa run (will correspond to sub-directory of same name)
-#mmgbsa_name="mmgbsa_A"
-#mmgbsa_name="mmgbsa_B"
-mmgbsa_name="mmgbsa_AB"
+# Name of mmgbsa run
+mmgbsa_name="mmgbsa"
 
 # Selection for the MMGBSA system
 system_selection='protein or (chain S T U L M N and not lipid)'
 
-# Selection for the part of the system
-# part_selection=" ( chain A and ( resid 223 to 417)) or (chain S L and not lipid) "
-# part_selection=" chain A and (resid 34 to 74)  "
-# part_selection=" ( chain A and  (resid 34 to 74 223 to 417)) or (chain S L and not lipid) "
-# FOR COMPATIBILITY :
-# part_selection=" chain A and ( resid 223 to 417) "
-# part_selection=" chain A and (resid 34 to 74)  "
- part_selection=" chain A and  (resid 34 to 74 223 to 417) "
+# Selection text for parts A and B of the complex
+partA_selection="  chain A and ( resid 223 to 417) "
+partB_selection="  chain A and (resid 34 to 74) "
 
-# Select residues explicitly for the decomposition.
-# residue_selection="chain A and resid 351 to 353 "
-# residue_selection="chain A and resid 51 to 53 "
- residue_selection="chain A and resid 51 to 53 351 to 353 "
+# Cutoff to choose residues within each part, for which the decomposition will be made. 
+# If set to zero, we use the alternative selections below. 
+cutoff_residues=0
+
+# Alternatively, one can select residues explicitly for the decomposition.
+partA_residues_selection="chain A and resid 351 to 353 "
+partB_residues_selection="chain A and resid 51 to 53 "
 
 # Trajectory of the full system (can be a DCD file or an XTC file). 
 traj=$mmgbsa_path/example/input/ofcc2.xtc
 
-# Frames used 
+# Frames used :
 start_frame=1
 frame_stride=1
 
@@ -53,7 +49,7 @@ n_jobs=3
 #    Maximum number of jobs junning simultaneourly, in order not to invate an entire cluter.
 max_jobs_running_simultaneously=50  
 #    Queuing system (one of "SGE" or "LSF") and queue name  
-queueing_system="LSF"
+queueing_system="LSF" 
 queue_name="3dmodel-big"  
 
 # Non-bonded interaction parameters :
@@ -83,7 +79,6 @@ capping[9]=0
 capping[10]=0
 capping[11]=0
 capping[12]=0
-
 
 ###################################################################
 #                                                                 #
@@ -117,11 +112,11 @@ res_req=""
 if [[  $HOSTNAME =~ panda ]]; then
     res_req="-l h_vmem=2G"
     # This required argment requests memory
+    # res_req="-l zeno=true,operating_system=rhel6.3"
+    # DEPRECATED This requests nodes where the /zenodotus file system is mounted
+    # and where charmm39 will run (on panda).
 fi
 
-# Variables for compatibility with one-traj code.
-#partA_selection=$system_selection
-#partA_residues_selection=$residue_selection
 
 ###################################################################
 # Charmm setup
@@ -155,20 +150,55 @@ cat > vmd_selections.tcl << EOF
 set complex_sel_text " $system_selection "
 # Must be the same as given to setup_charmm.csh 
 
-# Selection text for part A (still necessary in multitraj for compatibility reasons)
-set A_sel_text " $part_selection "
+# Selection text for part A
+# transport domain A
+set A_sel_text " $partA_selection "
 
-# Selection text for interesting residues
-set Aresidues_sel_text  "( \$complex_sel_text ) and ( $residue_selection )"
+# Selection text for part B
+# trimerization domains and transport domains ABC
+set B_sel_text " $partB_selection "
+
+# Cutoff to choose residues within each part, for which the decomposition will be made. 
+set cutoff_residues $cutoff_residues
 
 EOF
+
+# There are two possibilities for the definition of residues of interest. 
+# 1) If a cutoff has been defined :
+if [ $cutoff_residues -gt 0 ]; then
+
+cat >> vmd_selections.tcl << EOF
+
+# Selection text for interesting residues of part A
+set Aresidues_sel_text  " ( \$A_sel_text ) and same residue as within \$cutoff_residues of ( \$B_sel_text ) "
+
+# Selection text for interesting residues of part B
+set Bresidues_sel_text  " ( \$B_sel_text ) and same residue as within \$cutoff_residues of ( \$A_sel_text ) "
+
+EOF
+
+else
+# 2) with explicit residue selections :
+cat >> vmd_selections.tcl << EOF
+
+# Selection text for interesting residues of part A
+set Aresidues_sel_text  "( \$A_sel_text ) and ( $partA_residues_selection )"
+
+# Selection text for interesting residues of part B
+set Bresidues_sel_text  " ( \$B_sel_text ) and ( $partB_residues_selection )"
+
+EOF
+
+fi
+
 
 ###################################################################
 # Prepare mmgbsa (part common to all subjobs)
 
 echo "    Preparing MMGBSA directory ... "
 
-$scripts/prepare_mmgbsa_common_multitraj.csh "$cutoff" "$ionconc"	
+$scripts/prepare_mmgbsa_common.csh "$cutoff" "$ionconc"	
+
 
 echo "    Testing trajectory ... "
 mkdir -p test_traj
@@ -184,7 +214,7 @@ EOF
 $vmd -dispdev text -e test_traj.tcl >& ../log/test_traj.log
 if [ "`grep ERROR ../log/test_traj.log`" != "" ]; then
 	echo "ERROR with trajectory !"
-	echo "See file ./log/test_traj.log"
+	echo "See file ./mmgbsa/log/test_traj.log"
 	exit 1
 fi
 cd ..
@@ -198,7 +228,7 @@ echo "    Submitting all sub-jobs ... "
 
 # SGE : 
 if [ $queueing_system == "SGE" ]; then 
-	jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit_multitraj.sh $traj $start_frame $frame_stride $frames_per_job )
+	jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job )
 	# The -v option to qsub pushes the  environment variables from the shell executing qsub
 	# This is needed to pass the mmgbsa_path global variable. 
 	jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
@@ -206,7 +236,7 @@ fi
 
 # LSF :
 if [ $queueing_system == "LSF" ]; then
-	jobid_raw=$( bsub -q $queue_name -n 1 -o "mmgbsa2.1.o%J.%I" -e "mmgbsa2.1.e%J.%I"  -J "mmgbsa.[1-$n_jobs]"  " sh $parallel_scripts/mmgbsa_master_submit_multitraj.sh $traj $start_frame $frame_stride $frames_per_job" )
+	jobid_raw=$( bsub -q $queue_name -n 1 -o "mmgbsa2.1.o%J.%I" -e "mmgbsa2.1.e%J.%I"  -J "mmgbsa.[1-$n_jobs]"  " sh $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job" )
 	echo $jobid_raw
 	jobid=$( echo $jobid_raw  | awk '{print substr($2,2,length($2)-2)}' )
 	# In LSF, (almost) all environment variables are passed by default.
@@ -220,18 +250,19 @@ echo "    Submitting final post-processing job ... "
 
 # SGE : 
 if [ $queueing_system == "SGE" ]; then
-	qsub -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit_multitraj.sh $traj $n_jobs $frames_per_job 
+	qsub -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job 
  	qstat
 fi
 
 # LSF :
 if [ $queueing_system == "LSF" ]; then
-	bsub -q $queue_name -n 1 -o "mmgbsa2.1_final.o%J.%I" -e "mmgbsa2.1_final.e%J.%I" -w "done($jobid)" -J "mmgbsa_final" " sh $parallel_scripts/mmgbsa_final_submit_multitraj .sh $traj $n_jobs $frames_per_job "
+	bsub -q $queue_name -n 1 -o "mmgbsa2.1_final.o%J.%I" -e "mmgbsa2.1_final.e%J.%I" -w "done($jobid)" -J "mmgbsa_final" " sh $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job "
 	# Passing arguments is not as easy, and requires the sub-sh construct. 
 	bjobs
 fi
 
 exit
+
 
 
 
