@@ -59,7 +59,7 @@ LABEL loop
  CALC bu = @a + @b - @c
 
  WRITE TITLE UNIT 13
- * @n  @a  @b  @c : @bu
+ * @n  @a  @b  @c  @bu
  *
 
 IF @n .LT. @nframes GOTO loop
