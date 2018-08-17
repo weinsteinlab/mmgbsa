@@ -51,11 +51,11 @@ echo "Finished solv perl"
 # Total
 
 $perl $perl_scripts/full-contri-multitraj.prl   > log/full-contri-multitraj.log
-echo "Finished full energy global."
+echo "Finished full energy byres."
 
 
 $perl $perl_scripts/full-global-multitraj.prl  > log/full-global-multitraj.log
-echo "Finished full energy byres."
+echo "Finished full energy global."
 
 echo "Done."
 

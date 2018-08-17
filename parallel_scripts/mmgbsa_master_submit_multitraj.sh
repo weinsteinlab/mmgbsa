@@ -1,18 +1,12 @@
-#!/bin/bash -l
-#$ -N mmgbsa2.2
-#$ -j y
-#$ -cwd
-#$ -q standard.q
-#$ -l h_vmem=5G
-##$ -l h_vmem=5G,zeno=true
+#!/bin/bash -l  
+
+# BSUB or LSF options passed directly on the command line.
 
 ###################################################################
 #                                                                 #
 # User-defined parameters, now passed as arguments                #
 #                                                                 #
 ###################################################################
-
-# TEST! Just to see how GitLab documents command line-pushed changes. 
 
 # Trajectory of the full system (can be a DCD file or an XTC file)
 mytraj=$1
@@ -23,17 +17,30 @@ stride=$3
 # Number of frames per job
 js=$4 # number of frames in each sub-job
 
-
 ###################################################################
 # Setup some variables 
 
 psf=./data/system.namd.psf
 
-A=$SGE_TASK_ID
+#SGE :
+if [ $queueing_system == "SGE" ]; then
+        mytmpdir=$TMPDIR
+	A=$SGE_TASK_ID
+fi
+#LSF :
+if [ $queueing_system == "LSF" ]; then
+        mytmpdir=$__LSF_JOB_TMPDIR__
+	A=$LSB_JOBINDEX
+fi
 B=`printf %04i $A`
 
+# DEBUGGING HACK :
+mytmpdir=./tmpdir/
+
+echo "Using temporary directory : $mytmpdir"
+
 # mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
-# This is now inherited by the environment through qsub -V
+# This is now inherited by the environment through qsub -v
 source $mmgbsa_path/scripts/setenv.sh
 catdcd=$mmgbsa_path/parallel_scripts/catdcd 
 
@@ -41,8 +48,8 @@ current=$(pwd)
 
 mj=$(( $js - 1 ))
 
-dcd_tmp=$TMPDIR/job_${B}
-main_tmp=$TMPDIR/${B}
+frames_tmp=$mytmpdir/frames_${B}
+main_tmp=$mytmpdir/${B}
 
 if [[ ${mytraj##*.} == "xtc" ]] ; then
 	trajtypeflag="-xtc"
@@ -56,10 +63,10 @@ fi
 ###################################################################
 # Make directories and small trajectory
 
-time_to_sleep=$(( $SGE_TASK_ID % 3 ))
+time_to_sleep=$(( $A % 3 ))
 sleep $time_to_sleep  
 
-mkdir $dcd_tmp
+mkdir $frames_tmp
 mkdir $main_tmp
 
 cp -rp data $main_tmp/.
@@ -81,42 +88,44 @@ then
 fi
 
 
-echo " Extracting small trajectory ... "
+# echo " Extracting small trajectory ... "
 if (( $frame_num % $js == 0 ))
 then
 	final_job=$((frame_num/$js))
 
 	if [ $A -le 1 ]
 	then	
-		$catdcd -o $dcd_tmp/$B.dcd -otype dcd -first 1 -last $js $trajtypeflag $mytraj
+		first=1
+		last=$js
 	else
 		last=$(($A*$js))
         	first=$((last-$mj))
-		$catdcd -o $dcd_tmp/$B.dcd -otype dcd -first $first -last $last $trajtypeflag $mytraj
 	fi
 else
 	final_job=$(((frame_num/$js)+1))
 
         if [ $A -le 1 ]
         then
-                $catdcd -o $dcd_tmp/$B.dcd -otype dcd -first 1 -last $js $trajtypeflag $mytraj
+                first=1
+                last=$js
         elif [ $A -lt $final_job ] 
 	then
                 last=$(($A*$js))
                 first=$((last-$mj))
-                $catdcd -o $dcd_tmp/$B.dcd -otype dcd -first $first -last $last $trajtypeflag $mytraj
 	else 
                 first=$((($A*$js)-$mj))
-		$catdcd -o $dcd_tmp/$B.dcd -otype dcd -first $first -last $frame_num $trajtypeflag $mytraj
+		last=$frame_num
         fi	
 fi
 
 unset frame_num
 
-small_traj=$dcd_tmp/$B.dcd
+# small_traj=$frames_tmp/$B.dcd
+# $catdcd -o $small_traj -otype dcd -first $first -last $last $trajtypeflag $mytraj
+
 
 # Get the number of frames in the local trajectory bit
-last=`$catdcd -num $small_traj | awk '($1=="Total"){print $3}'`
+# last=`$catdcd -num $small_traj | awk '($1=="Total"){print $3}'`
 
 
 ###################################################################
@@ -124,35 +133,32 @@ last=`$catdcd -num $small_traj | awk '($1=="Total"){print $3}'`
 
 cd $main_tmp
 
-$catdcd -o ./data/first_frame_of_dcd.pdb -otype pdb -s $psf -stype psf -first $real_first -last 1 $small_traj
-
 echo " "
-echo "Task ID : $SGE_TASK_ID"
+echo "Task ID : $A"
 echo "Host : " `hostname`
 echo "Base directory : $current"
 echo "Working directory : $main_tmp"
-echo "DCD directory : $dcd_tmp"
+echo "Frames directory : $frames_tmp"
 
 echo " "
 echo " Preparing local MMGBSA job ... "
-$mmgbsa_path/scripts/prepare_mmgbsa_local_multitraj.csh $small_traj 1 $last $stride $dcd_tmp > $current/log/prepare_job_$SGE_TASK_ID.log
+$mmgbsa_path/scripts/prepare_mmgbsa_local_multitraj.csh $mytraj $first $last $stride $frames_tmp > $current/log/prepare_job_$A.log
 
 ###################################################################
 # Run local mmgbsa 
 
 echo " Running local MMGBSA job ... "
-$mmgbsa_path/scripts/run_one_mmgbsa_multitraj.sh  >  $current/log/run_job_$SGE_TASK_ID.log
+$mmgbsa_path/scripts/run_one_mmgbsa_multitraj.sh  >  $current/log/run_job_$A.log
 
 
 sleep 10
 
 echo " Cleaning up ... "
-#rm -r ./frames-comp 
-#rm -r ./data
+# rm -r ./frames-comp 
+# rm -r ./data
+# rm -r $frames_tmp
 
-#rm -r $dcd_tmp
-
-cd $TMPDIR
+cd $mytmpdir
 
 tar czf $B.tar.gz $B 
 rm -r $B

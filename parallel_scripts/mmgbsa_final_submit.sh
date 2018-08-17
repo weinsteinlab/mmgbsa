@@ -1,9 +1,6 @@
 #!/bin/bash -l
-#$ -N mmgbsa2.2_final
-#$ -j y
-#$ -cwd
-#$ -q standard.q
-#$ -l h_vmem=10G
+
+# SGE or LSF arguments given on command line 
 
 ###################################################################
 #                                                                 #
@@ -17,6 +14,14 @@ frames_per_job=$3
 
 source $mmgbsa_path/scripts/setenv.sh
 
+#SGE :
+if [ $queueing_system == "SGE" ]; then
+        mytmpdir=$TMPDIR
+fi
+#LSF :
+if [ $queueing_system == "LSF" ]; then
+        mytmpdir=$__LSF_JOB_TMPDIR__
+fi
 
 ###################################################################
 
@@ -27,10 +32,10 @@ rm ./mmgbsa2.1.o*
 
 cd ..
 
-cp -rp $cwd $TMPDIR/final_job_tmp
+cp -rp $cwd $mytmpdir/final_job_tmp
 
-cd $TMPDIR/final_job_tmp
-echo "Working in directory $TMPDIR/final_job_tmp/"
+cd $mytmpdir/final_job_tmp
+echo "Working in directory $mytmpdir/final_job_tmp/"
 
 for file in `ls [0-9][0-9][0-9][0-9].tar.gz`; do
 	tar -xzf $file

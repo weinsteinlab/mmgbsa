@@ -48,7 +48,7 @@ echo "    Capping options : ${capping[*]}"
 
 # ---------------------------------------------------------------
  # Extract complex from full system in NAMD format:
-echo "    Extracting complex ..."
+echo "        Extracting complex ..."
 cat > extract_complex.tcl  << EOF
   mol new system.namd.psf
   mol addfile system.pdb
@@ -66,7 +66,7 @@ $vmd -dispdev text -e  extract_complex.tcl >& extract_complex.log
 cat complex_raw.pdb | $scripts/pdb2crd.prl > complex_raw.crd
 
 # Parse protein and check if OK. 
-echo "    Parsing complex ..."
+echo "        Parsing complex ..."
 $scripts/parse-protein.prl complex_raw.crd
 
 # ---------------------------------------------------------------
@@ -89,12 +89,12 @@ sed -i -e "$prot_plus,9999 s/NTER/NONE/" ./preparing-system/ProteinSegments
 sed -i -e "$prot_plus,9999 s/CTER/NONE/" ./preparing-system/ProteinSegments
 
 echo ""
-echo "    Segments detected in the MMGBSA system : "
+echo "        Segments detected in the MMGBSA system : "
 echo ""
 cat preparing-system/ProteinSegments
 echo ""
 
-echo "    Is this ok? If not, edit the ./setup_charmm/preparing-system/ProteinSegments file before hitting enter"
+echo "        Is this ok? If not, edit the ./setup_charmm/preparing-system/ProteinSegments file before hitting enter"
 read we_can_continue 
 
 # ---------------------------------------------------------------
@@ -115,11 +115,11 @@ cp -p $top_path/par_all36_carb.prm toppar/.
 cp -p $top_path/toppar_water_ions.str toppar/.
 cp -p $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str toppar/.
 
-echo "    Running charmm setup ... "
+echo "        Running charmm setup ... "
 $perl $scripts/prepare-charmm36.prl
  
 cd ..
 
-echo "    Done."
+echo "        Done."
 
 #end

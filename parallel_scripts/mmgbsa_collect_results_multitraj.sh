@@ -90,11 +90,7 @@ done
 
 unset counter i job_num_formatted multiplier end tmp_num
 
-#===================================================================================
-# MAC to check later :
-# All this seems to amount to concatenating and renumbering the rows in the file...
-# This relies on the fact that cat * will take the files in the right order...
-# I prefer the version below, which involves much less file manipulation and does not rely on the cat * order.
+################################################################################################
 
 counter=1
 rm -f ./total/inter-global.dat
@@ -111,9 +107,6 @@ rm  ./total/inter-global.tmp
 
 # We could do even simpler (if we rely also on the right cat * order):
 # cat $current/*/total/inter-global.dat |  awk '{print NR, $2,$3,$4}' > ./total/inter-global.dat
-
-
-# MAC end of remark =============================================================
 
 $perl_scripts/inter-contri-multitraj.prl > ./log_collect/inter-contri-multitraj.log
 
@@ -151,6 +144,7 @@ done
 
 ################################################################################################
 # SASA Collect average values per residue
+
 rm -f ./sas/sas-res.tmp
 for i in $resA
 do        
