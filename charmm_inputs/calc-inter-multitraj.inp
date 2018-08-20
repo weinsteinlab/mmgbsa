@@ -137,7 +137,7 @@ LABEL loop
      
      ! ------------------------------------------------------
      ! Backbone-rest 
-     INTER SELE thisbb END SELE .NOT. IRES @k END
+     INTER SELE thisbb END SELE A .AND. .NOT. ( IRES @k ) END
      SET bondbbrest ?BOND
      SET dihebbrest ?DIHE
      SET vdwbbrest ?VDW
@@ -166,7 +166,7 @@ LABEL loop
 
      ! ------------------------------------------------------
      ! Sidechain-rest 
-     INTER SELE thisbb END SELE .NOT. IRES @k END
+     INTER SELE thisbb END SELE A .AND. .NOT. ( IRES @k ) END
      SET bondscrest ?BOND
      SET dihescrest ?DIHE
      SET vdwscrest ?VDW

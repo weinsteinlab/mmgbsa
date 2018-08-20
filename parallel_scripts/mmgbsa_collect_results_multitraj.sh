@@ -134,9 +134,6 @@ do
 		counter=$((counter+1))
 	done
 	
-	sed -i 's/[[:space:]]\{1,\}/,/g' ./sas/sas-res-${i}.tmp
-        sed -i 's/^,//g' ./sas/sas-res-${i}.tmp
-        
         $perl_scripts/renumber_and_stats.prl ./sas/sas-res-${i}.tmp > ./sas/sas-res-${i}.dat
         
         rm ./sas/sas-res-${i}.tmp
@@ -148,10 +145,11 @@ done
 rm -f ./sas/sas-res.tmp
 for i in $resA
 do        
-        awk '($1=="AVE"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./sas/sas-res-${i}.dat  >> ./sas/sas-res.tmp
+        awk '($1=="AVG"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./sas/sas-res-${i}.dat  >> ./sas/sas-res.tmp
 done
 
-awk '{  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+awk '{ print $0;  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+	
         END{  print "--------------------------------------------";
         printf "%4s    %10.4f %10.4f %10.4f \n", "TOT", s2, s3, s4 }' ./sas/sas-res.tmp > ./sas/sas-res.dat
 rm ./sas/sas-res.tmp  
@@ -162,17 +160,17 @@ rm ./sas/sas-res.tmp
 ################################################################################################
 # SASA total 
 counter=1
-rm -f ./total/sasa.tmp
+rm -f ./total/sasa-global.tmp
 while [ $counter -le $job_num ]
 do
         job_num_formatted=`printf %04i $counter`
-        cat $current/$job_num_formatted/total/sasa.dat >> ./total/sasa.tmp
+        cat $current/$job_num_formatted/total/sasa-global.dat >> ./total/sasa-global.tmp
         counter=$((counter+1))
 done
 unset counter job_num_formatted
 
-$perl_scripts/renumber_and_stats.prl ./total/sasa.tmp > ./total/sasa.dat
-rm  ./total/sasa.tmp
+$perl_scripts/renumber_and_stats.prl ./total/sasa-global.tmp > ./total/sasa-global.dat
+rm  ./total/sasa-global.tmp
 
 
 ################################################################################################
@@ -223,10 +221,6 @@ do
 		counter=$((counter+1))
 	done
 
-	sed -i 's/[[:space:]]\{1,\}/,/g' ./solv/solv-res-${i}.tmp
-        sed -i 's/^,//g' ./solv/solv-res-${i}.tmp
-
-	
         $perl_scripts/renumber_and_stats.prl ./solv/solv-res-${i}.tmp > ./solv/solv-res-${i}.dat
         
         rm ./solv/solv-res-${i}.tmp
@@ -237,10 +231,10 @@ done
 rm -f ./solv/solv-res.tmp
 for i in $resA
 do        
-        awk '($1=="AVE"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./solv/solv-res-${i}.dat  >> ./solv/solv-res.tmp
+        awk '($1=="AVG"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./solv/solv-res-${i}.dat  >> ./solv/solv-res.tmp
 done
 
-awk '{  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+awk '{  print $0; s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
         END{  print "--------------------------------------------";
         printf "%4s    %10.4f %10.4f %10.4f \n", "TOT", s2, s3, s4 }' ./solv/solv-res.tmp > ./solv/solv-res.dat
 rm ./solv/solv-res.tmp  

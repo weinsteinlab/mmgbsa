@@ -35,7 +35,8 @@ fi
 B=`printf %04i $A`
 
 # DEBUGGING HACK :
-mytmpdir=./tmpdir/
+current=$(pwd)
+mytmpdir=$current/tmpdir/
 
 echo "Using temporary directory : $mytmpdir"
 
@@ -43,8 +44,6 @@ echo "Using temporary directory : $mytmpdir"
 # This is now inherited by the environment through qsub -v
 source $mmgbsa_path/scripts/setenv.sh
 catdcd=$mmgbsa_path/parallel_scripts/catdcd 
-
-current=$(pwd)
 
 mj=$(( $js - 1 ))
 
@@ -66,8 +65,8 @@ fi
 time_to_sleep=$(( $A % 3 ))
 sleep $time_to_sleep  
 
-mkdir $frames_tmp
-mkdir $main_tmp
+mkdir -p $frames_tmp
+mkdir -p $main_tmp
 
 cp -rp data $main_tmp/.
 cp -rp vmd_selections.tcl $main_tmp/.
@@ -88,7 +87,7 @@ then
 fi
 
 
-# echo " Extracting small trajectory ... "
+# echo " Local preparation for MMGBSA  ... "
 if (( $frame_num % $js == 0 ))
 then
 	final_job=$((frame_num/$js))

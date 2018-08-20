@@ -25,16 +25,20 @@ print "Number of conformations : $nconf \n";
 open(IN,"total/inter-global.dat") or die "Could not open total/inter-global.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);  
-  $bonded[$w[0]]=$w[1];
-  $vdw[$w[0]]=$w[2];
-  $elec[$w[0]]=$w[3];
+  if ($w[0] =~ /^[0-9,.E]+$/ ) {
+  	$bonded[$w[0]]=$w[1];
+  	$vdw[$w[0]]=$w[2];
+  	$elec[$w[0]]=$w[3];
+  }
 }
 close(IN);
 
 open(IN,"total/solv-global.dat") or die "Could not open total/solv-global.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
-  $solv[$w[0]]=$w[1];
+  if ($w[0] =~ /^[0-9,.E]+$/ ) {  
+	$solv[$w[0]]=$w[1];
+  }
 }
 close(IN);
 
@@ -42,7 +46,9 @@ close(IN);
 open(IN,"total/sasa-global.dat") or die "Could not open total/sasa-global.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
-  $np[$w[0]]=0.0072*$w[1];
+  if ($w[0] =~ /^[0-9,.E]+$/ ) {
+	$np[$w[0]]=0.0072*$w[1];
+  }
 }
 close(IN);
 

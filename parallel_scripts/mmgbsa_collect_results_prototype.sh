@@ -125,10 +125,10 @@ done
 rm -f ./sas-a/sas-a-res.tmp
 for i in $resA
 do        
-        awk '($1=="AVE"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./sas-a/sas-a-res-${i}.dat  >> ./sas-a/sas-a-res.tmp
+        awk '($1=="AVG"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./sas-a/sas-a-res-${i}.dat  >> ./sas-a/sas-a-res.tmp
 done
 
-awk '{  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+awk '{  print $0; s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
         END{  print "--------------------------------------------";
         printf "%4s    %10.4f %10.4f %10.4f \n", "TOT", s2, s3, s4 }' ./sas-a/sas-a-res.tmp > ./sas-a/sas-a-res.dat
 rm ./sas-a/sas-a-res.tmp  
@@ -147,10 +147,10 @@ done
 rm -f ./sas-b/sas-b-res.tmp
 for i in $resA
 do        
-        awk '($1=="AVE"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./sas-b/sas-b-res-${i}.dat  >> ./sas-b/sas-b-res.tmp
+        awk '($1=="AVG"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./sas-b/sas-b-res-${i}.dat  >> ./sas-b/sas-b-res.tmp
 done
 
-awk '{  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+awk '{  print $0; s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
         END{  print "--------------------------------------------";
         printf "%4s    %10.4f %10.4f %10.4f \n", "TOT", s2, s3, s4 }' ./sas-b/sas-b-res.tmp > ./sas-b/sas-b-res.dat
 rm ./sas-b/sas-b-res.tmp  
@@ -168,10 +168,10 @@ done
 rm -f ./sas-comp/sas-comp-res.tmp
 for i in $resA
 do        
-        awk '($1=="AVE"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./sas-comp/sas-comp-res-${i}.dat  >> ./sas-comp/sas-comp-res.tmp
+        awk '($1=="AVG"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./sas-comp/sas-comp-res-${i}.dat  >> ./sas-comp/sas-comp-res.tmp
 done
 
-awk '{  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+awk '{ print $0; s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
         END{  print "--------------------------------------------";
         printf "%4s    %10.4f %10.4f %10.4f \n", "TOT", s2, s3, s4 }' ./sas-comp/sas-comp-res.tmp > ./sas-comp/sas-comp-res.dat
 rm ./sas-comp/sas-comp-res.tmp  
@@ -240,10 +240,10 @@ done
 rm -f ./solv-a/solv-a-res.tmp
 for i in $resA
 do        
-        awk '($1=="AVE"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./solv-a/solv-a-res-${i}.dat  >> ./solv-a/solv-a-res.tmp
+        awk '($1=="AVG"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./solv-a/solv-a-res-${i}.dat  >> ./solv-a/solv-a-res.tmp
 done
 
-awk '{  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+awk '{ print $0;  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
         END{  print "--------------------------------------------";
         printf "%4s    %10.4f %10.4f %10.4f \n", "TOT", s2, s3, s4 }' ./solv-a/solv-a-res.tmp > ./solv-a/solv-a-res.dat
 rm ./solv-a/solv-a-res.tmp  
@@ -288,10 +288,10 @@ done
 rm -f ./solv-b/solv-b-res.tmp
 for i in $resB
 do        
-        awk '($1=="AVE"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./solv-b/solv-b-res-${i}.dat  >> ./solv-b/solv-b-res.tmp
+        awk '($1=="AVG"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./solv-b/solv-b-res-${i}.dat  >> ./solv-b/solv-b-res.tmp
 done
 
-awk '{  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+awk '{ print $0; s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
         END{  print "--------------------------------------------";
         printf "%4s    %10.4f %10.4f %10.4f \n", "TOT", s2, s3, s4 }' ./solv-b/solv-b-res.tmp > ./solv-b/solv-b-res.dat
 rm ./solv-b/solv-b-res.tmp  
@@ -337,10 +337,10 @@ done
 rm -f ./solv-comp/solv-comp-res.tmp
 for i in $both_A_B
 do        
-        awk '($1=="AVE"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./solv-comp/solv-comp-res-${i}.dat  >> ./solv-comp/solv-comp-res.tmp
+        awk '($1=="AVG"){printf "%4d    %10.4f %10.4f %10.4f \n", ii,$2,$3,$4}' ii=$i ./solv-comp/solv-comp-res-${i}.dat  >> ./solv-comp/solv-comp-res.tmp
 done
 
-awk '{  s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
+awk '{ print $0; s2=s2+$2; s3=s3+$3; s4=s4+$4}; 
         END{  print "--------------------------------------------";
         printf "%4s    %10.4f %10.4f %10.4f \n", "TOT", s2, s3, s4 }' ./solv-comp/solv-comp-res.tmp > ./solv-comp/solv-comp-res.dat
 rm ./solv-comp/solv-comp-res.tmp  

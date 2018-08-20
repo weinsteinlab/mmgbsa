@@ -23,12 +23,14 @@ if [ $queueing_system == "LSF" ]; then
         mytmpdir=$__LSF_JOB_TMPDIR__
 fi
 
+echo "    Using temporary directory : $mytmpdir/final_job_tmp"
+
 ###################################################################
 
 cwd=$(pwd)
 
-tar czf ./sub_job_logs.tar.gz ./mmgbsa2.2.o*
-rm ./mmgbsa2.2.o*
+tar czf ./sub_job_logs.tar.gz ./mmgbsa2.1.o*
+rm ./mmgbsa2.1.o*
 
 cd ..
 
