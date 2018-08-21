@@ -1,6 +1,9 @@
 #!/bin/bash -l
 
 current=$(pwd)
+ 
+# For VitalIT
+module load R
 
 # source ./setenv.sh
 
@@ -168,11 +171,11 @@ for i in $resA
 do
 	counter=1
 
-	rm -f ./sas/sas-a-res-${i}.dat
+	rm -f ./sas-a/sas-a-res-${i}.dat
 	while [ $counter -le $job_num ]
 	do
 		job_num_formatted=`printf %04i $counter`
-		awk '($1~/[0-9]/)' $current/$job_num_formatted/sas/sas-a-res-${i}.dat >> ./sas/sas-a-res-${i}.dat
+		awk '($1~/[0-9]/)' $current/$job_num_formatted/sas-a/sas-a-res-${i}.dat >> ./sas-a/sas-a-res-${i}.dat
 		counter=$((counter+1))
 	done
 	
@@ -269,11 +272,11 @@ for i in $resB
 do
 	mkdir ./sas-b/res-${i}
 	counter=1
-	rm -f ./sas/sas-b-res-${i}.dat
+	rm -f ./sas-b/sas-b-res-${i}.dat
 	while [ $counter -le $job_num ]
 	do
 		job_num_formatted=`printf %04i $counter`
-		awk '($1~/[0-9]/)' $current/$job_num_formatted/sas/sas-b-res-${i}.dat >> ./sas/sas-b-res-${i}.dat
+		awk '($1~/[0-9]/)' $current/$job_num_formatted/sas-b/sas-b-res-${i}.dat >> ./sas-b/sas-b-res-${i}.dat
 		counter=$((counter+1))
 	done
 	
@@ -369,11 +372,11 @@ rm ./sas-b/line.txt ./sas-b/sas-b-res_stat.dat
 for i in $both_A_B
 do
 	counter=1
-	rm -f ./sas/sas-comp-res-${i}.dat
+	rm -f ./sas-comp/sas-comp-res-${i}.dat
 	while [ $counter -le $job_num ]
 	do
 		job_num_formatted=`printf %04i $counter`
-		awk '($1~/[0-9]/)' $current/$job_num_formatted/sas/sas-res-${i}.dat >> ./sas/sas-comp-res-${i}.dat
+		awk '($1~/[0-9]/)' $current/$job_num_formatted/sas-comp/sas-comp-res-${i}.dat >> ./sas-comp/sas-comp-res-${i}.dat
 		counter=$((counter+1))
 	done
 	
@@ -472,12 +475,12 @@ rm -f ./total/buried-sasa.dat
 while [ $counter -le $job_num ]
 do
         job_num_formatted=`printf %04i $counter`
-        cat $current/$job_num_formatted/total/buried-sasa.dat >> ./total/buried-sasa.dat
+        cat $current/$job_num_formatted/total/buried-sasa.dat >> ./total/buried-sasa.tmp
         counter=$((counter+1))
 done
 unset counter job_num_formatted
 
-awk '{print NR, $2,$3,$4}' ./total/buried-sasa.tmp > ./total/buried-sasa.dat
+awk '{print NR, $2,$3,$4, $5, $6}' ./total/buried-sasa.tmp > ./total/buried-sasa.dat
 rm  ./total/buried-sasa.tmp
 
 ################################################################################################
@@ -902,46 +905,46 @@ rm ./solv-comp/line.txt ./solv-comp/solv-comp-res_stat.dat
 ################################################################################################
 
 counter=1
-rm -f ./total/solv-a-global.dat
+rm -f ./total/solv-a-global.tmp
 while [ $counter -le $job_num ]
 do
         job_num_formatted=`printf %04i $counter`
-        cat $current/$job_num_formatted/total/solv-a-global.dat >> ./total/solv-a-global.dat
+        cat $current/$job_num_formatted/total/solv-a-global.dat >> ./total/solv-a-global.tmp
         counter=$((counter+1))
 done
 unset counter job_num_formatted
 
-awk '{print NR, $2,$3,$4}' ./total/solv-a-global.tmp > ./total/solv-a-global.dat
+awk '{print NR, $2}' ./total/solv-a-global.tmp > ./total/solv-a-global.dat
 rm  ./total/solv-a-global.tmp
 
 ################################################################################################
 
 counter=1
-rm -f ./total/solv-b-global.dat
+rm -f ./total/solv-b-global.tmp
 while [ $counter -le $job_num ]
 do
         job_num_formatted=`printf %04i $counter`
-        cat $current/$job_num_formatted/total/solv-b-global.dat >> ./total/solv-b-global.dat
+        cat $current/$job_num_formatted/total/solv-b-global.dat >> ./total/solv-b-global.tmp
         counter=$((counter+1))
 done
 unset counter job_num_formatted
 
-awk '{print NR, $2,$3,$4}' ./total/solv-b-global.tmp > ./total/solv-b-global.dat
+awk '{print NR, $2}' ./total/solv-b-global.tmp > ./total/solv-b-global.dat
 rm  ./total/solv-b-global.tmp
 
 ################################################################################################
 
 counter=1
-rm -f ./total/solv-comp-global.dat
+rm -f ./total/solv-comp-global.tmp
 while [ $counter -le $job_num ]
 do
         job_num_formatted=`printf %04i $counter`
-        cat $current/$job_num_formatted/total/solv-comp-global.dat >> ./total/solv-comp-global.dat
+        cat $current/$job_num_formatted/total/solv-comp-global.dat >> ./total/solv-comp-global.tmp
         counter=$((counter+1))
 done
 unset counter job_num_formatted
 
-awk '{print NR, $2,$3,$4}' ./total/solv-comp-global.tmp > ./total/solv-comp-global.dat
+awk '{print NR, $2}' ./total/solv-comp-global.tmp > ./total/solv-comp-global.dat
 rm  ./total/solv-comp-global.tmp
 
 ################################################################################################
@@ -950,9 +953,9 @@ $perl $perl_scripts/calc-bind-byres.prl  > ./log/calc-bind-byres.log
 $perl $perl_scripts/calc-bind-byres-stat.prl > ./log/calc-bind-byres-stat.log
 
 # Put values into pdb B-factor column
-$scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb  binding_sc.dat > binding_sc.pdb 
-$scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb  binding_bb.dat > binding_bb.pdb 
-$scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb  binding_all.dat > binding_all.pdb 
+$perl $scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb  binding_sc.dat > binding_sc.pdb 
+$perl $scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb  binding_bb.dat > binding_bb.pdb 
+$perl $scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb  binding_all.dat > binding_all.pdb 
 
 
 echo "Done."

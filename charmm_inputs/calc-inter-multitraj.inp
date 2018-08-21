@@ -124,7 +124,7 @@ LABEL loop
      SET elecbb ?ELEC
      
      ! ------------------------------------------------------
-     ! Special case of CMPA
+     ! Special case of CMAP
      ! In charmm INTER, the CMAP energy is atributed to the previous residue. 
      CALC j = @k - 1      
      DEFINE thisbbcmap SELECT (IRES @j .AND. bb) END
@@ -137,7 +137,7 @@ LABEL loop
      
      ! ------------------------------------------------------
      ! Backbone-rest 
-     INTER SELE thisbb END SELE .NOT. IRES @k END
+     INTER SELE thisbb END SELE A .AND. .NOT. ( IRES @k ) END
      SET bondbbrest ?BOND
      SET dihebbrest ?DIHE
      SET vdwbbrest ?VDW
@@ -166,7 +166,7 @@ LABEL loop
 
      ! ------------------------------------------------------
      ! Sidechain-rest 
-     INTER SELE thisbb END SELE .NOT. IRES @k END
+     INTER SELE thissc END SELE A .AND. .NOT. ( IRES @k ) END
      SET bondscrest ?BOND
      SET dihescrest ?DIHE
      SET vdwscrest ?VDW
@@ -174,7 +174,7 @@ LABEL loop
      
      ! ------------------------------------------------------
      ! Sidechain-Backbone 
-     INTER SELE thisbb END SELE thissc END
+     INTER SELE thissc END SELE thissc END
      SET bondbbsc ?BOND
      SET dihebbsc ?DIHE
      SET vdwbbsc ?VDW

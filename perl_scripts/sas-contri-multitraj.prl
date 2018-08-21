@@ -13,7 +13,7 @@
 #########################################################
 
 # prevent warnings for "smartmatch", i.e. operator "~~".
-use experimental qw(smartmatch switch);
+# use experimental qw(smartmatch switch);
 
 $mmgbsa_path = $ENV{'mmgbsa_path'};
 require "$mmgbsa_path/perl_scripts/time_statistics.prl";

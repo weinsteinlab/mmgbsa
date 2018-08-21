@@ -52,7 +52,7 @@ close(IN);
 open(IN,"total/buried-sasa.dat") or die "Could not open total/buried-sasa.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
-  $surf[$w[0]]=$w[5];
+  $surf[$w[0]]=$w[4];   # No more colon in file
 }
 close(IN);
 

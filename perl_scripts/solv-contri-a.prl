@@ -12,7 +12,7 @@
 #########################################################
 
 # prevent warnings for "smartmatch", i.e. operator "~~".
-use experimental qw(smartmatch switch);
+# use experimental qw(smartmatch switch);
 
 
 $natoma=`grep \"NATOMA \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in A

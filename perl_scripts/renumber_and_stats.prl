@@ -29,7 +29,7 @@ require "$mmgbsa_path/perl_scripts/time_statistics.prl";
 $filename = $ARGV[0] ;
 
 ########################################################
-# Read file and pring renumbered rows. 
+# Read file, store values, and print renumbered rows. 
 
 open(IN,$filename) or die "Could not open file $filename";
 $n=1;
@@ -81,3 +81,6 @@ for $i (1..$ll) {
 printf STDOUT ("\n");
 
 close(STDOUT)
+
+
+

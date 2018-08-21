@@ -15,7 +15,7 @@ STREAM ./data/definitions.str
 !================================================================
 
 !--- Open output files for writing
-OPEN UNIT 13 CARD WRITE NAME total/sasa.dat
+OPEN UNIT 13 CARD WRITE NAME total/sasa-global.dat
 
 NBOND @nbstr
 

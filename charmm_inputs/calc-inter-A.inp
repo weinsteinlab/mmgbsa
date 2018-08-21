@@ -58,7 +58,7 @@ LABEL loop
 
      INCR k 
      
-     ! ##### Select resoidues based on WCOMP from definitions.crd 
+     ! ##### Select residues based on WCOMP from definitions.crd 
      COOR COMP STAT SELE ( IRES @k ) END
      SET key ?WAVE    
      ! # Convention    A : w=1    Acalc : w=2    B : w=-1   Bcalc : w=-2
