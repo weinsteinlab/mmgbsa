@@ -2,7 +2,7 @@
 
 # Needs a directory ./input with *.psf and *.pdb files
 
-set -e
+#set -e
 set -u
 
 ###################################################################
@@ -11,17 +11,35 @@ set -u
 #                                                                 #
 ###################################################################
 
+echo "    Starting ..."
+
 # Path to MMGBSA distribution 
-mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+mmgbsa_path=/home/mcuendet/archive/mmgbsa/mmgbsa-multitraj/
+
+# Name of mmgbsa run (will correspond to sub-directory of same name)
+mmgbsa_name="mmgbsa_A"
+#mmgbsa_name="mmgbsa_B"
+#mmgbsa_name="mmgbsa_AB"
 
 # Selection for the MMGBSA system
-system_selection='protein'
+system_selection='protein or (chain S T U L M N and not lipid)'
+
+# Selection for the part of the system
+# part_selection=" ( chain A and ( resid 223 to 417)) or (chain S L and not lipid) "
+# part_selection=" chain A and (resid 34 to 74)  "
+# part_selection=" ( chain A and  (resid 34 to 74 223 to 417)) or (chain S L and not lipid) "
+# FOR COMPATIBILITY :
+ part_selection=" chain A and ( resid 223 to 417) "
+# part_selection=" chain A and (resid 34 to 74)  "
+# part_selection=" chain A and  (resid 34 to 74 223 to 417) "
 
 # Select residues explicitly for the decomposition.
-residue_selection="chain A and resid 351 to 353 "
+ residue_selection="chain A and resid 351 to 353 "
+# residue_selection="chain A and resid 51 to 53 "
+# residue_selection="chain A and resid 51 to 53 351 to 353 "
 
 # Trajectory of the full system (can be a DCD file or an XTC file). 
-traj=/path/to/traj.xtc
+traj=$mmgbsa_path/example/input/ofcc2.xtc
 
 # Frames used 
 start_frame=1
@@ -46,7 +64,7 @@ ionconc=0.154
 
 # System details - proteins are assumed to come first in the PSF.
 #    Number of separate (i.e. not covalently bonded) protein/peptide segments
-proteins=3 
+proteins=6 
 
 # For each protein/peptide, include the following variables ###
 capping[1]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
@@ -59,6 +77,12 @@ capping[5]=0 # is the 3rd protein/peptide's n-term capped? 0 for no, 1 for yes.
 capping[6]=0 # is the 3rd protein/peptide's c-term capped? 0 for no, 1 for yes.
 # et caetera ...
 
+capping[7]=0
+capping[8]=0
+capping[9]=0
+capping[10]=0
+capping[11]=0
+capping[12]=0
 
 
 ###################################################################
@@ -71,13 +95,12 @@ capping[6]=0 # is the 3rd protein/peptide's c-term capped? 0 for no, 1 for yes.
 ###################################################################
 # Define some variables 
 
+echo "    Defining environment ... "
 export mmgbsa_path  
 # It is very important that mmgbsa_path be a global variable.
+export queueing_system
 
 source $mmgbsa_path/scripts/setenv.sh
-
-# Name of mmgbsa run
-mmgbsa_name="mmgbsa"
 
 # Make the path to traj absolute if it is not already
 traj=`readlink -f $traj`
@@ -97,18 +120,19 @@ if [[  $HOSTNAME =~ panda ]]; then
 fi
 
 # Variables for compatibility with one-traj code.
-partA_selection=$system_selection
-partA_residues_selection=$residue_selection
+#partA_selection=$system_selection
+#partA_residues_selection=$residue_selection
 
 ###################################################################
 # Charmm setup
 
-echo "Performing charmm setup ... "
+echo "    Performing charmm setup ... "
 
 mkdir -p setup_charmm
 cd setup_charmm
 
-$scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}" | tee setup_charmm.log 
+#$scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}" | tee setup_charmm.log 
+echo "          SKIPPING ...    "
 
 is_ok=`grep  "Everything seems Ok" setup_charmm.log`
 if [ -z "$is_ok" ]; then
@@ -123,7 +147,7 @@ cd $mmgbsa_name
 ###################################################################
 # Make vmd_selection.tcl file
 
-echo "Making VMD selection file ..."
+echo "    Making VMD selection file ..."
 
 cat > vmd_selections.tcl << EOF
 
@@ -131,26 +155,22 @@ cat > vmd_selections.tcl << EOF
 set complex_sel_text " $system_selection "
 # Must be the same as given to setup_charmm.csh 
 
-EOF
-
-# Definition of residues of interest. 
-cat >> vmd_selections.tcl << EOF
+# Selection text for part A (still necessary in multitraj for compatibility reasons)
+set A_sel_text " $part_selection "
 
 # Selection text for interesting residues
-set residues_sel_text  "( \$complex_sel_text ) and ( $residues_selection )"
-
+set Aresidues_sel_text  "( \$complex_sel_text ) and ( $residue_selection )"
 
 EOF
 
 ###################################################################
 # Prepare mmgbsa (part common to all subjobs)
 
-echo "Preparing MMGBSA directory ... "
+echo "    Preparing MMGBSA directory ... "
 
 $scripts/prepare_mmgbsa_common_multitraj.csh "$cutoff" "$ionconc"	
 
-
-echo "Testing trajectory ... "
+echo "    Testing trajectory ... "
 mkdir -p test_traj
 cd test_traj
 mypsf="../data/system.namd.psf"
@@ -174,7 +194,7 @@ cd ..
 #      This calls the preparation script 
 #      $scripts/prepare_mmgbsa_local.csh $traj $startframe $endframe $stride
 
-echo "Submitting all sub-jobs ... "
+echo "    Submitting all sub-jobs ... "
 
 # SGE : 
 if [ $queueing_system == "SGE" ]; then 
@@ -196,7 +216,7 @@ fi
 ###################################################################
 # Submit post-processing job
 
-echo "Submitting final post-processing job ... "
+echo "    Submitting final post-processing job ... "
 
 # SGE : 
 if [ $queueing_system == "SGE" ]; then
@@ -206,13 +226,12 @@ fi
 
 # LSF :
 if [ $queueing_system == "LSF" ]; then
-	bsub -q $queue_name -n 1 -o "mmgbsa2.1_final.o%J.%I" -e "mmgbsa2.1_final.e%J.%I" -w "done($jobid)" -J "mmgbsa_final" " sh $parallel_scripts/mmgbsa_final_submit_multitraj .sh $traj $n_jobs $frames_per_job "
+	bsub -q $queue_name -n 1 -o "mmgbsa2.1_final.o%J.%I" -e "mmgbsa2.1_final.e%J.%I" -w "done($jobid)" -J "mmgbsa_final" " sh $parallel_scripts/mmgbsa_final_submit_multitraj.sh $traj $n_jobs $frames_per_job "
 	# Passing arguments is not as easy, and requires the sub-sh construct. 
 	bjobs
 fi
 
 exit
-
 
 
 
