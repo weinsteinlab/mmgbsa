@@ -139,7 +139,7 @@ unset counter job_num_formatted
 
 # Replace all of the above with:
 awk '{print NR, $2,$3,$4}' ./total/inter-global.tmp > ./total/inter-global.dat
-rm  ./total/inter-global.
+rm  ./total/inter-global.tmp
 
 # We apply these modifications everywhere below...
 
