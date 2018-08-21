@@ -90,9 +90,9 @@ open(OUTBB,">full_bb.dat");
 open(OUTSC,">full_sc.dat");
 open(OUTALL,">full_all.dat");
 
-printf OUTBB ("%-12s  %7s  %7s    %7s    %7s    %7s   :    %7s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
-printf OUTSC ("%-12s  %7s  %7s    %7s    %7s    %7s   :    %7s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
-printf OUTALL ("%-12s  %7s  %7s    %7s    %7s    %7s   :    %7s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
+printf OUTBB ("%-12s  %10s  %10s    %10s    %10s    %10s   :    %10s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
+printf OUTSC ("%-12s  %10s  %10s    %10s    %10s    %10s   :    %10s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
+printf OUTALL ("%-12s  %10s  %10s    %10s    %10s    %10s   :    %10s \n", "name", "bonded", "vdw", "elec", "solv", "np", "total");
 
 foreach $i (@resA)  {
 
@@ -127,13 +127,13 @@ foreach $i (@resA)  {
   $full_all_tot+=$full_all[$i];
 
 
-  printf OUTBB ("%-12s  %7.2f  %7.2f    %7.2f    %7.2f    %7.2f   :    %7.2f \n", 
+  printf OUTBB ("%-12s  %10.4f  %10.4f    %10.4f    %10.4f    %10.4f   :    %10.4f \n", 
 	 $name[$i], $bonded_bb[$i], $vdw_bb[$i], $elec_bb[$i], $solv_bb[$i], $np_bb[$i], $full_bb[$i]);
 
-  printf OUTSC ("%-12s  %7.2f  %7.2f    %7.2f    %7.2f    %7.2f   :    %7.2f \n", 
+  printf OUTSC ("%-12s  %10.4f  %10.4f    %10.4f    %10.4f    %10.4f   :    %10.4f \n", 
 	 $name[$i], $bonded_sc[$i], $vdw_sc[$i], $elec_sc[$i], $solv_sc[$i], $np_sc[$i], $full_sc[$i]);
 
-  printf OUTALL ("%-12s  %7.2f  %7.2f    %7.2f    %7.2f    %7.2f   :    %7.2f \n", 
+  printf OUTALL ("%-12s  %10.4f  %10.4f    %10.4f    %10.4f    %10.4f   :    %10.4f \n", 
 	 $name[$i], $bonded_all[$i], $vdw_all[$i], $elec_all[$i], $solv_all[$i], $np_all[$i], $full_all[$i]);
 }
 
@@ -141,15 +141,15 @@ print OUTBB "-------------------------------------------------------------------
 print OUTSC "-------------------------------------------------------------------\n";
 print OUTALL "-------------------------------------------------------------------\n";
 
-printf OUTBB ("TOT            %7.2f  %7.2f    %7.2f    %7.2f   %7.2f   :    %7.2f \n",
+printf OUTBB ("TOT            %10.4f  %10.4f    %10.4f    %10.4f   %10.4f   :    %10.4f \n",
        $bonded_bb_tot, $vdw_bb_tot, $elec_bb_tot, $solv_bb_tot,
        $np_bb_tot, $full_bb_tot);
 
-printf OUTSC ("TOT            %7.2f  %7.2f    %7.2f    %7.2f   %7.2f   :    %7.2f \n",
+printf OUTSC ("TOT            %10.4f  %10.4f    %10.4f    %10.4f   %10.4f   :    %10.4f \n",
        $bonded_sc_tot, $vdw_sc_tot, $elec_sc_tot, $solv_sc_tot,
        $np_sc_tot, $full_sc_tot);
   
-printf OUTALL ("TOT           %7.2f  %7.2f    %7.2f    %7.2f   %7.2f   :    %7.2f \n",
+printf OUTALL ("TOT           %10.4f  %10.4f    %10.4f    %10.4f   %10.4f   :    %10.4f \n",
        $bonded_all_tot, $vdw_all_tot, $elec_all_tot, $solv_all_tot,
        $np_all_tot, $full_all_tot);
 

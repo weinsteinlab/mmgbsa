@@ -62,7 +62,7 @@ for $i (1..$nconf) {
 
   $full[$i] = $bonded[$i] + $vdw[$i] + $elec[$i] + $solv[$i] + $np[$i];
 
-  printf OUT ("%3d :  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+  printf OUT ("%3d :  %10.4f  %10.4f  %10.4f  %10.4f  %10.4f  :   %10.4f \n",
 	      $i, $bonded[$i], $vdw[$i], $elec[$i], $solv[$i], $np[$i], $full[$i]);
 }
 
@@ -78,13 +78,13 @@ for $i (1..$nconf) {
 
 
 print OUT "---------------------------------------------------------\n";
-printf OUT ("AVE :  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+printf OUT ("AVE :  %10.4f  %10.4f  %10.4f  %10.4f  %10.4f  :   %10.4f \n",
 	      $bonded_mean, $vdw_mean, $elec_mean, $solv_mean, $np_mean, $full_mean);
-printf OUT ("SD  :  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+printf OUT ("SD  :  %10.4f  %10.4f  %10.4f  %10.4f  %10.4f  :   %10.4f \n",
 	      $bonded_sd, $vdw_sd, $elec_sd, $solv_sd, $np_sd, $full_sd);
-printf OUT ("N_EF:  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+printf OUT ("N_EF:  %10.4f  %10.4f  %10.4f  %10.4f  %10.4f  :   %10.4f \n",
 	      $bonded_n_eff, $vdw_n_eff, $elec_n_eff, $solv_n_eff, $np_n_eff, $full_n_eff);
-printf OUT ("ERR :  %10.3f  %10.3f  %10.3f  %10.3f  %10.3f  :   %10.3f \n",
+printf OUT ("ERR :  %10.4f  %10.4f  %10.4f  %10.4f  %10.4f  :   %10.4f \n",
 	      $bonded_err, $vdw_err, $elec_err, $solv_err, $np_err, $full_err);
 
 

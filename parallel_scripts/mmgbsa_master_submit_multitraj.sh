@@ -36,7 +36,7 @@ B=`printf %04i $A`
 
 # DEBUGGING HACK :
 current=$(pwd)
-mytmpdir=$current/tmpdir/
+# mytmpdir=$current/tmpdir/
 
 echo "Using temporary directory : $mytmpdir"
 

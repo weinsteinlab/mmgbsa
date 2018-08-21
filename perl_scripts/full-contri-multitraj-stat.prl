@@ -176,19 +176,19 @@ open(OUTBB,">full_bb_stat.dat");
 open(OUTSC,">full_sc_stat.dat");
 open(OUTALL,">full_all_stat.dat");
 
-printf OUTBB ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "E", "sd", "n_eff", "err");
-printf OUTSC ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "E", "sd", "n_eff", "err");
-printf OUTALL ("#%-12s  %7s    %7s    %7s    %7s \n", "name", "E", "sd", "n_eff", "err");
+printf OUTBB ("#%-12s  %10s    %10s    %10s    %10s \n", "name", "E", "sd", "n_eff", "err");
+printf OUTSC ("#%-12s  %10s    %10s    %10s    %10s \n", "name", "E", "sd", "n_eff", "err");
+printf OUTALL ("#%-12s  %10s    %10s    %10s    %10s \n", "name", "E", "sd", "n_eff", "err");
 
 foreach $i (@resA)  {
 
-  printf OUTBB (" %-12s  %7.2f    %7.2f    %7.2f    %7.2f  \n", 
+  printf OUTBB (" %-12s  %10.4f    %10.4f    %10.4f    %10.4f  \n", 
 	 $name[$i], $full_bb_mean[$i], $full_bb_sd[$i], $full_bb_neff[$i], $full_bb_err[$i] );
 
-  printf OUTSC (" %-12s  %7.2f    %7.2f    %7.2f    %7.2f   \n", 
+  printf OUTSC (" %-12s  %10.4f    %10.4f    %10.4f    %10.4f   \n", 
 	 $name[$i], $full_sc_mean[$i], $full_sc_sd[$i], $full_sc_neff[$i], $full_sc_err[$i] );
 
-  printf OUTALL (" %-12s  %7.2f    %7.2f    %7.2f    %7.2f   \n", 
+  printf OUTALL (" %-12s  %10.4f    %10.4f    %10.4f    %10.4f   \n", 
 	 $name[$i], $full_all_mean[$i], $full_all_sd[$i], $full_all_neff[$i], $full_all_err[$i] );
 
 }
