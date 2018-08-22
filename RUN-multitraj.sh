@@ -14,7 +14,7 @@ set -u
 echo "    Starting ..."
 
 # Path to MMGBSA distribution 
-mmgbsa_path=/home/mcuendet/archive/mmgbsa/mmgbsa-multitraj/
+mmgbsa_path=/pbtech_mounts/homes029/mac2109/mmgbsa/mmgbsa-multitraj/
 
 # Name of mmgbsa run (will correspond to sub-directory of same name)
 mmgbsa_name="mmgbsa_A"
@@ -29,17 +29,17 @@ system_selection='protein or (chain S T U L M N and not lipid)'
 # part_selection=" chain A and (resid 34 to 74)  "
 # part_selection=" ( chain A and  (resid 34 to 74 223 to 417)) or (chain S L and not lipid) "
 # FOR COMPATIBILITY :
- part_selection=" chain A and ( resid 223 to 417) "
+part_selection=" chain A and ( resid 223 to 417) "
 # part_selection=" chain A and (resid 34 to 74)  "
 # part_selection=" chain A and  (resid 34 to 74 223 to 417) "
 
 # Select residues explicitly for the decomposition.
- residue_selection="chain A and resid 351 to 353 "
+residue_selection="chain A and resid 351 to 353 "
 # residue_selection="chain A and resid 51 to 53 "
 # residue_selection="chain A and resid 51 to 53 351 to 353 "
 
 # Trajectory of the full system (can be a DCD file or an XTC file). 
-traj=$mmgbsa_path/example/input/ofcc2.xtc
+traj=
 
 # Frames used 
 start_frame=1
@@ -53,8 +53,8 @@ n_jobs=3
 #    Maximum number of jobs junning simultaneourly, in order not to invate an entire cluter.
 max_jobs_running_simultaneously=50  
 #    Queuing system (one of "SGE" or "LSF") and queue name  
-queueing_system="LSF"
-queue_name="3dmodel-big"  
+queueing_system="SGE"
+queue_name="normal"  
 
 # Non-bonded interaction parameters :
 #    Cutoff for electro and VdW interactions in Angstroms.
@@ -198,7 +198,7 @@ echo "    Submitting all sub-jobs ... "
 
 # SGE : 
 if [ $queueing_system == "SGE" ]; then 
-	jobid_raw=$( qsub -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit_multitraj.sh $traj $start_frame $frame_stride $frames_per_job )
+	jobid_raw=$( qsub -cwd -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -t 1-$n_jobs -tc $max_jobs_running_simultaneously  $parallel_scripts/mmgbsa_master_submit_multitraj.sh $traj $start_frame $frame_stride $frames_per_job )
 	# The -v option to qsub pushes the  environment variables from the shell executing qsub
 	# This is needed to pass the mmgbsa_path global variable. 
 	jobid=$( echo $jobid_raw | awk '{split($3,jjj,"."); print jjj[1]}' )
@@ -220,7 +220,7 @@ echo "    Submitting final post-processing job ... "
 
 # SGE : 
 if [ $queueing_system == "SGE" ]; then
-	qsub -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit_multitraj.sh $traj $n_jobs $frames_per_job 
+	qsub -cwd -v mmgbsa_path=$mmgbsa_path -v queueing_system=$queueing_system $res_req -q $queue_name -hold_jid $jobid $parallel_scripts/mmgbsa_final_submit_multitraj.sh $traj $n_jobs $frames_per_job 
  	qstat
 fi
 

@@ -48,11 +48,11 @@ $parallel_scripts/mmgbsa_collect_results_multitraj.sh ${traj} ${sub_job_num}  ${
 
 rm -r [0-9][0-9][0-9][0-9]
 
-tar czf $cwd/final_results.tar.gz inter sas solv total log_collect *.dat
+tar czf $cwd/final_results.tar.gz inter sas solv total full log_collect *.dat
 
 cp *.dat $cwd/.
 
-rm -r inter sas solv total
+rm -r inter sas solv total full
 
 
 exit
