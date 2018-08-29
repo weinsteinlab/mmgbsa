@@ -49,7 +49,7 @@ endif
 # .......................................................................
 # HERE WE USE THE ORIGINAL CHARMM SETUP !
 cp  -p $main_path/setup_charmm/data/complex* data/.
-cp  -p $main_path/input/*.psf data/system.namd.psf
+cp  -p $main_path/input/*.pdb data/system.pdb
 
 # We make local copies of charmm input files so that the node does not read 100 times from main disk. 
 cp -p $top_path/top_all36_prot.rtf data/.

@@ -20,7 +20,7 @@ js=$4 # number of frames in each sub-job
 ###################################################################
 # Setup some variables 
 
-psf=./data/system.namd.psf
+#psf=./data/system.namd.psf
 
 #SGE :
 if [ $queueing_system == "SGE" ]; then
