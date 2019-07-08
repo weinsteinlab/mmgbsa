@@ -78,8 +78,9 @@ sub time_statistics_FTZ {
 	# Unbiased standard deviation estimate 
 	my $a_sd = sqrt( ( $a2_tot - $nconf*$a_mean**2 ) / ($nconf -1) );
 
-	# Effective sample size in an AR(1)  correlated time series according to :
-	# Zwiers and Storch, Taking Serial Correlation into Account in Tests of the Mean, Journal of Climate 8 : 336 (1995).
+	# Effective sample size in a correlated time series according to the first time through zero method :
+	#    Chodera, et al,, J. Chem. Theory Comput. 3, 26 (2007).
+    #    Zieba and Ramza, Metrology and Measurement Systems 18, 529 (2011).
 
 	# Now that we have the mean, we can calculate the moments :
 	my $a2_norm_tot=0;
@@ -87,6 +88,7 @@ sub time_statistics_FTZ {
 	   $a2_norm_tot+=($a[$n] -  $a_mean)**2; 
 	}
 	
+	# Find the first passage through zero of the autocorrelation function
 	if ($a2_norm_tot > 0) {	
 	 for $k (1..$nconf) {
 	   my $a2_shift_tot=0;
