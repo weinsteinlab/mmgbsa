@@ -26,22 +26,27 @@ js=$4 # number of frames in each sub-job
 ###################################################################
 # Setup some variables 
 
-psf=./data/system.namd.psf
+psf=./data/system.namd.pdb
 
 #SGE :
 if [ $queueing_system == "SGE" ]; then
         mytmpdir=$TMPDIR
 	A=$SGE_TASK_ID
-fi
 #LSF :
-if [ $queueing_system == "LSF" ]; then
+elif [ $queueing_system == "LSF" ]; then
         mytmpdir=$__LSF_JOB_TMPDIR__
 	A=$LSB_JOBINDEX
+#SLURM :
+elif [ $queueing_system == "SLURM" ]; then
+        mytmpdir=$TMPDIR
+        A=$SLURM_ARRAY_TASK_ID
 fi
 B=`printf %04i $A`
 
 # mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
-# This is now inherited by the environment through qsub -v
+# This is now inherited by the environment through the queueing system command line
+echo "mmgbsa_path : $mmgbsa_path"
+export mmgbsa_path
 source $mmgbsa_path/scripts/setenv.sh
 catdcd=$mmgbsa_path/parallel_scripts/catdcd 
 

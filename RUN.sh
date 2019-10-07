@@ -44,10 +44,10 @@ n_jobs=3
 #    Maximum number of jobs junning simultaneourly, in order not to invate an entire cluter.
 max_jobs_running_simultaneously=50   
 
-#    Queuing system (one of "SGE" or "LSF") and queue name                                                                                                                                                                                                                   
-queueing_system="LSF"                                                                                                                                                                                                                                                     
-queue_name="3dmodel-big"                                                                                                                                                                                                                                                  
-  
+#    Queuing system (one of "SGE" or "LSF or "SLURM") and queue name
+queueing_system="SLURM"
+queue_name="panda"
+ 
 # Non-bonded interaction parameters :
 #    Cutoff for electro and VdW interactions in Angstroms.
 cutoff=30
@@ -100,12 +100,12 @@ else
 fi
 
 # Select the correct resource requirement depending on which cluster we run 
-res_req=""
-if [[  $HOSTNAME =~ panda ]]; then
-    res_req="-l zeno=true,operating_system=rhel6.3"
+#res_req=""
+#if [[  $HOSTNAME =~ panda ]]; then
+#    res_req="-l zeno=true,operating_system=rhel6.3"
     # This requests nodes where the /zenodotus file system is mounted
     # and where charmm39 will run (on panda).
-fi
+#fi
 
 
 ###################################################################
@@ -248,11 +248,11 @@ elif [ $queueing_system == "LSF" ]; then
 # SLURM :  ----------------------------------------------------------
 elif [ $queueing_system == "SLURM" ]; then
 
-	jobid=`sbatch --array=1-${n_jobs}%${max_jobs_running_simultaneously} -p $queue_name $parallel_scripts/mmgbsa_master_submit_slurm.sh $traj $start_frame $frame_stride $frames_per_job | egrep -o -e "\b[0-9]+$"`
+        jobid=`sbatch --array=1-${n_jobs}%${max_jobs_running_simultaneously} -p $queue_name --nodes=1 --mem=20G --job-name=mmgbsa2.1 --output="mmgbsa.o%A.%a" --error="mmgbsa.e%A.%a" --export=mmgbsa_path=$mmgbsa_path,queueing_system=$queueing_system $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job | egrep -o -e "\b[0-9]+$"`
 
         # Submit post-processing job
-	echo "Submitting final post-processing job ... "
-	sbatch --dependency=afterok:${jobid} -p $queue_name $parallel_scripts/mmgbsa_final_submit_slurm.sh $traj $n_jobs $frames_per_job
+        echo "Submitting final post-processing job ... "
+        sbatch --dependency=afterok:${jobid} -p $queue_name --nodes=1 --mem=20G --job-name=mmgbsa2.1_final --output="mmgbsa2.1_final.o%A" --error="mmgbsa_final.e%A" --export=mmgbsa_path=$mmgbsa_path,queueing_system=$queueing_system $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job
 	squeue -u `whoami`
 else
         echo "ERROR: bad queuing system identifyiner"

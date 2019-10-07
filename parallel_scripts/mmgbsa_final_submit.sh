@@ -26,11 +26,16 @@ cwd=$(pwd)
 
 #SGE :
 if [ $queueing_system == "SGE" ]; then
-	mytmpdir=$TMPDIR
-fi
+        mytmpdir=$TMPDIR
+        A=$SGE_TASK_ID
 #LSF :
-if [ $queueing_system == "LSF" ]; then
-	mytmpdir=$__LSF_JOB_TMPDIR__
+elif [ $queueing_system == "LSF" ]; then
+        mytmpdir=$__LSF_JOB_TMPDIR__
+        A=$LSB_JOBINDEX
+#SLURM :
+elif [ $queueing_system == "SLURM" ]; then
+        mytmpdir=$TMPDIR
+        A=$SLURM_ARRAY_TASK_ID
 fi
 
 tar czf ./sub_job_logs.tar.gz ./mmgbsa2.1.o* ./mmgbsa2.1.e*

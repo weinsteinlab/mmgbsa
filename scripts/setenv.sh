@@ -19,11 +19,12 @@ if [[  $HOSTNAME =~ pug ]]; then
     # Fido has an old version of perl, which does not understand some operators.
     export perl==/home/mac2109/local/perl-5.24.0/bin/perl    
 fi
-if [[  $HOSTNAME =~ curie ]]; then
+if [[  $HOSTNAME =~ panda ]] || [[  $HOSTNAME =~ curie ]] ; then
     #export charmm=/home/mac2109/src/c39b2/exec/em64t/charmm
     export charmm=/home/mac2109/local/c44b1/bin/charmm 
     # This works on panda but is too recent for fido
     export vmd=/home/mac2109/local/vmd-1.9.2/bin/vmd 
+    export perl=`which perl`
 fi
 if [[  $HOSTNAME =~ vital ]]; then
     export charmm=/home/vzoete/charmm/c36b1/exec/em64t/charmm 

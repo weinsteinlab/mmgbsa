@@ -14,7 +14,7 @@
 
 set -e
 set -u
-# source ./setenv.sh
+#source $mmgbsa_path/scripts/setenv.sh
 
 pwd
 

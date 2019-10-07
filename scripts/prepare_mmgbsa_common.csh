@@ -47,6 +47,8 @@ endif
 
 # .......................................................................
 # HERE WE USE THE ORIGINAL CHARMM SETUP !
+
+set system_path="../"
 cp  -p $system_path/setup_charmm/data/complex* data/.
 cp  -p $system_path/setup_charmm/complex_raw.pdb data/.
 #cp -p $system_path/input/*.psf data/system.namd.psf

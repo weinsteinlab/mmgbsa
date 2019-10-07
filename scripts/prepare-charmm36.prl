@@ -107,7 +107,8 @@ print INPUT "close unit 1 \n\n";
 #print INPUT "STREAM \@lib/toppar_all36_lipid_inositol.str\n";
 #print INPUT "STREAM \@lib/saia.str \n";
 #print INPUT "STREAM \@lib/sapi24_renamed_sapi.str \n";
-print INPUT "STREAM \@lib/stream/lipid/toppar_all36_lipid_cholesterol.str \n";
+#print INPUT "STREAM \@lib/stream/lipid/toppar_all36_lipid_cholesterol.str \n";
+print INPUT "STREAM \@lib/toppar_all36_lipid_cholesterol.str \n";
 print INPUT "STREAM \@lib/toppar_water_ions.str \n\n";
 
 
