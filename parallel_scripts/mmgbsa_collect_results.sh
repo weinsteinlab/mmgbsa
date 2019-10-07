@@ -4,6 +4,10 @@ current=$(pwd)
 
 # For VitalIT
 module load R
+Rscript=Rscript
+
+# On Panda
+Rscript=/softlib/exe/x86_64/bin/Rscript
 
 # source ./setenv.sh
 
@@ -128,7 +132,7 @@ inter_global <- cbind(i, inter_global)\n\
 write.table(inter_global, './total/inter-global.dat', row.names=FALSE, col.names=FALSE, sep=',')\n\
 q(save='no')" > ./tmp.R 
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 sed -i 's/^/ /' ./total/inter-global.dat
@@ -203,7 +207,7 @@ write.table(stats, './sas-a/sas-a-res-${i}_stats.dat', row.names=FALSE, col.name
 i	
 q(save='no')" > ./tmp.R
 
-	Rscript ./tmp.R > ./NULL
+	$Rscript ./tmp.R > ./NULL
 	rm ./tmp.R
 	rm ./NULL
 
@@ -245,7 +249,7 @@ sas_line <- t(sas_line)\n\
 write.table(sas_line, './sas-a/sas-a-res_stat.dat', row.names=FALSE, col.names=FALSE, sep=',', quote=FALSE)\n\
 q(save='no')" > ./tmp.R 
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 awk -F, '{ printf "%4d    %10.4f %10.4f %10.4f \n", $1, $2, $3, $4 }' ./sas-a/sas-a-res.dat > ./sas-a/tmp.txt
@@ -310,7 +314,7 @@ write.table(stats, './sas-b/sas-b-res-${i}_stats.dat', row.names=FALSE, col.name
 i	
 q(save='no')" > ./tmp.R
 
-	Rscript ./tmp.R > ./NULL
+	$Rscript ./tmp.R > ./NULL
 	rm ./tmp.R
 	rm ./NULL
 
@@ -352,7 +356,7 @@ sas_line <- t(sas_line)\n\
 write.table(sas_line, './sas-b/sas-b-res_stat.dat', row.names=FALSE, col.names=FALSE, sep=',', quote=FALSE)\n\
 q(save='no')" > ./tmp.R 
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 awk -F, '{ printf "%4d    %10.4f %10.4f %10.4f \n", $1, $2, $3, $4 }' ./sas-b/sas-b-res.dat > ./sas-b/tmp.txt
@@ -417,7 +421,7 @@ write.table(stats, './sas-comp/sas-comp-res-${i}_stats.dat', row.names=FALSE, co
 i	
 q(save='no')" > ./tmp.R
 
-	Rscript ./tmp.R > ./NULL
+	$Rscript ./tmp.R > ./NULL
 	rm ./tmp.R
 	rm ./NULL
 
@@ -459,7 +463,7 @@ sas_line <- t(sas_line)\n\
 write.table(sas_line, './sas-comp/sas-comp-res_stat.dat', row.names=FALSE, col.names=FALSE, sep=',', quote=FALSE)\n\
 q(save='no')" > ./tmp.R 
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 awk -F, '{ printf "%4d    %10.4f %10.4f %10.4f \n", $1, $2, $3, $4 }' ./sas-comp/sas-comp-res.dat > ./sas-comp/tmp.txt
@@ -499,7 +503,7 @@ buried <- cbind(i, buried)\n\
 write.table(buried, './total/buried-sasa.dat', row.names=FALSE, col.names=FALSE, sep=',', quote=FALSE)\n\
 q(save='no')" > ./tmp.R
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 sed -i 's/^/ /' ./total/buried-sasa.dat
@@ -601,7 +605,7 @@ write.table(stats, './solv-a/solv-a-res-${i}_stats.dat', row.names=FALSE, col.na
 i	
 q(save='no')" > ./tmp.R
 
-	Rscript ./tmp.R > ./NULL
+	$Rscript ./tmp.R > ./NULL
 	rm ./tmp.R
 	rm ./NULL
 
@@ -643,7 +647,7 @@ sas_line <- t(sas_line)\n\
 write.table(sas_line, './solv-a/solv-a-res_stat.dat', row.names=FALSE, col.names=FALSE, sep=',', quote=FALSE)\n\
 q(save='no')" > ./tmp.R 
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 awk -F, '{ printf "%4d    %10.4f %10.4f %10.4f \n", $1, $2, $3, $4 }' ./solv-a/solv-a-res.dat > ./solv-a/tmp.txt
@@ -740,7 +744,7 @@ write.table(stats, './solv-b/solv-b-res-${i}_stats.dat', row.names=FALSE, col.na
 i	
 q(save='no')" > ./tmp.R
 
-	Rscript ./tmp.R > ./NULL
+	$Rscript ./tmp.R > ./NULL
 	rm ./tmp.R
 	rm ./NULL
 
@@ -782,7 +786,7 @@ sas_line <- t(sas_line)\n\
 write.table(sas_line, './solv-b/solv-b-res_stat.dat', row.names=FALSE, col.names=FALSE, sep=',', quote=FALSE)\n\
 q(save='no')" > ./tmp.R 
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 awk -F, '{ printf "%4d    %10.4f %10.4f %10.4f \n", $1, $2, $3, $4 }' ./solv-b/solv-b-res.dat > ./solv-b/tmp.txt
@@ -879,7 +883,7 @@ write.table(stats, './solv-comp/solv-comp-res-${i}_stats.dat', row.names=FALSE, 
 i	
 q(save='no')" > ./tmp.R
 
-	Rscript ./tmp.R > ./NULL
+	$Rscript ./tmp.R > ./NULL
 	rm ./tmp.R
 	rm ./NULL
 
@@ -921,7 +925,7 @@ sas_line <- t(sas_line)\n\
 write.table(sas_line, './solv-comp/solv-comp-res_stat.dat', row.names=FALSE, col.names=FALSE, sep=',', quote=FALSE)\n\
 q(save='no')" > ./tmp.R 
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 awk -F, '{ printf "%4d    %10.4f %10.4f %10.4f \n", $1, $2, $3, $4 }' ./solv-comp/solv-comp-res.dat > ./solv-comp/tmp.txt
@@ -961,7 +965,7 @@ solv_a_global <- cbind(i, solv_a_global)\n\
 write.table(solv_a_global, './total/solv-a-global.dat', row.names=FALSE, col.names=FALSE, sep=',')\n\
 q(save='no')" > ./tmp.R
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 sed -i 's/^/ /' ./total/solv-a-global.dat
@@ -994,7 +998,7 @@ solv_b_global <- cbind(i, solv_b_global)\n\
 write.table(solv_b_global, './total/solv-b-global.dat', row.names=FALSE, col.names=FALSE, sep=',')\n\
 q(save='no')" > ./tmp.R
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 sed -i 's/^/ /' ./total/solv-b-global.dat
@@ -1027,7 +1031,7 @@ solv_comp_global <- cbind(i, solv_comp_global)\n\
 write.table(solv_comp_global, './total/solv-comp-global.dat', row.names=FALSE, col.names=FALSE, sep=',')\n\
 q(save='no')" > ./tmp.R
 
-Rscript tmp.R
+$Rscript tmp.R
 rm tmp.R
 
 sed -i 's/^/ /' ./total/solv-comp-global.dat
