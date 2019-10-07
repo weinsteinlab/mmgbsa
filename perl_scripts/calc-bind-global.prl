@@ -26,6 +26,7 @@ print "Number of conformations : $nconf \n";
 open(IN,"total/inter-global.dat") or die "Could not open total/inter-global.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
+  if ( $w[0] !~ /^[0-9]+$/ ) { last } 
   $vdw[$w[0]]=$w[1];
   $elec[$w[0]]=$w[2];
 }
@@ -34,6 +35,7 @@ close(IN);
 open(IN,"total/solv-comp-global.dat") or die "Could not open total/solv-comp-global.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
+  if ( $w[0] !~ /^[0-9]+$/ ) { last }
   $solv_comp[$w[0]]=$w[1];
 }
 close(IN);
@@ -42,6 +44,7 @@ close(IN);
 open(IN,"total/solv-a-global.dat") or die "Could not open total/solv-a-global.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
+  if ( $w[0] !~ /^[0-9]+$/ ) { last }
   $solv_a[$w[0]]=$w[1];
 }
 close(IN);
@@ -49,6 +52,7 @@ close(IN);
 open(IN,"total/solv-b-global.dat") or die "Could not open total/solv-b-global.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
+  if ( $w[0] !~ /^[0-9]+$/ ) { last }
   $solv_b[$w[0]]=$w[1];
 }
 close(IN);
@@ -56,6 +60,7 @@ close(IN);
 open(IN,"total/buried-sasa.dat") or die "Could not open total/buried-sasa.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
+  if ( $w[0] !~ /^[0-9]+$/ ) { last }
   $surf[$w[0]]=$w[5];
 }
 close(IN);
