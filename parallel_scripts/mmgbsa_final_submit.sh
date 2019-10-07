@@ -38,8 +38,8 @@ elif [ $queueing_system == "SLURM" ]; then
         A=$SLURM_ARRAY_TASK_ID
 fi
 
-tar czf ./sub_job_logs.tar.gz ./mmgbsa2.1.o* ./mmgbsa2.1.e*
-rm ./mmgbsa2.1.o* ./mmgbsa2.1.e*
+tar czf ./sub_job_logs.tar.gz ./mmgbsa.o* ./mmgbsa.e*
+rm ./mmgbsa.o* ./mmgbsa.e*
 
 cd ..
 

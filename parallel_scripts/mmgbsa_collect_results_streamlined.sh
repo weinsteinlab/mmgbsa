@@ -80,7 +80,8 @@ do
         for i in $(seq 1 $end)
         do
                 tmp_num=$((i+multiplier))
-                cp $current/$job_num_formatted/inter/inter-byres-${i}-a.dat ./inter/inter-byres-${tmp_num}-a.dat                               cp $current/$job_num_formatted/inter/inter-byres-${i}-b.dat ./inter/inter-byres-${tmp_num}-b.dat
+                cp $current/$job_num_formatted/inter/inter-byres-${i}-a.dat ./inter/inter-byres-${tmp_num}-a.dat 
+ 		cp $current/$job_num_formatted/inter/inter-byres-${i}-b.dat ./inter/inter-byres-${tmp_num}-b.dat
         done
         
         counter=$((counter+1))

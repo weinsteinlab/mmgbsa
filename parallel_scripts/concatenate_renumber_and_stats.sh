@@ -30,7 +30,7 @@ sed -i 's/^,//g' $ftmp
 
 $perl_scripts/renumber_and_stats.prl $ftmp > $fname
 
-#rm $ftmp
+rm $ftmp
 
 
 
