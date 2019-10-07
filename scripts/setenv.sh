@@ -22,7 +22,7 @@ fi
 if [[  $HOSTNAME =~ panda ]]; then
     export charmm=/home/mac2109/src/c39b2/exec/em64t/charmm
     # This works on panda but is too recent for fido
-    export vmd=/home/mac2109/local/vmd-1.9.2/bin/vmd 
+    export vmd=/home/mac2109/local/vmd-1.9.3/bin/vmd 
     export perl=`which perl`
 fi
 if [[  $HOSTNAME =~ vital ]]; then
