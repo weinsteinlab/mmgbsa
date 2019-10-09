@@ -159,6 +159,10 @@ $mmgbsa_path/scripts/run_one_mmgbsa.sh  >  $current/log/run_job_$A.log
 
 sleep 10
 
+# Keep frames for debug:
+mkdir frames-comp.bkp
+cp -rp frames-comp/* frames-comp.bkp/.
+
 echo " Cleaning up ... "
 rm -r ./frames-a 
 rm -r ./frames-b 

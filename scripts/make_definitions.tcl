@@ -96,6 +96,9 @@ puts $fp "SET lastresb      $max_resB\n"
 
 puts $fp "SET nframes XXXNFRAMES\n"
 
+# Do membrane calculation?
+puts $fp "SET do_membrane     $do_membrane"
+
 #This will be read by perl, but refer to IRES, so we take the list starting at 1
 # The numbering should correspond to column 2 of crd files. 
 puts $fp "!A $resA\n"

@@ -108,6 +108,13 @@ cat > extract_frames.tcl  << EOF
   set nf [molinfo top get numframes]
   set sel [atomselect top "\$complex_sel_text"]
 
+  # If we do membrane calculations, we have to center membrane at Z=0
+  if { \$do_membrane == "YES" } {
+      puts "Will center the membrane at Z=0"
+      set membrane_sel_text "lipids and noh"
+      set membrane [ atomselect top \$membrane_sel_text ]
+  }
+  
   if {$endframe > \$nf} {
      error "End frame specified is beyond trajectory end !!"
   }
@@ -116,6 +123,15 @@ cat > extract_frames.tcl  << EOF
   for {set i $startframe} {\$i <= $endframe} {incr i $stride} {
     set frameidx [ expr {\$i -1 }]
     \$sel frame \$frameidx
+    # If we do membrane calculation
+    if { \$do_membrane == "YES" } {
+        \$membrane frame \$frameidx
+        set mem_com [measure center \$membrane]
+	set mem_z [lindex \$mem_com 2]
+        puts "Original membrane Z : \$mem_z"
+        set offset [ expr { -\$mem_z } ]
+        \$sel move [transoffset "0 0 \$offset" ]     
+    }
     \$sel writepdb "frames-comp/\$j-raw.pdb"
     puts "Done writing frame \$i to file \$j-raw.pdb"
     set j [ expr {\$j + 1} ]

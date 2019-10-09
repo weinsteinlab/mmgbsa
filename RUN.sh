@@ -51,8 +51,12 @@ queue_name="panda"
 # Non-bonded interaction parameters :
 #    Cutoff for electro and VdW interactions in Angstroms.
 cutoff=30
+
 #    Monovalent ion concentration in M for Deheye-Huckel screening (default = 0.154). 
 ionconc=0.154 
+
+#    Do a membrane calculation: center along Z on group "lipids", and use HDGB in charmm
+do_membrane="YES"
 
 # System details - proteins are assumed to come first in the PSF.
 #    Number of separate (i.e. not covalently bonded) protein/peptide segments
@@ -149,6 +153,9 @@ set B_sel_text " $partB_selection "
 
 # Cutoff to choose residues within each part, for which the decomposition will be made. 
 set cutoff_residues $cutoff_residues
+
+# Do membrane calculation with HDGB
+set do_membrane $do_membrane
 
 EOF
 
