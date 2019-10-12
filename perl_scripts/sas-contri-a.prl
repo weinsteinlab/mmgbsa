@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+# use Math::Interpolate qw(linear_interpolate);
 
 #########################################################
 #
@@ -23,6 +24,9 @@ $nconf=`grep nframes  data/definitions.str | awk '{print \$3}'`; # number of con
 chomp $nconf;
 print "Number of conformations : $nconf \n";
 
+$do_membrane=`grep domem  data/definitions.str | awk '{print \$3}'`; # Do HDGB for membranes?
+chomp $do_membrane;
+
 $temp = `awk '(\$1=="!Ares")'  data/definitions.str `;
 chomp $temp;
 my @resA = split(/ /,$temp );
@@ -45,6 +49,27 @@ close(IN);
 $lastresnum=$resnum[$natom];
 
 
+# Load gamma profile for HDGB
+
+if ( $do_membrane eq "YES" ) {
+  print "Doing membrane non-polar correction. \n";
+  $i = 0;
+  open(IN,"data/hdgb_gamma_switch.dat");
+  foreach $line (<IN>) {
+    if ( $i > 0 ) { 
+        @w=split(" ",$line);
+        $z_ref[$i]=$w[0];
+        $S_ref[$i]=$w[1];
+    }
+    $i += 1;
+  }
+  close(IN);
+  $n_z_ref = $i-1;
+  $last_z_ref = $z_ref[$n_z_ref]; 
+}
+print "Loaded gamma switch file. Last Z ref : $last_z_ref\n";
+
+
 # Calculate contribution for $nconf conformations.
 
 for $n (1..$nconf) {
@@ -54,20 +79,46 @@ for $n (1..$nconf) {
 #    if ($line =~ / A1 / or $line =~ / B1 / or $line =~ / A2 / or $line =~ / B2 /) {
       @w=split(" ",$line);
       $sas[$w[0]]=$w[9];
+      $z[$w[0]]=$w[6];
 #    }
   }
   close(IN);
 
   for $i (1..$natom) {
     if ($resnum[$i] ~~ @resA ) {   # This does not work with older perl versions. 
-      $res_all[$resnum[$i]][$n]+=$sas[$i];
-      $res_all_mean[$resnum[$i]]+=$sas[$i];
+
+      # Do the interpolation of the switch funtion for HDGB
+      if ( $do_membrane eq "YES" and $sas[$i] > 0.0 ) {
+        if ( abs($z[$i]) > $last_z_ref ) { 
+	    $S = 1.0;
+ 	} else {
+            $z_ref_old=0.0;
+            $S_ref_old=$S_ref[1] ;
+	    for $j (2..$n_z_ref) {
+		if ( abs($z[$i]) < $z_ref[$j] ) {
+		    $proportion = ( abs($z[$i]) - $z_ref_old ) / ($z_ref[$j] - $z_ref_old ) ;
+		    $S = $S_ref_old + $proportion * ($S_ref[$j] - $S_ref_old );
+		    last;
+		}
+		$z_ref_old = $z_ref[$j];
+		$S_ref_old = $S_ref[$j]; 
+	    } 
+	}  
+	$this = $S * $sas[$i];
+        # print "Atom $i  sas : $sas[$i]  z : $z[$i]  S ; $S  this : $this \n";
+      }else{
+        $this=$sas[$i];
+      }
+
+      # Allocate to residue
+      $res_all[$resnum[$i]][$n]+=$this;
+      $res_all_mean[$resnum[$i]]+=$this;
       if ( $atomname[$i] eq "CA" or  $atomname[$i] eq "HA" or $atomname[$i] eq "C" or $atomname[$i] eq "O" or $atomname[$i] eq "N"  or $atomname[$i] eq "NT" or $atomname[$i] eq "HN" or $atomname[$i] eq "HT1" or $atomname[$i] eq "HT2" or $atomname[$i] eq "HT3" or $atomname[$i] eq "OT1" or $atomname[$i] eq "OT2"or $atomname[$i] eq "HA1" or $atomname[$i] eq "HA2") {
-	$res_bb[$resnum[$i]][$n]+=$sas[$i];
-	$res_bb_mean[$resnum[$i]]+=$sas[$i];
+	$res_bb[$resnum[$i]][$n]+=$this;
+	$res_bb_mean[$resnum[$i]]+=$this;
       } else {
-	$res_sc[$resnum[$i]][$n]+=$sas[$i];
-	$res_sc_mean[$resnum[$i]]+=$sas[$i];
+	$res_sc[$resnum[$i]][$n]+=$this;
+	$res_sc_mean[$resnum[$i]]+=$this;
       }
     }
   }

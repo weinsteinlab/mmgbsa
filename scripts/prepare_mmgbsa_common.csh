@@ -21,6 +21,8 @@ if ( ! ( -e  vmd_selections.tcl ) )  then
     echo "    ERROR! We need a file vmd_selections.tcl in the MMGBSA directory !"
     exit 2
 endif 
+
+set do_membrane = `awk '($2 == "do_membrane"){print $3}' vmd_selections.tcl`
     
 # paths ( now read from environment variables )
 #set scratch_path="/scratch/mac2109/mmgbsa/"
@@ -67,6 +69,17 @@ cp -p $top_path/par_all36_carb.prm data/.
 
 cp -rp $top_path/toppar_water_ions.str data/.
 cp -rp $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str data/.
+
+# For HDGB membrane
+if ( $do_membrane == "YES" ) then
+   echo "    Using HGDB for implicit membrane..." 
+   if ( -e $inputs/hdgb_eps.dat ) then
+        cp -rp $inputs/hdgb_eps.dat data/.
+   endif
+   if ( -e $inputs/hdgb_gamma_switch.dat ) then
+        cp -rp $inputs/hdgb_gamma_switch.dat data/.
+   endif
+endif
 
 # ..........................................................................
 # DEFINITIONS :

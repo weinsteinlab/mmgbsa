@@ -23,6 +23,9 @@ $nconf=`grep nframes data/definitions.str | awk '{print \$3}'`; # number of conf
 chomp $nconf;
 print "Number of conformations : $nconf \n";
 
+$do_membrane=`grep domem  data/definitions.str | awk '{print \$3}'`; # Do HDGB for membranes?
+chomp $do_membrane;
+
 $temp = `awk '(\$1=="!B") '  data/definitions.str `;
 chomp $temp;
 my @allB = split(/ /,$temp );
@@ -87,6 +90,7 @@ if ( $ni != $natomb ) {
 	die "Mismatch between number of atoms in dictionary ($ni) and in data/system.dat ($natomb) !\n";
 }
 
+
 # Determine type, charges and residue for each atom.
 open(IN,"data/charges.crd");
 foreach $line (<IN>) {
@@ -97,9 +101,25 @@ foreach $line (<IN>) {
 }
 close(IN);
 
-# Now the total contribution is calculated in solv-b.inp because we don''t do all residues here...
-# open(DAT,">total/solv-tot-b.dat");
 
+# Load epsilon profile for HDGB
+if ( $do_membrane eq "YES" ) {
+  print "Doing membrane dielectric correction. \n";
+  $i = 0;
+  open(IN,"data/hdgb_eps.dat");
+  foreach $line (<IN>) {
+    if ( $i > 0 ) {
+        @w=split(" ",$line);
+        $z_ref[$i]=$w[0];
+        $eps_ref[$i]=$w[1];
+    }
+    $i += 1;
+  }
+  close(IN);
+  $n_z_ref = $i-1;
+  $last_z_ref = $z_ref[$n_z_ref];
+}
+print "Loaded epsilon file. Last Z ref : $last_z_ref\n";
 
 # Calculate contribution for $nconf conformations.
 for $n (1..$nconf) {
@@ -116,6 +136,34 @@ for $n (1..$nconf) {
   }
   close(IN);
 
+  if ( $do_membrane eq "YES" ) { # Do membrane with  HDGB 
+
+    # First we do the interpolation of the switch function for epsilon
+    for $i (1..$natomb) {
+        if ( abs($z[$i]) >= $last_z_ref ) {
+            $eps[$i] = $eps_w;
+        } else {
+            $z_ref_old=0.0;
+            $eps_ref_old=$eps_ref[1] ;
+            for $j (2..$n_z_ref) {
+                if ( abs($z[$i]) < $z_ref[$j] ) {
+                    $proportion = ( abs($z[$i]) - $z_ref_old ) / ($z_ref[$j] - $z_ref_old ) ;
+                    $eps[$i] = $eps_ref_old + $proportion * ($eps_ref[$j] - $eps_ref_old );
+                    last;
+                }
+                $z_ref_old = $z_ref[$j];
+                $eps_ref_old = $eps_ref[$j];
+            }
+            #print "Atom $i   z : $z[$i]  eps ; $eps[$i]  \n";
+        }
+     }
+
+   }else{  # Do regular calculation, no HDGB
+     for $i (1..$natomb) {
+        $eps[$i]=$eps_w;
+     }
+   }
+
   @contri=0;
   if ($do_new_scheme) {	# Improved loops with less testing for group belonging (slower than actually calculating...)
       for $i (1..$natomb) {
@@ -125,8 +173,10 @@ for $n (1..$nconf) {
               if ($r2 > $cutoff2) { next };
 	      $a2=$a[$i]*$a[$j];
 	      $d = sqrt( $r2 + $a2*exp(-$r2/(8*$a2)));
-              $k = $celec*( $inv_eps_s - exp(-$kappa*$d)*$inv_eps_w) ;   # This is the Debeye-Huckel contribution
-              $term=$k*$q[$i]*$q[$j]/$d;
+              $eps_ij = 0.5 * ( $eps[$i] + $eps[$j] );
+              $k = $celec*( $inv_eps_s - exp(-$kappa*$d) / $eps_ij) ;   # exp(-kappa d) is the Debeye-Huckel contribution.
+                                                                        # It is probably not right with HDGB, but we leave it.
+$term=$k*$q[$i]*$q[$j]/$d;
               $contri[$i]+= $term;         
           }
         }
@@ -141,8 +191,10 @@ for $n (1..$nconf) {
               $r2=($x[$i]-$x[$j])**2+($y[$i]-$y[$j])**2+($z[$i]-$z[$j])**2;
 	      $a2=$a[$i]*$a[$j];
 	      $d = sqrt( $r2 + $a2*exp(-$r2/(8*$a2)));
-	      $k = $celec*( $inv_eps_s - exp(-$kappa*$d)*$inv_eps_w ) ;   # This is the Debeye-Huckel contribution
-	      $term=$k*$q[$i]*$q[$j]/$d;
+	      $eps_ij = 0.5 * ( $eps[$i] + $eps[$j] );
+              $k = $celec*( $inv_eps_s - exp(-$kappa*$d) / $eps_ij) ;   # exp(-kappa d) is the Debeye-Huckel contribution.
+                                                                        # It is probably not right with HDGB, but we leave it.t
+              $term=$k*$q[$i]*$q[$j]/$d;
 	      # print "Atom $i $j : charges $q[$i] $q[$j] distance $d term $term\n";
 	      if ($i == $j) {
         	$contri[$i]+= $term;
