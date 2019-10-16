@@ -160,6 +160,10 @@ $mmgbsa_path/scripts/run_one_mmgbsa.sh  >  $current/log/run_job_$A.log
 sleep 10
 
 # Keep frames for debug:
+mkdir frames-a.bkp
+cp -rp frames-a/* frames-a.bkp/.
+mkdir frames-b.bkp
+cp -rp frames-b/* frames-b.bkp/.
 mkdir frames-comp.bkp
 cp -rp frames-comp/* frames-comp.bkp/.
 

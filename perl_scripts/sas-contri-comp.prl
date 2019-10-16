@@ -90,6 +90,7 @@ for $n (1..$nconf) {
 #    if ($line =~ / A1 / or $line =~ / B1 / or $line =~ / A2 / or $line =~ / B2 /) {
       @w=split(" ",$line);
       $sas[$w[0]]=$w[9];
+      $z[$w[0]]=$w[6];
 #    }
   }
   close(IN);

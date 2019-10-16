@@ -5,7 +5,7 @@
 
 # Arguments 
 # 1) pdb file
-# 2) file with values : residue_number value 
+# 2) file with values : format of binding_sc.dat
 # 3) optional : factor to scale the value :
 
 if ($#ARGV eq 2) {
@@ -49,22 +49,17 @@ foreach $line (<IN>) {
             }    
        } 
        if  ($w[10] eq "LIG"){ $chain = "L"};
-       if  ($w[10] ne "LIG") { $chain = "X" } ;
+       if  ($w[10] ne "LIG") { $chain = "X" } ; # Default
        if  ($w[10] eq "1S") { $chain = "A" } ;
        if  ($w[10] eq "2S") { $chain = "B" } ;
        if  ($w[10] eq "3S") { $chain = "C" } ;
-       if  ($w[10] eq "4S") { $chain = "S" } ;
-       if  ($w[10] eq "5S") { $chain = "T" } ;
-       if  ($w[10] eq "6S") { $chain = "U" } ;
-       if  ($w[10] eq "7S") { $chain = "L" } ;
-       if  ($w[10] eq "8S") { $chain = "L" } ;
-       if  ($w[10] eq "9S") { $chain = "L" } ;
-       if  ($w[10] eq "10S") { $chain = "M" } ;
-       if  ($w[10] eq "11S") { $chain = "M" } ;
-       if  ($w[10] eq "12S") { $chain = "M" } ;
-       if  ($w[10] eq "13S") { $chain = "N" } ;
-       if  ($w[10] eq "14S") { $chain = "N" } ;
-       if  ($w[10] eq "15S") { $chain = "N" } ;
+       if  ($w[10] eq "4S") { $chain = "D" } ;
+       if  ($w[10] eq "5S") { $chain = "E" } ;
+       if  ($w[10] eq "6S") { $chain = "F" } ;
+       if  ($w[10] eq "7S") { $chain = "G" } ;
+       if  ($w[10] eq "8S") { $chain = "H" } ;
+       if  ($w[10] eq "9S") { $chain = "I" } ;
+       if  ($w[10] eq "10S") { $chain = "J" } ;
  
         if (length($w[2]) <4) {   
             printf("%-4s%7d  %-3s %3s %1s%4d    %8.3f%8.3f%8.3f%6.2f%6.2f%10s \n",
