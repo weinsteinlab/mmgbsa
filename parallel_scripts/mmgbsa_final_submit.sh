@@ -55,6 +55,10 @@ rm *.gz
 
 $parallel_scripts/mmgbsa_collect_results_streamlined.sh ${traj} ${sub_job_num}  ${frames_per_job}
 
+$scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb binding_sc.dat > binding_sc.pdb
+$scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb binding_bb.dat > binding_bb.pdb
+$scripts/put_mmgbsa_in_pdb_beta.prl data/complex.pdb binding_all.dat > binding_all.pdb
+
 rm -r [0-9][0-9][0-9][0-9]
 
 tar czf $cwd/final_results.tar.gz inter sas-a sas-b sas-comp solv-a solv-b solv-comp total dg  *.dat
