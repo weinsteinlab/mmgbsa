@@ -211,6 +211,7 @@ for $n (1..$nconf) {
             if (($resnum[$i] ~~ @resAB ) or ($resnum[$j] ~~ @resAB )) {
               $r2=($x[$i]-$x[$j])**2+($y[$i]-$y[$j])**2+($z[$i]-$z[$j])**2;
 	      $a2=$a[$i]*$a[$j];
+              $d = sqrt( $r2 + $a2*exp(-$r2/(8*$a2)));
 	      $eps_ij = 0.5 * ( $eps[$i] + $eps[$j] );
               $k = $celec*( $inv_eps_s - exp(-$kappa*$d) / $eps_ij) ;   # exp(-kappa d) is the Debeye-Huckel contribution.
                                                                         # It is probably not right with HDGB, but we leave it.

@@ -91,7 +91,6 @@ foreach $line (<IN>) {
     @w=split(" ",$line);
     if ( ($w[0] !~ /\*/) && ($#w >0) ) {      
     	$q[$subindex[$w[0]]]=$w[9];
-	print  
     }
 }
 close(IN);

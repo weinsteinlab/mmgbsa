@@ -193,7 +193,7 @@ $term=$k*$q[$i]*$q[$j]/$d;
 	      $d = sqrt( $r2 + $a2*exp(-$r2/(8*$a2)));
 	      $eps_ij = 0.5 * ( $eps[$i] + $eps[$j] );
               $k = $celec*( $inv_eps_s - exp(-$kappa*$d) / $eps_ij) ;   # exp(-kappa d) is the Debeye-Huckel contribution.
-                                                                        # It is probably not right with HDGB, but we leave it.t
+                                                                        # It is probably not right with HDGB, but we leave it.
               $term=$k*$q[$i]*$q[$j]/$d;
 	      # print "Atom $i $j : charges $q[$i] $q[$j] distance $d term $term\n";
 	      if ($i == $j) {
