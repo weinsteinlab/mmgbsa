@@ -54,7 +54,7 @@ set system_path="../"
 cp  -p $system_path/setup_charmm/data/complex* data/.
 cp  -p $system_path/setup_charmm/complex_raw.pdb data/.
 #cp -p $system_path/input/*.psf data/system.namd.psf
-cp -p $system_path/input/*.pdb data/system.namd.pdb
+cp -p $system_path/input/system.pdb data/system.namd.pdb
 
 # We make local copies of charmm input files so that the node does not read 100 times from main disk. 
 cp -p $top_path/top_all36_prot.rtf data/.
@@ -69,6 +69,7 @@ cp -p $top_path/par_all36_carb.prm data/.
 
 cp -rp $top_path/toppar_water_ions.str data/.
 cp -rp $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str data/.
+cp -rp $top_path/toppar_all36_lipid_prot.str data/.
 
 # For HDGB membrane
 if ( $do_membrane == "YES" ) then

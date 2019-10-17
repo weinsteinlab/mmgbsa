@@ -109,8 +109,8 @@ print INPUT "close unit 1 \n\n";
 #print INPUT "STREAM \@lib/sapi24_renamed_sapi.str \n";
 #print INPUT "STREAM \@lib/stream/lipid/toppar_all36_lipid_cholesterol.str \n";
 print INPUT "STREAM \@lib/toppar_all36_lipid_cholesterol.str \n";
-print INPUT "STREAM \@lib/toppar_water_ions.str \n\n";
-
+print INPUT "STREAM \@lib/toppar_water_ions.str \n";
+print INPUT "STREAM \@lib/toppar_all36_lipid_prot.str\n\n" ; # For CYSP : palmitoylated Cys
 
 #print INPUT "open unit 1 card read name \@lib/par_all22_prot_swisssidechain.inp \n";
 #print INPUT "read PARA card unit 1 append\n";

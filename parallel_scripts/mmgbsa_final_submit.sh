@@ -64,6 +64,7 @@ rm -r [0-9][0-9][0-9][0-9]
 tar czf $cwd/final_results.tar.gz inter sas-a sas-b sas-comp solv-a solv-b solv-comp total dg  *.dat
 
 cp *.dat $cwd/.
+cp binding*.pdb $cwd/.
 
 rm -r inter sas-a sas-b sas-comp solv-a solv-b solv-comp total dg
 

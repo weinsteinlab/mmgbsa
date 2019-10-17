@@ -41,7 +41,7 @@ echo "    Capping options : ${capping[*]}"
 
  # Make links with generic names 
 # ln -fs ../input/*.pdb system.pdb
-sed 's/CYS2/ CYS/' ../input/*.pdb > system.pdb
+sed 's/CYS2/ CYS/' ../input/system.pdb > system.pdb
 # Try to do without NAMD psf
 # ln -fs ../input/*.psf system.namd.psf
 
@@ -118,6 +118,7 @@ cp -p $top_path/par_all36_cgenff.prm toppar/.
 cp -p $top_path/par_all36_carb.prm toppar/.
 cp -p $top_path/toppar_water_ions.str toppar/.
 cp -p $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str toppar/.
+cp -p $top_path/toppar_all36_lipid_prot.str toppar/.
 
 echo "    Running charmm setup ... "
 $perl $scripts/prepare-charmm36.prl
