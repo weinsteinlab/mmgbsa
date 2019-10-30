@@ -94,6 +94,7 @@ source $mmgbsa_path/scripts/setenv.sh
 mmgbsa_name="mmgbsa"
 
 # Make the path to traj absolute if it is not already
+echo "Locating trajectory ..."
 traj=`readlink -f $traj`
 if [[ -e $traj ]]; then
         echo "Using trajectory $traj"
