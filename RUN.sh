@@ -49,7 +49,7 @@ queueing_system="SLURM"
 queue_name="panda"
  
 # Non-bonded interaction parameters :
-#    Cutoff for electro and VdW interactions in Angstroms.  !!! Warining, test with GBMV !!!
+#    Cutoff for electro and VdW interactions in Angstroms.  !!! Warning, test with GBMV !!!
 cutoff=999 
 
 #    Monovalent ion concentration in M for Deheye-Huckel screening (default = 0.154). 

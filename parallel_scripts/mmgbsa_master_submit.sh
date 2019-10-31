@@ -38,7 +38,8 @@ elif [ $queueing_system == "LSF" ]; then
 	A=$LSB_JOBINDEX
 #SLURM :
 elif [ $queueing_system == "SLURM" ]; then
-        mytmpdir=$TMPDIR
+        mytmpdir="$TMPDIR/$SLURM_JOB_ID"
+	# On Wally, there is no job-specific temporary directory ...
         A=$SLURM_ARRAY_TASK_ID
 fi
 B=`printf %04i $A`
@@ -72,8 +73,8 @@ fi
 time_to_sleep=$(( $A % 3 ))
 sleep $time_to_sleep  
 
-mkdir $frames_tmp
-mkdir $main_tmp
+mkdir -p $frames_tmp
+mkdir -p $main_tmp
 
 cp -rp data $main_tmp/.
 cp -rp vmd_selections.tcl $main_tmp/.
@@ -148,14 +149,20 @@ echo "Frames directory : $frames_tmp"
 
 echo " "
 echo " Preparing local MMGBSA job ... "
-$mmgbsa_path/scripts/prepare_mmgbsa_local.csh $mytraj $first $last $stride $frames_tmp > $current/log/prepare_job_$A.log
+$mmgbsa_path/scripts/prepare_mmgbsa_local.sh $mytraj $first $last $stride $frames_tmp >& $current/log/prepare_job_$A.log
+status_prep=$?
+if [ $status_prep -ne 0 ]; then
+    echo "ERROR in prepare_mmgbsa_local.sh. "
+    # We do not exit because we want to get the files back from node /tmp
+fi
 
 ###################################################################
 # Run local mmgbsa 
 
-echo " Running local MMGBSA job ... "
-$mmgbsa_path/scripts/run_one_mmgbsa.sh  >  $current/log/run_job_$A.log
-
+if [ $status_prep -eq 0 ]; then
+    echo " Running local MMGBSA job ... "
+    $mmgbsa_path/scripts/run_one_mmgbsa.sh  >&  $current/log/run_job_$A.log
+fi
 
 sleep 10
 
@@ -164,8 +171,8 @@ sleep 10
 #cp -rp frames-a/* frames-a.bkp/.
 #mkdir frames-b.bkp
 #cp -rp frames-b/* frames-b.bkp/.
-#mkdir frames-comp.bkp
-#cp -rp frames-comp/* frames-comp.bkp/.
+mkdir frames-comp.bkp
+cp -rp frames-comp/* frames-comp.bkp/.
 
 echo " Cleaning up ... "
 rm -r ./frames-a 

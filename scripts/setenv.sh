@@ -26,8 +26,8 @@ if [[  $HOSTNAME =~ panda ]] || [[  $HOSTNAME =~ curie ]] ; then
     export vmd=/home/mac2109/local/vmd-1.9.2/bin/vmd 
     export perl=`which perl`
 fi
-if [[  $HOSTNAME =~ vital ]]; then
-    export charmm=/home/vzoete/charmm/c36b1/exec/em64t/charmm 
-    export vmd=/home/mcuendet/local/vmd-1.9.2/bin/vmd
+if [[  $HOSTNAME =~ wally ]]; then
+    export charmm=/users/mcuende1/local/c44b1/bin/charmm 
+    export vmd=/users/mcuende1/local/vmd-1.9.3/bin/vmd
     export perl=`which perl`
 fi
