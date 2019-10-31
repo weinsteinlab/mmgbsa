@@ -25,12 +25,16 @@ do
 	counter=$((counter+1))
 done
 
+# Remove trailing spaces
+sed -i 's/[ \t]*$//' $ftmp
+# Replace spaces with commas
 sed -i 's/[[:space:]]\{1,\}/,/g' $ftmp
-sed -i 's/^,//g' $ftmp
+# Remove first comma
+sed -i 's/^,//g;s/,^//g' $ftmp
 
 $perl_scripts/renumber_and_stats.prl $ftmp > $fname
 
-rm $ftmp
+#rm $ftmp
 
 
 
