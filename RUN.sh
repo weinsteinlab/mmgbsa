@@ -97,9 +97,9 @@ mmgbsa_name="mmgbsa"
 echo "Locating trajectory ..."
 traj=`readlink -f $traj`
 if [[ -e $traj ]]; then
-        echo "Using trajectory $traj"
+        echo "    Using trajectory $traj"
 else
-        echo "ERROR : trajectory does not exist"
+        echo "    ERROR : trajectory does not exist"
         echo $traj
         exit 1
 fi
@@ -117,20 +117,24 @@ job_name="$(basename $(pwd))_$mmgbsa_name"
 ###################################################################
 # Charmm setup
 
-echo "Performing charmm setup ... "
+if [[ -f setup_charmm/data/complex.psf &&  -f setup_charmm/data/complex.crd ]]; then
+        echo "Using previous charmm setup in ./setup_charmm/data/ ..."
+else
+	echo "Performing charmm setup ... "
 
-mkdir -p setup_charmm
-cd setup_charmm
+	mkdir -p setup_charmm
+	cd setup_charmm
 
-$scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}" | tee setup_charmm.log 
+	$scripts/setup_charmm.sh "${system_selection}" "$proteins" "${capping[@]}" | tee setup_charmm.log 
 
-is_ok=`grep  "Everything seems Ok" setup_charmm.log`
-if [ -z "$is_ok" ]; then
-	echo "ERROR during charmm setup !"
-	exit 1
-fi
+	is_ok=`grep  "Everything seems Ok" setup_charmm.log`
+	if [ -z "$is_ok" ]; then
+		echo "ERROR during charmm setup !"
+		exit 1
+	fi
+        cd ..
+fi 
 
-cd ..
 mkdir -p  $mmgbsa_name
 cd $mmgbsa_name
 
