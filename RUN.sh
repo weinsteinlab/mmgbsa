@@ -12,7 +12,7 @@ set -u
 ###################################################################
 
 # Path to MMGBSA distribution 
-mmgbsa_path=/home/mac2109/mmgbsa/mmgbsa2.1/
+mmgbsa_path=/users/mcuende1/mmgbsa/mmgbsa2.1/
 
 # Selection for the MMGBSA system
 system_selection='protein'
@@ -46,7 +46,7 @@ max_jobs_running_simultaneously=50
 
 #    Queuing system (one of "SGE" or "LSF or "SLURM") and queue name
 queueing_system="SLURM"
-queue_name="panda"
+queue_name="normal"
  
 # Non-bonded interaction parameters :
 #    Cutoff for electro and VdW interactions in Angstroms.  !!! Warning, test with GBMV !!!
@@ -56,7 +56,7 @@ cutoff=999
 ionconc=0.154 
 
 #    Do a membrane calculation: center along Z on group "lipids", and use HDGB in charmm
-do_membrane="YES"
+do_membrane="NO"
 
 # System details - proteins are assumed to come first in the PSF.
 #    Number of separate (i.e. not covalently bonded) protein/peptide segments
@@ -112,6 +112,7 @@ fi
     # and where charmm39 will run (on panda).
 #fi
 
+job_name="$(basename $(pwd))_$mmgbsa_name"
 
 ###################################################################
 # Charmm setup
@@ -142,7 +143,7 @@ cat > vmd_selections.tcl << EOF
 
 # Selection for the whole complex
 set complex_sel_text " $system_selection "
-# Must be the same as given to setup_charmm.csh 
+# Must be the same as given to setup_charmm.sh 
 
 # Selection text for part A
 # transport domain A
@@ -194,7 +195,11 @@ fi
 
 echo "Preparing MMGBSA directory ... "
 
-$scripts/prepare_mmgbsa_common.csh "$cutoff" "$ionconc"	
+$scripts/prepare_mmgbsa_common.sh "$cutoff" "$ionconc"	
+if [ $? -ne 0 ]; then
+    echo "Error in prepare_mmgbsa_common.sh"
+    exit 1
+fi
 
 
 echo "Testing trajectory ... "
@@ -202,7 +207,8 @@ mkdir -p test_traj
 cd test_traj
 # Try to use only the PDB (this is useful when the trajectory comes from gromacs, where there is no psf) 
 #mypsf="../data/system.namd.psf"
-mypsf=../system.pdb
+mypsf="../data/system.namd.pdb"
+#mypsf=../system.pdb
 
 cat > test_traj.tcl  << EOF
   source ../vmd_selections.tcl
@@ -256,11 +262,11 @@ elif [ $queueing_system == "LSF" ]; then
 # SLURM :  ----------------------------------------------------------
 elif [ $queueing_system == "SLURM" ]; then
 
-        jobid=`sbatch --array=1-${n_jobs}%${max_jobs_running_simultaneously} -p $queue_name --nodes=1 --mem=20G --job-name=mmgbsa2.1 --output="mmgbsa.o%A.%a" --error="mmgbsa.e%A.%a" --export=mmgbsa_path=$mmgbsa_path,queueing_system=$queueing_system $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job | egrep -o -e "\b[0-9]+$"`
+        jobid=`sbatch --array=1-${n_jobs}%${max_jobs_running_simultaneously} -p $queue_name --nodes=1 --mem=20G --job-name=$job_name --output="mmgbsa.o%A.%a" --error="mmgbsa.e%A.%a" --export=mmgbsa_path=$mmgbsa_path,queueing_system=$queueing_system $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job | egrep -o -e "\b[0-9]+$"`
 
         # Submit post-processing job
         echo "Submitting final post-processing job ... "
-        sbatch --dependency=afterok:${jobid} -p $queue_name --nodes=1 --mem=20G --job-name=mmgbsa2.1_final --output="mmgbsa2.1_final.o%A" --error="mmgbsa_final.e%A" --export=mmgbsa_path=$mmgbsa_path,queueing_system=$queueing_system $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job
+        sbatch --dependency=afterok:${jobid} -p $queue_name --nodes=1 --mem=20G --job-name=${job_name}_final --output="mmgbsa2.1_final.o%A" --error="mmgbsa_final.e%A" --export=mmgbsa_path=${mmgbsa_path},queueing_system=${queueing_system} $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job
 	squeue -u `whoami`
 else
         echo "ERROR: bad queuing system identifyiner"
