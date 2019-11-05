@@ -171,8 +171,8 @@ sleep 10
 #cp -rp frames-a/* frames-a.bkp/.
 #mkdir frames-b.bkp
 #cp -rp frames-b/* frames-b.bkp/.
-mkdir frames-comp.bkp
-cp -rp frames-comp/* frames-comp.bkp/.
+#mkdir frames-comp.bkp
+#cp -rp frames-comp/* frames-comp.bkp/.
 
 echo " Cleaning up ... "
 rm -r ./frames-a 

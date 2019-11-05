@@ -26,8 +26,8 @@ partB_selection=" chain B "
 cutoff_residues=0
 
 # Alternatively, one can select residues explicitly for the decomposition.
-partA_residues_selection="chain A and resid 351 to 353 "
-partB_residues_selection="chain B and resid 51 to 53 "
+partA_residues_selection="resid 351 to 353 "
+partB_residues_selection="resid 51 to 53 "
 
 # Trajectory of the full system (can be a DCD file or an XTC file). 
 traj=/path/to/traj.xtc
@@ -270,7 +270,7 @@ elif [ $queueing_system == "SLURM" ]; then
 
         # Submit post-processing job
         echo "Submitting final post-processing job ... "
-        sbatch --dependency=afterok:${jobid} -p $queue_name --nodes=1 --mem=20G --job-name=${job_name}_final --output="mmgbsa2.1_final.o%A" --error="mmgbsa_final.e%A" --export=mmgbsa_path=${mmgbsa_path},queueing_system=${queueing_system} $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job
+        sbatch --dependency=afterok:${jobid} -p $queue_name --nodes=1 --mem=20G --job-name=${job_name}_final --output="mmgbsa_final.o%A" --error="mmgbsa_final.e%A" --export=mmgbsa_path=${mmgbsa_path},queueing_system=${queueing_system} $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job
 	squeue -u `whoami`
 else
         echo "ERROR: bad queuing system identifyiner"

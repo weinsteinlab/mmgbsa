@@ -27,26 +27,27 @@ cwd=$(pwd)
 #SGE :
 if [ $queueing_system == "SGE" ]; then
         mytmpdir=$TMPDIR
-        A=$SGE_TASK_ID
 #LSF :
 elif [ $queueing_system == "LSF" ]; then
         mytmpdir=$__LSF_JOB_TMPDIR__
-        A=$LSB_JOBINDEX
 #SLURM :
 elif [ $queueing_system == "SLURM" ]; then
-        mytmpdir=$TMPDIR
-        A=$SLURM_ARRAY_TASK_ID
+        mytmpdir="$TMPDIR/$SLURM_JOB_ID"
+        # On Wally, there is no job-specific temporary directory ...
 fi
 
 tar czf ./sub_job_logs.tar.gz ./mmgbsa.o* ./mmgbsa.e*
 rm ./mmgbsa.o* ./mmgbsa.e*
 
-cd ..
+#cd ..
 
+mkdir -p $mytmpdir 
 cp -rp $cwd $mytmpdir/final_job_tmp
 
 cd $mytmpdir/final_job_tmp
 echo "Working in directory $mytmpdir/final_job_tmp/"
+echo "Files before analysis:"
+ls -lrt 
 
 for file in `ls [0-9][0-9][0-9][0-9].tar.gz`; do
 	tar -xzf $file
