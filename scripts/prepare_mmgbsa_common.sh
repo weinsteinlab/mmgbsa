@@ -44,6 +44,10 @@ fi
 echo "    Copying files to local data directory ..."
 system_path="../"
 cp  -p "$system_path/setup_charmm/data/complex"* data/.
+if [[ -f $system_path/setup_charmm/data/ligand.par && -f $system_path/setup_charmm/data/ligand.rtf ]]; then
+	cp -p $system_path/setup_charmm/data/ligand.par data/.
+        cp -p $system_path/setup_charmm/data/ligand.rtf data/.
+fi 
 cp  -p $system_path/setup_charmm/complex_raw.pdb data/.
 #cp -p $system_path/input/*.psf data/system.namd.psf
 cp -p $system_path/input/system.pdb data/system.namd.pdb
