@@ -35,11 +35,6 @@ for $i (0..@line-1) {
 	    $atom_name[$numatom] = $nametemp;
         }
       }
-      # Taking care of NTer hydrogens
-      if ($atom_name[$numatom] eq "H1  ") { $atom_name[$numatom] = "HT1 ";} 
-      if ($atom_name[$numatom] eq "H2  ") { $atom_name[$numatom] = "HT2 ";}
-      if ($atom_name[$numatom] eq "H3  ") { $atom_name[$numatom] = "HT3 ";}
-    
       # Residue name :
       $nametemp=substr($line[$i],17,4);
       if ($nametemp eq "CYS2") {
@@ -47,7 +42,12 @@ for $i (0..@line-1) {
       } else {
         $res_name[$numatom]=$nametemp;
       }
- 
+
+      # Taking care of NTer hydrogens (ligands can have Hi atoms) 
+      if (($atom_name[$numatom] eq "H1  ")&&($res_name[$numatom] ne "LIG ")) { $atom_name[$numatom] = "HT1 ";} 
+      if (($atom_name[$numatom] eq "H2  ")&&($res_name[$numatom] ne "LIG ")) { $atom_name[$numatom] = "HT2 ";}
+      if (($atom_name[$numatom] eq "H3  ")&&($res_name[$numatom] ne "LIG ")) { $atom_name[$numatom] = "HT3 ";}
+    
       # Residue number and chain
       $res_num[$numatom]=substr($line[$i],22,4);
       $chain[$numatom]=substr($line[$i],21,1);
