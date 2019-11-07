@@ -29,12 +29,17 @@ do_membrane=`awk '($2 == "do_membrane"){print $3}' vmd_selections.tcl`
 # Also, charmm cannot handle variables with capital letters, so an absolute path
 # will fail in some cases. 
 basedir_backslash='.' 
+system_path="../"
 
 mkdir -p data log outputs
 
 if [ -f data/loader.str ];  then
         echo "    Using previous loader.str"
+elif [ -f $system_path/setup_charmm/data/loader.str ]; then
+        echo "    Using loaded.str present in ./setup_charmm/data/"
+	cp $system_path/setup_charmm/data/loader.str data/.
 else
+        echo "    Using defalut loader.str from mmgbsa distribution"
         sed "s/BASEDIR/$basedir_backslash/" $inputs/loader.str > data/loader.str
 fi
 
@@ -42,15 +47,15 @@ fi
 # HERE WE USE THE ORIGINAL CHARMM SETUP !
 
 echo "    Copying files to local data directory ..."
-system_path="../"
+
 cp  -p "$system_path/setup_charmm/data/complex"* data/.
-if [[ -f $system_path/setup_charmm/data/ligand.par && -f $system_path/setup_charmm/data/ligand.rtf ]]; then
-	cp -p $system_path/setup_charmm/data/ligand.par data/.
-        cp -p $system_path/setup_charmm/data/ligand.rtf data/.
+if [[ -f $system_path/setup_charmm/toppar/ligand.par && -f $system_path/setup_charmm/toppar/ligand.rtf ]]; then
+	cp -p $system_path/setup_charmm/toppar/ligand.par data/.
+        cp -p $system_path/setup_charmm/toppar/ligand.rtf data/.
 fi 
 cp  -p $system_path/setup_charmm/complex_raw.pdb data/.
 #cp -p $system_path/input/*.psf data/system.namd.psf
-cp -p $system_path/input/system.pdb data/system.namd.pdb
+cp -p $system_path/input/system.pdb data/system_raw.pdb
 
 # We make local copies of charmm input files so that the node does not read 100 times from main disk. 
 cp -p $top_path/top_all36_prot.rtf data/.

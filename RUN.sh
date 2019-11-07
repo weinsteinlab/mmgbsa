@@ -211,7 +211,7 @@ mkdir -p test_traj
 cd test_traj
 # Try to use only the PDB (this is useful when the trajectory comes from gromacs, where there is no psf) 
 #mypsf="../data/system.namd.psf"
-mypsf="../data/system.namd.pdb"
+mypsf="../data/system_raw.pdb"
 #mypsf=../system.pdb
 
 cat > test_traj.tcl  << EOF

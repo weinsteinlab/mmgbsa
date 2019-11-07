@@ -90,7 +90,7 @@ echo framesdir_b : $framesdir_b
 #
 echo " Extracting frames ..."
 #mypsf="./data/system.namd.psf"
-mypsf="./data/system.namd.pdb"
+mypsf="./data/system_raw.pdb"
 
 cat > extract_frames.tcl  << EOF
   source ./vmd_selections.tcl

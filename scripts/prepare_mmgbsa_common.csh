@@ -54,7 +54,7 @@ set system_path="../"
 cp  -p $system_path/setup_charmm/data/complex* data/.
 cp  -p $system_path/setup_charmm/complex_raw.pdb data/.
 #cp -p $system_path/input/*.psf data/system.namd.psf
-cp -p $system_path/input/system.pdb data/system.namd.pdb
+cp -p $system_path/input/system.pdb data/system_raw.pdb
 
 # We make local copies of charmm input files so that the node does not read 100 times from main disk. 
 cp -p $top_path/top_all36_prot.rtf data/.
