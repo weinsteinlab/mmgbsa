@@ -10,11 +10,12 @@ pwd
 nb_cutoff=$1;
 echo "    Cutoff for non-bonded interactions : $nb_cutoff A"
 
-ionconc=$2
-if [ $ionconc == "" ]; then 
-	ionconc = 0.154
-fi
+ionconc=${2:-0.154}  # Compact syntax for default value if argument is missing or null
 echo "    Monovalent ion concentration for Debye-Huckel : $ionconc M"
+
+eps_s=${3:-1.0}
+echo "    Solute dielectric constant : $eps_s "
+
 
 # The vmd_selections.tcl file must be present.  
 if [ !  -f  vmd_selections.tcl ];  then  
@@ -112,6 +113,7 @@ kappa=` echo "0.316*sqrt( $ionconc ) " | bc -l ` #Debeye screening constant [A-1
 
 printf 'SET kappa %6f \n\n' $kappa >> data/definitions.str
 printf '!monovalent_ion_concentration %f\n' $ionconc >> data/definitions.str
+printf '!solute_dielectric %f\n' $eps_s >> data/definitions.str
 
 
 # ..........................................................................

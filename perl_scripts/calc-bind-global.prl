@@ -20,6 +20,13 @@ $nconf=`grep nframes data/definitions.str | awk '{print \$3}'`; # number of conf
 chomp $nconf;
 print "Number of conformations : $nconf \n";
 
+# Solute dielectric
+$eps_s=`grep \"solute_dielectric\" data/definitions.str | awk '{print \$2}'`;   # Number of atoms in the system
+chomp $eps_s;
+print "Solute dielectric : $eps_s \n";
+
+$eps_w=80.0;
+
 # --------------------------------------------------------------------
 # Read suff in
 
@@ -74,16 +81,23 @@ open(OUT, ">binding-time.dat");
 printf OUT ("       %8s  %8s  %8s  %8s  :   %8s \n","VdW","Elec","GB","SA", "TOTAL");
 print OUT "---------------------------------------------------------\n";
 
+# Apply correction for solute dielectric
+$coef= ( 1.0/$eps_s - 1.0/$eps_w) / ( 1.0  - 1.0/$eps_w);
+ 
+print "coefficient for solvation part to account for solute dielectric in calc-bind-global : $coef \n";
+
 for $i (1..$nconf) {
 
-  $desolv[$i]=$solv_comp[$i]-($solv_a[$i]+$solv_b[$i]);
+  # Apply correction for solute dielectri
+  $desolv[$i]= $coef * ( $solv_comp[$i] - ($solv_a[$i]+$solv_b[$i]) );
   $np[$i]=-0.0072*$surf[$i];
+  $elec_s[$i]=$elec[$i]/$eps_s;
   # The minus sign comes from the fact that the buried surface is calculated 
   # as (a + b -comp) (to get a positive number)
-  $bind[$i] = $vdw[$i] + $elec[$i] + $desolv[$i] + $np[$i];
+  $bind[$i] = $vdw[$i] + $elec_s[$i] + $desolv[$i] + $np[$i];
 
   printf OUT ("%3d :  %8.2f  %8.2f  %8.2f  %8.2f  :   %8.2f \n",
-	      $i, $vdw[$i], $elec[$i], $desolv[$i], $np[$i], $bind[$i]);
+	      $i, $vdw[$i], $elec_s[$i], $desolv[$i], $np[$i], $bind[$i]);
 }
 
 
@@ -92,7 +106,7 @@ for $i (1..$nconf) {
 #  Calculate time statistics
 
 ($vdw_mean, $vdw_sd, $vdw_n_eff, $vdw_err) = time_statistics_FTZ(@vdw);
-($elec_mean, $elec_sd, $elec_n_eff, $elec_err) = time_statistics_FTZ(@elec);
+($elec_mean, $elec_sd, $elec_n_eff, $elec_err) = time_statistics_FTZ(@elec_s);
 ($desolv_mean, $desolv_sd, $desolv_n_eff, $desolv_err) = time_statistics_FTZ(@desolv);
 ($np_mean, $np_sd, $np_n_eff, $np_err) = time_statistics_FTZ(@np);
 ($bind_mean, $bind_sd, $bind_n_eff, $bind_err) = time_statistics_FTZ(@bind);

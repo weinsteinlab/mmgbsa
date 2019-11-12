@@ -11,6 +11,10 @@
 #
 #########################################################
 
+# Setup some variables
+
+$mmgbsa_path = $ENV{'mmgbsa_path'};
+require "$mmgbsa_path/perl_scripts/time_statistics.prl";
 
 $natom=`grep \"NATOM \" data/system.dat | awk '{print \$2}'`;   # Number of atoms in the system
 chomp $natom;
@@ -46,22 +50,22 @@ my @resAB = @resA;
 push( @resAB, @resB) ; 
 $nresAB = $nresA + $nresB;
 
+$eps_s=`grep \"solute_dielectric\" data/definitions.str | awk '{print \$2}'`;   # Number of atoms in the system
+chomp $eps_s;
+print "Solute dielectric : $eps_s \n";
+
 
 # Calculate contribution for $nconf conformations.
 
 for $n (1..$nconf) {
   $nrA=0;
-  open(IN,"inter/inter-byres-$n-a.dat") or die "Could not open file inter-byres-$n-b.dat \n";
+  open(IN,"inter/inter-byres-$n-a.dat") or die "Could not open file inter-byres-$n-a.dat \n";
   foreach $line (<IN>) {
     @w=split(" ",$line);
     $res_vdw_bb[$w[0]][$n]+=$w[1];
-    $res_vdw_bb_mean[$w[0]]+=$w[1];
-    $res_elec_bb[$w[0]][$n]+=$w[2];
-    $res_elec_bb_mean[$w[0]]+=$w[2];
+    $res_elec_bb[$w[0]][$n]+=$w[2]/$eps_s;
     $res_vdw_sc[$w[0]][$n]+=$w[3];
-    $res_vdw_sc_mean[$w[0]]+=$w[3];
-    $res_elec_sc[$w[0]][$n]+=$w[4];
-    $res_elec_sc_mean[$w[0]]+=$w[4];
+    $res_elec_sc[$w[0]][$n]+=$w[4]/$eps_s;
     $nrA+=1;
   }
   close(IN);
@@ -70,13 +74,9 @@ for $n (1..$nconf) {
   foreach $line (<IN>) {
     @w=split(" ",$line);
     $res_vdw_bb[$w[0]][$n]+=$w[1];
-    $res_vdw_bb_mean[$w[0]]+=$w[1];
-    $res_elec_bb[$w[0]][$n]+=$w[2];
-    $res_elec_bb_mean[$w[0]]+=$w[2];
+    $res_elec_bb[$w[0]][$n]+=$w[2]/$eps_s;
     $res_vdw_sc[$w[0]][$n]+=$w[3];
-    $res_vdw_sc_mean[$w[0]]+=$w[3];
-    $res_elec_sc[$w[0]][$n]+=$w[4];
-    $res_elec_sc_mean[$w[0]]+=$w[4];
+    $res_elec_sc[$w[0]][$n]+=$w[4]/$eps_s;
     $nrB+=1;
   }
 
@@ -84,26 +84,15 @@ for $n (1..$nconf) {
   if ( $nrB != $nresB ) { die "Frame $n : number of inter values in part B ($nrB) does not match definitions.str ($nresB) !!" ;}
 
   close(IN);
-  
 }
 
+# Time statistics
 foreach $i (@resAB) {
-  $res_vdw_bb_mean[$i]=$res_vdw_bb_mean[$i]/$nconf;
-  $res_elec_bb_mean[$i]=$res_elec_bb_mean[$i]/$nconf;
-  $res_vdw_sc_mean[$i]=$res_vdw_sc_mean[$i]/$nconf;
-  $res_elec_sc_mean[$i]=$res_elec_sc_mean[$i]/$nconf;
-  for $n (1..$nconf) {
-    $res_vdw_bb_sd[$i]+=($res_vdw_bb[$i][$n]-$res_vdw_bb_mean[$i])**2;
-    $res_elec_bb_sd[$i]+=($res_elec_bb[$i][$n]-$res_elec_bb_mean[$i])**2;
-    $res_vdw_sc_sd[$i]+=($res_vdw_sc[$i][$n]-$res_vdw_sc_mean[$i])**2;
-    $res_elec_sc_sd[$i]+=($res_elec_sc[$i][$n]-$res_elec_sc_mean[$i])**2;
-  }
-  $res_vdw_bb_sd[$i]=sqrt($res_vdw_bb_sd[$i]/$nconf);
-  $res_elec_bb_sd[$i]=sqrt($res_elec_bb_sd[$i]/$nconf);
-  $res_vdw_sc_sd[$i]=sqrt($res_vdw_sc_sd[$i]/$nconf);
-  $res_elec_sc_sd[$i]=sqrt($res_elec_sc_sd[$i]/$nconf);
+  ($res_vdw_bb_mean[$i],$res_vdw_bb_sd[$i],$res_vdw_bb_neff[$i],$res_vdw_bb_err[$i]) = time_statistics_FTZ(@{ $res_vdw_bb[$i] });
+  ($res_elec_bb_mean[$i],$res_elec_bb_sd[$i],$res_elec_bb_neff[$i],$res_elec_bb_err[$i]) = time_statistics_FTZ(@{ $res_elec_bb[$i] });
+  ($res_vdw_sc_mean[$i],$res_vdw_sc_sd[$i],$res_vdw_sc_neff[$i],$res_vdw_sc_err[$i]) = time_statistics_FTZ(@{ $res_vdw_sc[$i] });
+  ($res_elec_sc_mean[$i],$res_elec_sc_sd[$i],$res_elec_sc_neff[$i],$res_elec_sc_err[$i]) = time_statistics_FTZ(@{ $res_elec_sc[$i] });
 }
-
 
 foreach $i (@resAB) {
   $filename="inter/inter-res-bb-$i.dat";
@@ -117,6 +106,10 @@ foreach $i (@resAB) {
 	      $res_vdw_bb_mean[$i], $res_elec_bb_mean[$i]);
   printf OUT ("SD      %10.4f %10.4f \n",
 	      $res_vdw_bb_sd[$i], $res_elec_bb_sd[$i]);
+  printf OUT ("NEFF    %10.4f %10.4f \n",
+	      $res_vdw_bb_neff[$i], $res_elec_bb_neff[$i]);
+  printf OUT ("SD      %10.4f %10.4f \n",
+	      $res_vdw_bb_err[$i], $res_elec_bb_err[$i]);
   close(OUT);
 }
 

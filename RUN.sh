@@ -52,6 +52,9 @@ queue_name="normal"
 #    Cutoff for electro and VdW interactions in Angstroms.  !!! Warning, test with GBMV !!!
 cutoff=999 
 
+# Dieclectir constant for solute 
+epsilon_s=2.0
+
 #    Monovalent ion concentration in M for Deheye-Huckel screening (default = 0.154). 
 ionconc=0.154 
 
@@ -199,7 +202,7 @@ fi
 
 echo "Preparing MMGBSA directory ... "
 
-$scripts/prepare_mmgbsa_common.sh "$cutoff" "$ionconc"	
+$scripts/prepare_mmgbsa_common.sh "$cutoff" "$ionconc" "$epsilon_s"	
 if [ $? -ne 0 ]; then
     echo "Error in prepare_mmgbsa_common.sh"
     exit 1

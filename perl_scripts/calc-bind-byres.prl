@@ -33,7 +33,7 @@ $nresAB = $nresA + $nresB;
 open(IN,"data/charges.crd");
 foreach $line (<IN>) {
   # Look only at C alphas, P for lipids, O3 for cholesterol, Na for sodium ions...
-  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /) or ($line =~ / SOD /) or ($line =~ / CAL / ) or ($line =~ / MG /) or ($line =~ / LIG / ) {
+  if ( ($line =~ /CA /) or ($line =~ / O3 /) or ($line =~ / P /) or ($line =~ / SOD /) or ($line =~ / CAL / ) or ($line =~ / MG /) or ($line =~ / LIG / ) )  {
     @w=split(" " ,$line);
     $name[$w[1]]=$w[7]." ".$w[2].$w[8];
   }
@@ -48,7 +48,7 @@ foreach $line (<IN>) {
 }
 close(IN);
 
-open(IN,"inter/inter-res-sc.dat") or die "Could not open inter-res-bb.dat";
+open(IN,"inter/inter-res-sc.dat") or die "Could not open inter-res-sc.dat";
 foreach $line (<IN>) {
   @w=split(" ",$line);
   $vdw_sc[$w[0]]=$w[1];

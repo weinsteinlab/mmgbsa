@@ -44,6 +44,10 @@ $cutoff2 = $cutoff**2;
 $ionconc = `awk '(\$1=="!monovalent_ion_concentration"){print \$2}'  data/definitions.str `;
 chomp $ionconc;
 
+$eps_s=`grep \"solute_dielectric\" data/definitions.str | awk '{print \$2}'`;   # Number of atoms in the system
+chomp $eps_s;
+print "Solute dielectric : $eps_s \n";
+
 # Force flushing to disk. 
 # $|++;
 
@@ -57,7 +61,6 @@ $do_new_scheme=1;
 $celec=-(332.0672/2);# Electric constant in kcal/mol as defined in CHARMM
 $eps_w=80;           # Relecative dielectric constant of water
 $inv_eps_w=1.0/$eps_w;
-$eps_s=1;            # Relative dielectric constant of solute
 $inv_eps_s = 1.0/$eps_s;
 #$ionconc=0.154;      # Physiological ion concentration
                      # Recover the original behavior with $ionconc=0
