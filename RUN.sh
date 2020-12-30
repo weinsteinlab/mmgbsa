@@ -187,10 +187,10 @@ else
 cat >> vmd_selections.tcl << EOF
 
 # Selection text for interesting residues of part A
-set Aresidues_sel_text  "( \$A_sel_text ) and ( $partA_residues_selection )"
+set Aresidues_sel_text  "( \$A_sel_text ) and same residue as ( $partA_residues_selection )"
 
 # Selection text for interesting residues of part B
-set Bresidues_sel_text  " ( \$B_sel_text ) and ( $partB_residues_selection )"
+set Bresidues_sel_text  " ( \$B_sel_text ) and same residue as ( $partB_residues_selection )"
 
 EOF
 

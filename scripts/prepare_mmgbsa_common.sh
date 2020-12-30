@@ -109,7 +109,7 @@ printf 'SET nbstr ctonnb %d ctofnb %d cutnb %d TRUNC \n\n' $cuton $nb_cutoff $cu
 printf '!cutoff %d\n\n' $nb_cutoff >> data/definitions.str
 
 # Ion concentration and kappa for Debeye-Huckel term
-kappa=` echo "0.316*sqrt( $ionconc ) " | bc -l ` #Debeye screening constant [A-1], 
+kappa=` echo "0.316*sqrt( $ionconc ) " | wc -l ` #Debeye screening constant [A-1], 
 
 printf 'SET kappa %6f \n\n' $kappa >> data/definitions.str
 printf '!monovalent_ion_concentration %f\n' $ionconc >> data/definitions.str
