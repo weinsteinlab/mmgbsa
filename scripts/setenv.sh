@@ -1,7 +1,7 @@
 #! /bin/bash -l
 
 # MMGBSA distribution
-#export mmgbsa_path=/home/mcuendet/mmgbsa/mmgbsa2.1
+export mmgbsa_path=/athena/hwlab/scratch/des2037/NSP5/openMM/mmgbsa
 export scripts=$mmgbsa_path/scripts/
 export parallel_scripts=$mmgbsa_path/parallel_scripts/
 export inputs=$mmgbsa_path/charmm_inputs/
@@ -19,11 +19,11 @@ if [[  $HOSTNAME =~ pug ]]; then
     # Fido has an old version of perl, which does not understand some operators.
     export perl==/home/mac2109/local/perl-5.24.0/bin/perl    
 fi
-if [[  $HOSTNAME =~ panda ]] || [[  $HOSTNAME =~ curie ]] ; then
-    #export charmm=/home/mac2109/src/c39b2/exec/em64t/charmm
-    export charmm=/home/mac2109/local/c44b1/bin/charmm 
+if [[  $HOSTNAME =~ panda ]] || [[  $HOSTNAME =~ curie ]] || [[ $HOSTNAME =~ edison ]] ; then
+    #export charmm=/home/mac2109/local/c44b1/bin/charmm 
+    export charmm=/athena/hwlab/scratch/lab_data/software/charmm/charmm_edison/charmm/exec/gnu/charmm 
     # This works on panda but is too recent for fido
-    export vmd=/home/mac2109/local/vmd-1.9.2/bin/vmd 
+    export vmd=/athena/hwlab/scratch/lab_data/software/vmd/vmd-1.9.3_athena/install_bin/vmd_athena
     export perl=`which perl`
 fi
 if [[  $HOSTNAME =~ wally ]] || [[ $HOSTNAME =~ axiom ]] ; then

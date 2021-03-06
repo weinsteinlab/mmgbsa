@@ -12,25 +12,25 @@ set -u
 ###################################################################
 
 # Path to MMGBSA distribution 
-mmgbsa_path=/users/mcuende1/mmgbsa/mmgbsa2.1/
+mmgbsa_path=/athena/hwlab/scratch/des2037/NSP5/openMM/mmgbsa
 
 # Selection for the MMGBSA system
-system_selection='protein'
+system_selection='not water and not ions'
 
 # Selection text for parts A and B of the complex
-partA_selection=" chain A "
-partB_selection=" chain B "
+partA_selection=" protein "
+partB_selection=" (not water and not ions and not protein) "
 
 # Cutoff to choose residues within each part, for which the decomposition will be made. 
 # If set to zero, we use the alternative selections below. 
 cutoff_residues=0
 
 # Alternatively, one can select residues explicitly for the decomposition.
-partA_residues_selection="resid 351 to 353 "
-partB_residues_selection="resid 51 to 53 "
+partA_residues_selection=" protein "
+partB_residues_selection=" (not water and not ions and not protein) "
 
 # Trajectory of the full system (can be a DCD file or an XTC file). 
-traj=/path/to/traj.xtc
+traj=/athena/hwlab/scratch/des2037/NSP5/openMM/mmgbsa/input/swarm0000_traj0000.dcd
 
 # Frames used :
 start_frame=1
@@ -39,14 +39,16 @@ frame_stride=1
 # Parallelization settings :
 #    number of frames in each sub-job.
 frames_per_job=10
+
 #    number of sub-jobs. Together with $frames_per_job, determines the total number of frames.
-n_jobs=3
+n_jobs=201
+
 #    Maximum number of jobs junning simultaneourly, in order not to invate an entire cluter.
-max_jobs_running_simultaneously=50   
+max_jobs_running_simultaneously=201   
 
 #    Queuing system (one of "SGE" or "LSF or "SLURM") and queue name
 queueing_system="SLURM"
-queue_name="normal"
+queue_name="edison,panda_physbio,hwlab_reserve"
  
 # Non-bonded interaction parameters :
 #    Cutoff for electro and VdW interactions in Angstroms.  !!! Warning, test with GBMV !!!
@@ -63,7 +65,7 @@ do_membrane="NO"
 
 # System details - proteins are assumed to come first in the PSF.
 #    Number of separate (i.e. not covalently bonded) protein/peptide segments
-proteins=3 
+proteins=2 
 
 # For each protein/peptide, include the following variables ###
 capping[1]=0 # is the first protein/peptide's n-term capped? 0 for no, 1 for yes. 
@@ -72,8 +74,8 @@ capping[2]=0 # is the first protein/peptide's c-term capped? 0 for no, 1 for yes
 capping[3]=0 # is the 2nd protein/peptide's n-term capped? 0 for no, 1 for yes. 
 capping[4]=0 # is the 2nd protein/peptide's c-term capped? 0 for no, 1 for yes.
 
-capping[5]=0 # is the 3rd protein/peptide's n-term capped? 0 for no, 1 for yes. 
-capping[6]=0 # is the 3rd protein/peptide's c-term capped? 0 for no, 1 for yes.
+#capping[5]=0 # is the 3rd protein/peptide's n-term capped? 0 for no, 1 for yes. 
+#capping[6]=0 # is the 3rd protein/peptide's c-term capped? 0 for no, 1 for yes.
 # et caetera ...
 
 
@@ -269,11 +271,11 @@ elif [ $queueing_system == "LSF" ]; then
 # SLURM :  ----------------------------------------------------------
 elif [ $queueing_system == "SLURM" ]; then
 
-        jobid=`sbatch --array=1-${n_jobs}%${max_jobs_running_simultaneously} -p $queue_name --nodes=1 --mem=20G --job-name=$job_name --output="mmgbsa.o%A.%a" --error="mmgbsa.e%A.%a" --export=mmgbsa_path=$mmgbsa_path,queueing_system=$queueing_system $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job | egrep -o -e "\b[0-9]+$"`
+        jobid=`sbatch -A hwlab --array=1-${n_jobs}%${max_jobs_running_simultaneously} -p $queue_name --nodes=1 --mem=20G --job-name=$job_name --output="mmgbsa.o%A.%a" --error="mmgbsa.e%A.%a" --export=mmgbsa_path=$mmgbsa_path,queueing_system=$queueing_system $parallel_scripts/mmgbsa_master_submit.sh $traj $start_frame $frame_stride $frames_per_job | egrep -o -e "\b[0-9]+$"`
 
         # Submit post-processing job
         echo "Submitting final post-processing job ... "
-        sbatch --dependency=afterok:${jobid} -p $queue_name --nodes=1 --mem=20G --job-name=${job_name}_final --output="mmgbsa_final.o%A" --error="mmgbsa_final.e%A" --export=mmgbsa_path=${mmgbsa_path},queueing_system=${queueing_system} $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job
+        sbatch -A hwlab --dependency=afterok:${jobid} -p $queue_name --nodes=1 --mem=20G --job-name=${job_name}_final --output="mmgbsa_final.o%A" --error="mmgbsa_final.e%A" --export=mmgbsa_path=${mmgbsa_path},queueing_system=${queueing_system} $parallel_scripts/mmgbsa_final_submit.sh $traj $n_jobs $frames_per_job
 	squeue -u `whoami`
 else
         echo "ERROR: bad queuing system identifyiner"

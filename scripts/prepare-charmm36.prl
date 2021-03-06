@@ -22,7 +22,7 @@
 # T: +41 21 692 4082
 ######################################################
 
-
+use File::Basename;
 $DIR="preparing-system";
 #$SETUP_FOR_CHARMM_DIR="/home/mcuendet/src/setup-for-charmm/";
 #$CHARMM_EXE="/softlib/exe/x86_64/pkg/charmm/36a2/intel9_64_mpich-1.2.7p1/bin/charmm";
@@ -34,83 +34,60 @@ $CHARMM_TOPPAR="../toppar";
 
 open(LOG,">$DIR/Preparation.log");
 
-
 open(INPUT,">$DIR/setup.inp");
 
-
-
 # Write CHARMM input file header
+
+
+my @rtf_files = glob "./toppar/*.rtf";
+my @prm_files = glob "./toppar/*.prm";
+my @par_files = glob "./toppar/*.par";
+my @par_prm_files = (@prm_files, @par_files);
+my @str_files = glob "./toppar/*.str";
 
 print INPUT "\* \n\n";
 
 print INPUT "!------ Aliases \n";
 print INPUT "SET lib  $CHARMM_TOPPAR \n\n";
 
-
-print INPUT "!------ Topology and Parameters \n";
-print INPUT "open unit 1 card read name \@lib/top_all36_prot.rtf \n";
-print INPUT "read RTF card unit 1 \n";
-print INPUT "close unit 1 \n\n";
-
-print INPUT "open unit 1 card read name \@lib/top_all36_lipid.rtf\n";
-print INPUT "read RTF card unit 1 append\n";
-print INPUT "close unit 1\n\n";
-
-print INPUT "open unit 1 card read name \@lib/top_all36_cgenff.rtf\n";
-print INPUT "read RTF card unit 1 append\n";
-print INPUT "close unit 1\n\n";
-
-print INPUT "open unit 1 card read name \@lib/top_all36_carb.rtf\n";
-print INPUT "read RTF card unit 1 append\n";
-print INPUT "close unit 1\n\n";
-
-
-#if (-e "$DIR/nad.pdb") {
-#  system "cp $SETUP_FOR_CHARMM_DIR/nad.rtf $DIR";
-#  print INPUT "open unit 1 card read name nad.rtf  \n";
-#  print INPUT "read RTF card unit 1 append \n";
-#  print INPUT "close unit 1 \n\n";
-#}
-
-#if (-e "$DIR/azi.pdb") {
-#  system "cp $SETUP_FOR_CHARMM_DIR/azi.rtf $DIR";
-#  print INPUT "open unit 1 card read name azi.rtf  \n";
-#  print INPUT "read RTF card unit 1 append \n";
-#  print INPUT "close unit 1 \n\n";
-#}
-
-if (-e "../setup/ligand/ligand.rtf") {
-  system "cp ../setup/ligand/ligand.rtf $DIR";
-  print INPUT "open unit 1 card read name ligand.rtf  \n";
-  print INPUT "read RTF card unit 1 append \n";
-  print INPUT "close unit 1 \n\n";
+my $counter = 1;
+for my $this_rtf ( @rtf_files ) {
+    my $just_base = basename($this_rtf); 
+    print INPUT "!------ Topology and Parameters \n";
+    print INPUT "open unit 1 card read name \@lib/$just_base \n";
+   
+    if ( $counter == 1 ) { 
+        print INPUT "read RTF card unit 1 \n";
+        $counter = 2;
+    } else {
+        print INPUT "read RTF card unit 1 append\n";
+    }
+    print INPUT "close unit 1 \n\n";
 }
 
 
-print INPUT "open unit 1 card read name \@lib/par_all36_prot.prm \n";
-print INPUT "read PARA card flex unit 1 \n";
-print INPUT "close unit 1 \n\n";
+$counter = 1;
+for my $this_par_prm ( @par_prm_files ) {
+    my $just_base = basename($this_par_prm); 
+    print INPUT "!------ Topology and Parameters \n";
+    print INPUT "open unit 1 card read name \@lib/$just_base \n";
+   
+    if ( $counter == 1 ) { 
+        print INPUT "read PARA card flex unit 1 \n";
+        $counter = 2;
+    } else {
+        print INPUT "read PARA card flex unit 1 append\n";
+    }
+    print INPUT "close unit 1 \n\n";
+}
 
-print INPUT "open unit 1 card read name \@lib/par_all36_lipid.prm \n";
-print INPUT "read PARA card flex unit 1 append\n";
-print INPUT "close unit 1 \n\n";
 
-print INPUT "open unit 1 card read name \@lib/par_all36_cgenff.prm \n";
-print INPUT "read PARA card flex unit 1 append\n";
-print INPUT "close unit 1 \n\n";
+for my $this_str ( @str_files ) {
+    my $just_base = basename($this_str); 
+    print INPUT "STREAM \@lib/$just_base \n";
+}
 
-print INPUT "open unit 1 card read name \@lib/par_all36_carb.prm \n";
-print INPUT "read PARA card flex unit 1 append\n";
-print INPUT "close unit 1 \n\n";
-
-
-#print INPUT "STREAM \@lib/toppar_all36_lipid_inositol.str\n";
-#print INPUT "STREAM \@lib/saia.str \n";
-#print INPUT "STREAM \@lib/sapi24_renamed_sapi.str \n";
-#print INPUT "STREAM \@lib/stream/lipid/toppar_all36_lipid_cholesterol.str \n";
-print INPUT "STREAM \@lib/toppar_all36_lipid_cholesterol.str \n";
-print INPUT "STREAM \@lib/toppar_water_ions.str \n";
-print INPUT "STREAM \@lib/toppar_all36_lipid_prot.str\n\n" ; # For CYSP : palmitoylated Cys
+print INPUT "\n";
 
 #print INPUT "open unit 1 card read name \@lib/par_all22_prot_swisssidechain.inp \n";
 #print INPUT "read PARA card unit 1 append\n";
@@ -146,21 +123,9 @@ print INPUT "STREAM \@lib/toppar_all36_lipid_prot.str\n\n" ; # For CYSP : palmit
 #  print INPUT "close unit 1 append \n\n"
 #}
 
-if (-e "../setup/ligand/ligand.par") {
-  system "cp ../setup/ligand/ligand.par $DIR";
-  print INPUT "open unit 1 card read name ligand.par  \n";
-  print INPUT "read PARA card unit 1 append \n";
-  print INPUT "close unit 1 \n\n";
-}
-
 #if (-e "$DIR/zn2.pdb" or -e "$DIR/heme.pdb") {
 #  print INPUT "STREAM $SETUP_FOR_CHARMM_DIR/sulf.str \n\n";
 #}
-
-
-if (-e "$DIR/heme.pdb") {
-  print INPUT "STREAM \@lib/stream/toppar_all22_prot_heme-vz.str \n\n";
-}
 
 
 # Check included segments. Calculate offsets.

@@ -54,6 +54,8 @@ Copy the main script locally :
 
 Edit the parameters inside the script. Then run the entire calculation with 
 
+        ./scripts/generate_loader_str.sh
+
 	./RUN.sh
 
 	

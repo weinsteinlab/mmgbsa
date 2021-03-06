@@ -32,6 +32,7 @@ do_membrane=`awk '($2 == "do_membrane"){print $3}' vmd_selections.tcl`
 basedir_backslash='.' 
 system_path="../"
 
+echo `pwd`
 mkdir -p data log outputs
 
 if [ -f data/loader.str ];  then
@@ -59,19 +60,7 @@ cp  -p $system_path/setup_charmm/complex_raw.pdb data/.
 cp -p $system_path/input/system.pdb data/system_raw.pdb
 
 # We make local copies of charmm input files so that the node does not read 100 times from main disk. 
-cp -p $top_path/top_all36_prot.rtf data/.
-cp -p $top_path/top_all36_lipid.rtf data/.
-cp -p $top_path/top_all36_cgenff.rtf data/.
-cp -p $top_path/top_all36_carb.rtf data/.
-
-cp -p $top_path/par_all36_prot.prm data/.
-cp -p $top_path/par_all36_lipid.prm data/.
-cp -p $top_path/par_all36_cgenff.prm data/.
-cp -p $top_path/par_all36_carb.prm data/.
-
-cp -rp $top_path/toppar_water_ions.str data/.
-cp -rp $top_path/stream/lipid/toppar_all36_lipid_cholesterol.str data/.
-cp -rp $top_path/toppar_all36_lipid_prot.str data/.
+cp -p $top_path/* data/.
 
 # For HDGB membrane
 if [ $do_membrane == "YES" ]; then
@@ -138,8 +127,4 @@ if [ $exit_status -ne 0 ]; then
     echo "ERROR : charmm charges.inp"
     exit 1
 fi
-
-
-
-
 

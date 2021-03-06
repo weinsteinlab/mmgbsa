@@ -21,14 +21,14 @@
 !NUCLEIC ACIDS
 !
 !Hart, K., Foloppe, N., Baker, C.M., Denning, E.J., Nilsson, L. and
-!MacKerell Jr., A.D. “Optimization of the CHARMM additive force field
+!MacKerell Jr., A.D. "Optimization of the CHARMM additive force field
 !for DNA: Improved treatment of the BI/BII conformational
-!equilibrium,” Journal of Chemical Theory and Computation, 8:348–362,
+!equilibrium," Journal of Chemical Theory and Computation, 8:348–362,
 !2012, http://dx.doi.org/10.1021/ct200723y
 !
 !Denning, E.J., Priyakumar, U.D., Nilsson, L., and MacKerell Jr., A.D.,
-!“Impact of 2’-hydroxyl sampling on the conformational properties of
-!RNA: Update of the CHARMM all-atom additive force field for RNA,”
+!"Impact of 2'-hydroxyl sampling on the conformational properties of
+!RNA: Update of the CHARMM all-atom additive force field for RNA,"
 !JCC, In Press, 2011, NIHMSID #272247
 
 !Foloppe, N. and MacKerell, Jr., A.D. "All-Atom Empirical Force Field for
@@ -41,48 +41,50 @@
 !
 
 ATOMS
-MASS  91  HN1   1.008000 ! Nucleic acid amine proton
-MASS  92  HN2   1.008000 ! Nucleic acid ring nitrogen proton
-MASS  93  HN3   1.008000 ! Nucleic acid aromatic carbon proton
-MASS  94  HN4   1.008000 ! Nucleic acid phosphate hydroxyl proton
-MASS  95  HN5   1.008000 ! Nucleic acid ribose hydroxyl proton
-MASS  96  HN6   1.008000 ! Nucleic acid ribose aliphatic proton
-MASS  97  HN7   1.008000 ! Nucleic acid proton (equivalent to protein HA)
-MASS  98  HN8   1.008000 ! Bound to CN8 in nucleic acids/model compounds
-MASS  99  HN9   1.008000 ! Bound to CN9 in nucleic acids/model compounds
-MASS 100  CN1  12.011000 ! Nucleic acid carbonyl carbon
-MASS 101  CN1T 12.011000 ! Nucleic acid carbonyl carbon (T/U C2)
-MASS 102  CN2  12.011000 ! Nucleic acid aromatic carbon to amide
-MASS 103  CN3  12.011000 ! Nucleic acid aromatic carbon 
-MASS 104  CN3T 12.011000 ! Nucleic acid aromatic carbon, Thy C5
-MASS 105  CN4  12.011000 ! Nucleic acid purine C8 and ADE C2  
-MASS 106  CN5  12.011000 ! Nucleic acid purine C4 and C5
-MASS 107  CN5G 12.011000 ! Nucleic acid guanine C5
-MASS 108  CN7  12.011000 ! Nucleic acid carbon (equivalent to protein CT1)
-MASS 109  CN7B 12.011000 ! Nucleic acid aliphatic carbon for C1'
-MASS 110  CN8  12.011000 ! Nucleic acid carbon (equivalent to protein CT2)
-MASS 111  CN8B 12.011000 ! Nucleic acid carbon (equivalent to protein CT2)
-MASS 112  CN9  12.011000 ! Nucleic acid carbon (equivalent to protein CT3)
-MASS 113  NN1  14.007000 ! Nucleic acid amide nitrogen
-MASS 114  NN2  14.007000 ! Nucleic acid protonated ring nitrogen
-MASS 115  NN2B 14.007000 ! From NN2, for N9 in GUA different from ADE
-MASS 116  NN2U 14.007000 ! Nucleic acid protonated ring nitrogen, ura N3
-MASS 117  NN2G 14.007000 ! Nucleic acid protonated ring nitrogen, gua N1
-MASS 118  NN3  14.007000 ! Nucleic acid unprotonated ring nitrogen 
-MASS 119  NN3A 14.007000 ! Nucleic acid unprotonated ring nitrogen, ade N1 and N3
-MASS 120  NN3G 14.007000 ! Nucleic acid unprotonated ring nitrogen, gua N3
-MASS 121  NN4  14.007000 ! Nucleic acid purine N7
-MASS 122  NN6  14.007000 ! Nucleic acid sp3 amine nitrogen (equiv to protein nh3)
-MASS 123  ON1  15.999400 ! Nucleic acid carbonyl oxygen
-MASS 124  ON1C 15.999400 ! Nucleic acid carbonyl oxygen, cyt O2
-MASS 125  ON2  15.999400 ! Nucleic acid phosphate ester oxygen
-MASS 126  ON3  15.999400 ! Nucleic acid =O in phosphate 
-MASS 127  ON4  15.999400 ! Nucleic acid phosphate hydroxyl oxygen
-MASS 128  ON5  15.999400 ! Nucleic acid ribose hydroxyl oxygen
-MASS 129  ON6  15.999400 ! Nucleic acid deoxyribose ring oxygen
-MASS 130  ON6B 15.999400 ! Nucleic acid ribose ring oxygen
-MASS 131  P    30.974000 ! phosphorus
-MASS 132  P2   30.974000 ! phosphorus, adm, 2011 DNA update
+MASS  -1  HN1        1.00800 ! Nucleic acid amine proton
+MASS  -1  HN2        1.00800 ! Nucleic acid ring nitrogen proton
+MASS  -1  HN3        1.00800 ! Nucleic acid aromatic carbon proton
+MASS  -1  HN4        1.00800 ! Nucleic acid phosphate hydroxyl proton
+MASS  -1  HN5        1.00800 ! Nucleic acid ribose hydroxyl proton
+MASS  -1  HN6        1.00800 ! Nucleic acid ribose aliphatic proton
+MASS  -1  HN7        1.00800 ! Nucleic acid proton (equivalent to protein HA)
+MASS  -1  HN8        1.00800 ! Bound to CN8 in nucleic acids/model compounds
+MASS  -1  HN9        1.00800 ! Bound to CN9 in nucleic acids/model compounds
+MASS  -1  CN1       12.01100 ! Nucleic acid carbonyl carbon
+MASS  -1  CN1T      12.01100 ! Nucleic acid carbonyl carbon (T/U C2)
+MASS  -1  CN2       12.01100 ! Nucleic acid aromatic carbon to amide
+MASS  -1  CN3       12.01100 ! Nucleic acid aromatic carbon 
+MASS  -1  CN3T      12.01100 ! Nucleic acid aromatic carbon, Thy C5
+MASS  -1  CN4       12.01100 ! Nucleic acid purine C8 and ADE C2  
+MASS  -1  CN5       12.01100 ! Nucleic acid purine C4 and C5
+MASS  -1  CN5G      12.01100 ! Nucleic acid guanine C5
+MASS  -1  CN7       12.01100 ! Nucleic acid carbon (equivalent to protein CT1)
+MASS  -1  CN7B      12.01100 ! Nucleic acid aliphatic carbon for C1'
+MASS  -1  CN8       12.01100 ! Nucleic acid carbon (equivalent to protein CT2)
+MASS  -1  CN8B      12.01100 ! Nucleic acid carbon (equivalent to protein CT2)
+MASS  -1  CN9       12.01100 ! Nucleic acid carbon (equivalent to protein CT3)
+MASS  -1  NN1       14.00700 ! Nucleic acid amide nitrogen
+MASS  -1  NN2       14.00700 ! Nucleic acid protonated ring nitrogen
+MASS  -1  NN2B      14.00700 ! From NN2, for N9 in GUA different from ADE
+MASS  -1  NN2U      14.00700 ! Nucleic acid protonated ring nitrogen, ura N3
+MASS  -1  NN2G      14.00700 ! Nucleic acid protonated ring nitrogen, gua N1
+MASS  -1  NN3       14.00700 ! Nucleic acid unprotonated ring nitrogen 
+MASS  -1  NN3A      14.00700 ! Nucleic acid unprotonated ring nitrogen, ade N1 and N3
+MASS  -1  NN3G      14.00700 ! Nucleic acid unprotonated ring nitrogen, gua N3
+MASS  -1  NN4       14.00700 ! Nucleic acid purine N7
+MASS  -1  NN6       14.00700 ! Nucleic acid sp3 amine nitrogen (equiv to protein nh3)
+MASS  -1  ON1       15.99940 ! Nucleic acid carbonyl oxygen
+MASS  -1  ON1C      15.99940 ! Nucleic acid carbonyl oxygen, cyt O2
+MASS  -1  ON2       15.99940 ! Nucleic acid phosphate ester oxygen
+MASS  -1  ON3       15.99940 ! Nucleic acid =O in phosphate 
+MASS  -1  ON4       15.99940 ! Nucleic acid phosphate hydroxyl oxygen
+MASS  -1  ON5       15.99940 ! Nucleic acid ribose hydroxyl oxygen
+MASS  -1  ON6       15.99940 ! Nucleic acid deoxyribose ring oxygen
+MASS  -1  ON6B      15.99940 ! Nucleic acid ribose ring oxygen
+MASS  -1  P         30.97400 ! phosphorus
+MASS  -1  P2        30.97400 ! phosphorus, adm, 2011 DNA update
+MASS  -1  P3        30.97400 ! pyrophosphate phosphorus
+MASS  -1  P4        30.97400 ! protonated pyrophosphate phosphorus
 
 BONDS
 !
@@ -205,6 +207,12 @@ CN7B ON5    428.0       1.400   ! check adm jr.,
 !@@@@@@@@@ Begining of bonds for nucleotide analogue @@@@@@@@@
 CN8  ON2    340.0       1.44    !
 !@@@@@@@@@ End of bonds for nucleotide analogue @@@@@@@@@
+!from nad_ppi stream file
+ON2  P3     300.0       1.68    !nad/ppi, jjp1/adm jr. 7/95
+ON3  P3     480.0       1.53    !nad/ppi, jjp1/adm jr. 7/95
+ON2  P4     300.0       1.68    !PPI2, from nad/ppi, adm jr. 7/01
+ON3  P4     480.0       1.53    !PPI2, from nad/ppi, adm jr. 7/01
+ON4  P4     237.0       1.58    !PPI2, from MP_1, ADM Jr.
 
 ANGLES
 !
@@ -491,6 +499,20 @@ ON5  P    ON3      98.9    111.6  ! From ON2 P ON3
 !------------------------ added for araim ----------------------
 ON6  CN7B CN7     120.0     106.25   ! 
 CN7B CN7  CN8      58.35    113.6   11.16 2.561 ! 
+!from nad_ppi stream file
+P    ON2  P       15.0     140.0 -40.0  2.80 !nad/ppi, jjp1/adm jr. 7/95
+CN9  ON2  P3      20.0     120.0  35.   2.33 !nad/ppi, jjp1/adm jr. 7/95
+P3   ON2  P       15.0     140.0 -40.0  2.80 !nad/ppi, jjp1/adm jr. 7/95
+P4   ON2  P       45.0     140.0  40.0  3.15 !PPI2, from nad/ppi, adm jr., 7/01
+P3   ON2  P3      15.0     140.0 -40.0  2.80 !nad/ppi, jjp1/adm jr. 7/95
+HN4  ON4  P4      30.0     120.0  40.0  2.35 !PPI2, from MP_1, adm jr., 7/01
+ON2  P4   ON4     48.1     100.0  !PPI2, from MP_1, adm jr., 7/01
+ON3  P4   ON4     98.9     108.23 !PPI2, from MP_1, adm jr., 7/01
+ON2  P3   ON2     80.0     104.3  !nad/ppi, jjp1/adm jr. 7/95
+ON2  P3   ON3     88.9     111.6  !nad/ppi, jjp1/adm jr. 7/95
+ON2  P4   ON3     88.9     105.0  !PPI2, from nad/ppi, adm jr., 7/01
+ON3  P3   ON3    104.0     120.0  !nad/ppi, jjp1/adm jr. 7/95
+ON3  P4   ON3    104.0     120.0  !PPI2, from nad/ppi, adm jr., 7/01
 
 DIHEDRALS
 !
@@ -1153,6 +1175,36 @@ HN7  CN7  CN7B ON5       0.195   3         0.0 ! for nadp/nadph (NOT!), adm jr.
 HN7  CN7B CN7  CN7       0.195   3         0.0 ! for nadp/nadph (NOT!), adm jr.
 HN7  CN7  CN7  CN7B      0.195   3         0.0 ! for nadp/nadph (NOT!), adm jr.
 HN7  CN7  CN7B HN7       0.195   3         0.0 ! for nadp/nadph (NOT!), adm jr.
+!from nad_ppi stream file
+! pyrophosphate (ppi)
+P3   ON2  P    ON2      0.03    2     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P3   ON2  P    ON2      0.03    3     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P    ON2  P3   ON2      0.03    2     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P    ON2  P3   ON2      0.03    3     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P3   ON2  P3   ON2      0.03    2     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P3   ON2  P3   ON2      0.03    3     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P    ON2  P    ON2      0.03    2     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P    ON2  P    ON2      0.03    3     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P    ON2  P    ON3      0.10    2     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P    ON2  P    ON3      0.03    3     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P    ON2  P3   ON3      0.10    2     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P    ON2  P3   ON3      0.03    3     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P3   ON2  P    ON3      0.10    2     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P3   ON2  P    ON3      0.03    3     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P3   ON2  P3   ON3      0.10    2     0.0  !nad/ppi, jjp1/adm jr. 7/95
+P3   ON2  P3   ON3      0.03    3     0.0  !nad/ppi, jjp1/adm jr. 7/95
+! protonated pyrophosphate (ppi2)
+P    ON2  P4   ON2      0.03    2     0.0  !from P ON2 P2 ON2, adm jr. 7/01
+P    ON2  P4   ON2      0.03    3     0.0  !from P ON2 P2 ON2, adm jr. 7/01
+P4   ON2  P    ON2      0.03    2     0.0  !from P ON2 P2 ON2, adm jr. 7/01
+P4   ON2  P    ON2      0.03    3     0.0  !from P ON2 P2 ON2, adm jr. 7/01
+P    ON2  P4   ON3      0.10    2     0.0  !from P ON2 P2 ON3, adm jr. 7/01
+P    ON2  P4   ON3      0.03    3     0.0  !from P ON2 P2 ON3, adm jr. 7/01
+P4   ON2  P    ON3      0.10    2     0.0  !from P ON2 P2 ON3, adm jr. 7/01
+P4   ON2  P    ON3      0.03    3     0.0  !from P ON2 P2 ON3, adm jr. 7/01
+P    ON2  P4   ON4      0.10    2     0.0  !from P ON2 P2 ON4, adm jr. 7/01
+P    ON2  P4   ON4      0.03    3     0.0  !from P ON2 P2 ON4, adm jr. 7/01
+X    ON4  P4   X        0.30    3     0.0  !from MP_1, adm jr.
 
 IMPROPER
 !
@@ -1240,6 +1292,8 @@ CN9      0.0       -0.0780    2.040  0.0   -0.01 1.90 !
 !
 P        0.0       -0.585     2.15  
 P2       0.0       -0.585     2.15  
+P3       0.0       -0.585     2.15  ! nad/ppi, jjp1/adm jr.
+P4       0.0       -0.585     2.15  ! for PPI2, adm jr.
 
 NBFIX
 !               Emin        Rmin
