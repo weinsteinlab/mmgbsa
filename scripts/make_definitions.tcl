@@ -8,9 +8,9 @@ source ./vmd_selections.tcl
 # Load  complex
 
 # Try to do without the namd psf 
-#mol new ../setup_charmm/complex_raw.psf
-#mol addfile ../setup_charmm/complex_raw.pdb type pdb
-mol new ./data/complex_raw.pdb 
+mol new ../setup_charmm/complex_raw.psf
+mol addfile ../setup_charmm/complex_raw.pdb type pdb
+#mol new ./data/complex_raw.pdb 
 
 # We have to load the original NAMD complex.pdb file 
 # because after setup-charmm the chain information disappears

@@ -60,8 +60,9 @@ $inv_eps_w=1.0/$eps_w;
 $inv_eps_s = 1.0/$eps_s;
 # $ionconc=0.154;      # Physiological ion concentration
 	             # Recover the original behavior with $ionconc=0
-	             
-$kappa=0.316*sqrt($ionconc); 	#Debeye screening constant, defined as in 
+
+$kappa=0.124007;	             
+#$kappa=0.316*sqrt($ionconc); 	#Debeye screening constant, defined as in 
 				# Onufriev et al., Proteins 55 : 383, 2004
 
 
