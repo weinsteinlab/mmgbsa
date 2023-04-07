@@ -12,7 +12,7 @@ set -u
 ###################################################################
 
 # Path to MMGBSA distribution 
-mmgbsa_path=/athena/hwlab/scratch/des2037/NSP5/openMM/mmgbsa
+mmgbsa_path=/absolute/path/to/this/directory/mmgbsa
 
 # Selection for the MMGBSA system
 system_selection='not water and not ions'
@@ -30,7 +30,7 @@ partA_residues_selection=" protein "
 partB_residues_selection=" (not water and not ions and not protein) "
 
 # Trajectory of the full system (can be a DCD file or an XTC file). 
-traj=/athena/hwlab/scratch/des2037/NSP5/openMM/mmgbsa/input/swarm0000_traj0000.dcd
+traj=//absolute/path/to/this/file/swarm0000_traj0000.dcd
 
 # Frames used :
 start_frame=1
@@ -48,7 +48,7 @@ max_jobs_running_simultaneously=201
 
 #    Queuing system (one of "SGE" or "LSF or "SLURM") and queue name
 queueing_system="SLURM"
-queue_name="edison,panda_physbio,hwlab_reserve"
+queue_name="your_partition_name"
  
 # Non-bonded interaction parameters :
 #    Cutoff for electro and VdW interactions in Angstroms.  !!! Warning, test with GBMV !!!
